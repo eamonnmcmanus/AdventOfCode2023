@@ -8,6 +8,9 @@ import static java.util.stream.Collectors.joining;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +23,7 @@ import java.util.regex.Pattern;
  */
 public class Puzzle19 {
   public static void main(String[] args) throws Exception {
-    try (InputStream in = Puzzle19.class.getResourceAsStream("puzzle19.txt")) {
+    try (InputStream in = Puzzle19.class.getResourceAsStream("puzzle19-small.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
       int empty = lines.indexOf("");
@@ -34,6 +37,18 @@ public class Puzzle19 {
         }
       }
       System.out.println(STR."Rating total \{sum}");
+
+      ConstraintSet accepted = allAcceptedBy(workflows);
+      int newSum = 0;
+      for (Part part : parts) {
+        if (accepted.matches(part)) {
+          newSum += part.rating();
+        } else if (accept(part, workflows)) {
+          throw new AssertionError(STR."Should have been accepted: \{part} given \{accepted}");
+        }
+      }
+      System.out.println(STR."Rating total \{newSum}");
+      System.out.println(STR."Accepting \{accepted}");
     }
   }
 
@@ -52,10 +67,38 @@ public class Puzzle19 {
     }
   }
 
+  static ConstraintSet allAcceptedBy(Map<String, Workflow> workflows) {
+    return allAcceptedBy(workflows, ConstraintSet.MATCH_ALL, "in");
+  }
+
+  static ConstraintSet allAcceptedBy(
+      Map<String, Workflow> workflows, ConstraintSet current, String startLabel) {
+    switch (startLabel) {
+      case "A" -> {
+        return current;
+      }
+      case "R" -> {
+        return ConstraintSet.EMPTY;
+      }
+    }
+    ConstraintSet accepted = ConstraintSet.EMPTY;
+    Workflow workflow = workflows.get(startLabel);
+    for (Rule rule : workflow.rules) {
+      // If the condition in the rule is true (intersection) then we'll pass the intersection of
+      // `current` and that condition into a recursive call to find everything that matches that.
+      // Otherwise, we'll update `current` with the complement of that condition.
+      accepted = accepted.union(allAcceptedBy(workflows, current.intersection(rule.constraints), rule.target));
+      current = current.minus(rule.constraints);
+      // This isn't right. If the rule says a<1000, we want to subtract just a<1000, not the other
+      // conditions.
+    }
+    return accepted.union(allAcceptedBy(workflows, current, workflow.defaultTarget));
+  }
+
   private static final Pattern WORKFLOW_PATTERN = Pattern.compile("([a-z]+)\\{(.*)\\}");
 
   // px{a<2006:qkq,m>2090:A,rfg}
-  private static Map<String, Workflow> parseWorkflows(List<String> lines) {
+  static Map<String, Workflow> parseWorkflows(List<String> lines) {
     Map<String, Workflow> map = new TreeMap<>();
     for (String line : lines) {
       Matcher matcher = WORKFLOW_PATTERN.matcher(line);
@@ -68,13 +111,13 @@ public class Puzzle19 {
     return map;
   }
 
-  private static Workflow parseWorkflow(String line) {
+  static Workflow parseWorkflow(String line) {
     List<String> ruleStrings = List.of(line.split(","));
     List<Rule> rules = ruleStrings.stream().limit(ruleStrings.size() - 1).map(Puzzle19::parseRule).toList();
     return new Workflow(rules, ruleStrings.getLast());
   }
 
-  private static Rule parseRule(String ruleString) {
+  static Rule parseRule(String ruleString) {
     char category = ruleString.charAt(0);
     char ltgt = ruleString.charAt(1);
     assert ltgt == '<' || ltgt == '>';
@@ -82,7 +125,7 @@ public class Puzzle19 {
     assert colon > 0;
     int value = Integer.parseInt(ruleString.substring(2, colon));
     String target = ruleString.substring(colon + 1);
-    return new Rule(category, ltgt, value, target);
+    return Rule.of(category, ltgt, value, target);
   }
 
   private static List<Part> parseParts(List<String> lines) {
@@ -112,20 +155,29 @@ public class Puzzle19 {
     }
   }
 
-  record Rule(char category, char ltgt, int value, String target) {
+  record Rule(Constraints constraints, String target) {
     boolean matches(Part part) {
-      int partValue = part.get(category);
-      return (ltgt == '<') ? partValue < value : partValue > value;
+      return constraints.matches(part);
+    }
+
+    static Rule of(char category, char ltgt, int value, String target) {
+      int moreThan = 0, lessThan = 4001;
+      switch (ltgt) {
+        case '<' -> lessThan = value;
+        case '>' -> moreThan = value;
+      }
+      Constraints constraints = Constraints.MATCH_ALL.with(category, new Constraint(moreThan, lessThan));
+      return new Rule(constraints, target);
     }
   }
 
-  static class Part extends TreeMap<Character, Integer> {
+  static class Part extends LinkedHashMap<Character, Integer> {
     Part(Map<Character, Integer> map) {
       super(map);
     }
 
     static Part of(int x, int m, int a, int s) {
-      return new Part(Map.of('x', x, 'm', m, 'a', a, 's', s));
+      return new Part(ImmutableMap.of('x', x, 'm', m, 'a', a, 's', s));
     }
 
     int rating() {
@@ -192,6 +244,8 @@ public class Puzzle19 {
     static final Constraints EMPTY = new Constraints(
         ImmutableMap.of('x', Constraint.EMPTY, 'm', Constraint.EMPTY, 'a', Constraint.EMPTY, 's', Constraint.EMPTY));
 
+    static final Constraints MATCH_ALL = Constraints.of(0, 4001, 0, 4001, 0, 4001, 0, 4001);
+
     static Constraints of(
         int xMoreThan, int xLessThan, int mMoreThan, int mLessThan,
         int aMoreThan, int aLessThan, int sMoreThan, int sLessThan) {
@@ -204,11 +258,17 @@ public class Puzzle19 {
     }
 
     Constraints with(char c, Constraint constraint) {
-      return new Constraints(
-          ImmutableMap.<Character, Constraint>builder()
-              .putAll(map)
-              .put(c, constraint)
-              .buildKeepingLast());
+      if (false) {
+        return new Constraints(
+            ImmutableMap.<Character, Constraint>builder()
+                .putAll(map)
+                .put(c, constraint)
+                .buildKeepingLast());
+      } else {
+        LinkedHashMap<Character, Constraint> newMap = new LinkedHashMap<>(map);
+        newMap.put(c, constraint);
+        return new Constraints(newMap);
+      }
     }
 
     boolean matches(Part part) {
@@ -244,11 +304,19 @@ public class Puzzle19 {
      * the intersection.
      */
     ConstraintSet minus(Constraints that) {
+      Set<Constraint> xMinus = this.map.get('x').minus(that.map.get('x'));
+      Set<Constraint> mMinus = this.map.get('m').minus(that.map.get('m'));
+      Set<Constraint> aMinus = this.map.get('a').minus(that.map.get('a'));
+      Set<Constraint> sMinus = this.map.get('s').minus(that.map.get('s'));
       ImmutableSet.Builder<Constraints> newConstraints = ImmutableSet.builder();
-      for (char c : map.keySet()) {
-        Set<Constraint> minus = this.map.get(c).minus(that.map.get(c));
-        for (Constraint con : minus) {
-          newConstraints.add(this.with(c, con));
+      for (Constraint x : xMinus) {
+        for (Constraint m : mMinus) {
+          for (Constraint a : aMinus) {
+            for (Constraint s : sMinus) {
+              Constraints constraints = new Constraints(ImmutableMap.of('x', x, 'm', m, 'a', a, 's', s));
+              newConstraints.add(constraints);
+            }
+          }
         }
       }
       return new ConstraintSet(newConstraints.build());
@@ -264,9 +332,26 @@ public class Puzzle19 {
 
   /**
    * A set of constraints, such that a {@link Part} matches the set if it matches any element of the
-   * set.
+   * set. The sets must not overlap.
    */
   record ConstraintSet(Set<Constraints> constraintSet) {
+    ConstraintSet {
+      List<Constraints> a = new ArrayList<>(constraintSet);
+      for (int i = 0; i < a.size(); i++) {
+        for (int j = i + 1; j < a.size(); j++) {
+          Constraints intersection = a.get(i).intersection(a.get(j));
+          if (!intersection.isEmpty()) {
+            throw new IllegalArgumentException(
+                STR."Overlapping sets \{a.get(i)} and \{a.get(j)} => \{intersection}");
+          }
+        }
+      }
+    }
+
+    static final ConstraintSet EMPTY = new ConstraintSet(Set.of());
+
+    static final ConstraintSet MATCH_ALL = new ConstraintSet(Set.of(Constraints.MATCH_ALL));
+
     static ConstraintSet of(Constraints constraints) {
       return new ConstraintSet(Set.of(constraints));
     }
@@ -275,8 +360,48 @@ public class Puzzle19 {
       return constraintSet.stream().anyMatch(c -> c.matches(part));
     }
 
+    /**
+     * Return a new {@link ConstraintSet} that matches everything this one does, and also matches
+     * anything matched by the given {@code constraints}.
+     */
     ConstraintSet plus(Constraints constraints) {
-      throw new UnsupportedOperationException();
+      // We want to remove from `constraints` any ranges that are already present in `constraintSet`.
+      // The result is in general a set of disjoint Contraints. For each Constraints in
+      // `constraintSet`, we will remove its elements from `remaining`. The end result is a set
+      // where no element has any values in common with `constraintSet`.
+      Set<Constraints> remaining = Set.of(constraints);
+      for (Constraints oldConstraints : constraintSet) {
+        Set<Constraints> newRemaining = new LinkedHashSet<>();
+        for (Constraints r : remaining) {
+          newRemaining.addAll(r.minus(oldConstraints).constraintSet);
+        }
+        remaining = newRemaining;
+      }
+      return new ConstraintSet(
+          ImmutableSet.<Constraints>builder().addAll(constraintSet).addAll(remaining).build());
+    }
+
+    ConstraintSet minus(Constraints constraints) {
+      Set<Constraints> newConstraints = constraintSet.stream()
+          .flatMap(c -> c.minus(constraints).constraintSet.stream())
+          .collect(toImmutableSet());
+      return new ConstraintSet(newConstraints);
+    }
+
+    ConstraintSet intersection(Constraints constraints) {
+      ImmutableSet<Constraints> newConstraints = constraintSet.stream()
+          .map(c -> c.intersection(constraints))
+          .filter(c -> !c.isEmpty())
+          .collect(toImmutableSet());
+      return new ConstraintSet(newConstraints);
+    }
+
+    ConstraintSet union(ConstraintSet that) {
+      ConstraintSet u = this;
+      for (Constraints constraints : that.constraintSet) {
+        u = u.plus(constraints);
+      }
+      return u;
     }
 
     @Override

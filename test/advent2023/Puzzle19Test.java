@@ -1,14 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package advent2023;
 
+import static advent2023.Puzzle19.allAcceptedBy;
+import static advent2023.Puzzle19.parseRule;
+import static advent2023.Puzzle19.parseWorkflows;
 import static com.google.common.truth.Truth.assertThat;
 
 import advent2023.Puzzle19.Constraint;
 import advent2023.Puzzle19.ConstraintSet;
 import advent2023.Puzzle19.Constraints;
+import advent2023.Puzzle19.Rule;
+import advent2023.Puzzle19.Workflow;
+import com.google.common.collect.ImmutableSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 
@@ -82,20 +86,84 @@ public class Puzzle19Test {
   }
 
   @Test
+  public void testConstraintsWith() {
+    Constraints c1 = Constraints.of(3, 6, 5, 9, 1, 10, 1, 5);
+    assertThat(c1.with('m', new Constraint(7, 9)))
+        .isEqualTo(Constraints.of(3, 6, 7, 9, 1, 10, 1, 5));
+  }
+
+  @Test
   public void testConstraintsMinus() {
     Constraints c1 = Constraints.of(3, 6, 5, 9, 1, 10, 1, 5);
-    Constraints c2 = Constraints.of(3, 6, 6, 8, 8, 10, 1, 5);
-    ConstraintSet minus1 = c1.minus(c2);
+    Constraints c2 = Constraints.of(5, 8, 6, 8, 8, 10, 0, 3);
     // c1 is 3<x<6, 5<m<9, 1<a<10, 1<s<5
-    // c2 is 3<x<6, 6<m<8, 8<a<10, 1<s<5
-    // The x and s values from c2 are a superset of the ones from c1. For the m and a values,
-    // we have (5<m<7,7<m<9,1<a<9); for each of those we should have a new Constraints where the
-    // other variables are unchanged.
-    assertThat(minus1).isEqualTo(
-        new ConstraintSet(
-            Set.of(
-                c1.with('m', new Constraint(5, 7)),
-                c1.with('m', new Constraint(7, 9)),
-                c1.with('a', new Constraint(1, 9)))));
+    // c2 is 5<x<8, 6<m<8, 8<a<10, 0<s<3
+    // The individual differences are:
+    //       3<x<6
+    //              5<m<7 or 7<m<9
+    //                     1<a<9
+    //                             2<s<5
+    // So we should have two elements in the set, for the two m ranges, plus one value for the others.
+    ConstraintSet expected = new ConstraintSet(
+        Set.of(
+            Constraints.of(3, 6, 5, 7, 1, 9, 2, 5),
+            Constraints.of(3, 6, 7, 9, 1, 9, 2, 5)));
+    ConstraintSet minus1 = c1.minus(c2);
+    assertThat(minus1).isEqualTo(expected);
+  }
+
+  @Test
+  public void testConstraintsPlus() {
+    Constraints c1 = Constraints.of(3, 6, 5, 9, 1, 10, 1, 5);
+    Constraints c2 = Constraints.of(5, 8, 6, 8, 8, 10, 0, 3);
+    // c1 is 3<x<6, 5<m<9, 1<a<10, 1<s<5
+    // c2 is 5<x<8, 6<m<8, 8<a<10, 0<s<3
+    // If we start with a set that contains c2 and add c1, that should be equivalent to
+    // {c2} ∪ (c1 - c2).
+    ConstraintSet c2set = new ConstraintSet(Set.of(c2));
+    Set<Constraints> expected = ImmutableSet.<Constraints>builder().add(c2).addAll(c1.minus(c2).constraintSet()).build();
+    ConstraintSet union = c2set.plus(c1);
+    assertThat(union.constraintSet()).isEqualTo(expected);
+  }
+
+  @Test
+  public void allAcceptedBy_simple() {
+    Map<String, Workflow> workflows = parseWorkflows(List.of("in{s<1351:A,R}"));
+    ConstraintSet set = allAcceptedBy(workflows);
+    assertThat(set).isEqualTo(ConstraintSet.of(Constraints.of(0, 4001, 0, 4001, 0, 4001, 0, 1351)));
+  }
+
+  @Test
+  public void allAcceptedBy_regression() {
+    Map<String, Workflow> workflows = parseWorkflows(
+        List.of(
+            "in{s<1351:px,qqz}",
+            "qqz{s>2770:qs,R}",
+            "qs{s>3448:A,lnx}",
+            "lnx{m>1548:A,R}",
+            "px{a<2006:A,R}"));
+    // The path in->px should accept (0<s<1351,0<a<2006) and the path in->qqz->qs->lnx should accept
+    // (s>1350,s>2770,s>3448)=>(s>3448) and (s>1350,s>2770,s<3449,m>1548)=>(2770<s<3449,1548<m<4001).
+    ConstraintSet set = allAcceptedBy(workflows);
+    assertThat(set).isNull();
   }
 }
+/*
+px{a<2006:qkq,m>2090:A,rfg}
+pv{a>1716:R,A}
+lnx{m>1548:A,A}
+rfg{s<537:gd,x>2440:R,A}
+qs{s>3448:A,lnx}
+qkq{x<1416:A,crn}
+crn{x>2662:A,R}
+in{s<1351:px,qqz}
+qqz{s>2770:qs,m<1801:hdj,R}
+gd{a>3333:R,R}
+hdj{m>838:A,pv}
+
+{x=787,m=2655,a=1222,s=2876}
+{x=1679,m=44,a=2067,s=496}
+{x=2036,m=264,a=79,s=2244}
+{x=2461,m=1339,a=466,s=291}
+{x=2127,m=1623,a=2188,s=1013}
+*/
