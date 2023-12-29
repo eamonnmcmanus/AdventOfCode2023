@@ -37,69 +37,69 @@ public class Puzzle19 {
     }
   }
 
-    private static boolean accept(Part part, Map<String, Workflow> workflows) {
-	Workflow current = workflows.get("in");
-	while (true) {
-	    String newLabel = current.apply(part);
-	    switch (newLabel) {
-	    case "A":
-		return true;
-	    case "R":
-		return false;
-	    default:
-		current = workflows.get(newLabel);
-	    }
-	}
+  private static boolean accept(Part part, Map<String, Workflow> workflows) {
+    Workflow current = workflows.get("in");
+    while (true) {
+      String newLabel = current.apply(part);
+      switch (newLabel) {
+        case "A":
+          return true;
+        case "R":
+          return false;
+        default:
+          current = workflows.get(newLabel);
+      }
     }
+  }
 
-    private static final Pattern WORKFLOW_PATTERN = Pattern.compile("([a-z]+)\\{(.*)\\}");
+  private static final Pattern WORKFLOW_PATTERN = Pattern.compile("([a-z]+)\\{(.*)\\}");
 
-    // px{a<2006:qkq,m>2090:A,rfg}
-    private static Map<String, Workflow> parseWorkflows(List<String> lines) {
-	Map<String, Workflow> map = new TreeMap<>();
-	for (String line : lines) {
-	    Matcher matcher = WORKFLOW_PATTERN.matcher(line);
-	    if (!matcher.matches()) {
-		throw new AssertionError(line);
-	    }
-	    var old = map.put(matcher.group(1), parseWorkflow(matcher.group(2)));
-	    assert old == null;
-	}
-	return map;
+  // px{a<2006:qkq,m>2090:A,rfg}
+  private static Map<String, Workflow> parseWorkflows(List<String> lines) {
+    Map<String, Workflow> map = new TreeMap<>();
+    for (String line : lines) {
+      Matcher matcher = WORKFLOW_PATTERN.matcher(line);
+      if (!matcher.matches()) {
+        throw new AssertionError(line);
+      }
+      var old = map.put(matcher.group(1), parseWorkflow(matcher.group(2)));
+      assert old == null;
     }
+    return map;
+  }
 
-    private static Workflow parseWorkflow(String line) {
-	List<String> ruleStrings = List.of(line.split(","));
-	List<Rule> rules = ruleStrings.stream().limit(ruleStrings.size() - 1).map(Puzzle19::parseRule).toList();
-	return new Workflow(rules, ruleStrings.getLast());
+  private static Workflow parseWorkflow(String line) {
+    List<String> ruleStrings = List.of(line.split(","));
+    List<Rule> rules = ruleStrings.stream().limit(ruleStrings.size() - 1).map(Puzzle19::parseRule).toList();
+    return new Workflow(rules, ruleStrings.getLast());
+  }
+
+  private static Rule parseRule(String ruleString) {
+    char category = ruleString.charAt(0);
+    char ltgt = ruleString.charAt(1);
+    assert ltgt == '<' || ltgt == '>';
+    int colon = ruleString.indexOf(':');
+    assert colon > 0;
+    int value = Integer.parseInt(ruleString.substring(2, colon));
+    String target = ruleString.substring(colon + 1);
+    return new Rule(category, ltgt, value, target);
+  }
+
+  private static List<Part> parseParts(List<String> lines) {
+    return lines.stream().map(Puzzle19::parsePart).toList();
+  }
+
+  private static final Pattern PART_PATTERN = Pattern.compile("\\{x=([0-9]+),m=([0-9]+),a=([0-9]+),s=([0-9]+)\\}");
+
+  private static Part parsePart(String line) {
+    Matcher matcher = PART_PATTERN.matcher(line);
+    if (!matcher.matches()) {
+      throw new AssertionError(line);
     }
-
-    private static Rule parseRule(String ruleString) {
-	char category = ruleString.charAt(0);
-	char ltgt = ruleString.charAt(1);
-	assert ltgt == '<' || ltgt == '>';
-	int colon = ruleString.indexOf(':');
-	assert colon > 0;
-	int value = Integer.parseInt(ruleString.substring(2, colon));
-	String target = ruleString.substring(colon + 1);
-	return new Rule(category, ltgt, value, target);
-    }
-
-    private static List<Part> parseParts(List<String> lines) {
-	return lines.stream().map(Puzzle19::parsePart).toList();
-    }
-
-    private static final Pattern PART_PATTERN = Pattern.compile("\\{x=([0-9]+),m=([0-9]+),a=([0-9]+),s=([0-9]+)\\}");
-
-    private static Part parsePart(String line) {
-	Matcher matcher = PART_PATTERN.matcher(line);
-	if (!matcher.matches()) {
-	    throw new AssertionError(line);
-	}
-	List<String> groups = List.of(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
-	List<Integer> values = groups.stream().map(Integer::parseInt).toList();
-	return Part.of(values.get(0), values.get(1), values.get(2), values.get(3));
-    }
+    List<String> groups = List.of(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
+    List<Integer> values = groups.stream().map(Integer::parseInt).toList();
+    return Part.of(values.get(0), values.get(1), values.get(2), values.get(3));
+  }
 
   record Workflow(List<Rule> rules, String defaultTarget) {
     String apply(Part part) {
@@ -232,7 +232,7 @@ public class Puzzle19 {
     Constraints intersection(Constraints that) {
       Map<Character, Constraint> result =
           map.keySet().stream().map(c -> Map.entry(c, this.map.get(c).intersection(that.map.get(c))))
-          .collect(toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+              .collect(toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
       boolean empty = result.values().stream().anyMatch(Constraint::isEmpty);
       return empty ? EMPTY : new Constraints(result);
     }
