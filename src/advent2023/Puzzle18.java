@@ -1,17 +1,13 @@
 package advent2023;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.toCollection;
 
 import com.google.common.collect.ImmutableMap;
 import java.io.InputStream;
-import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 /**
@@ -22,93 +18,160 @@ public class Puzzle18 {
     try (InputStream in = Puzzle18.class.getResourceAsStream("puzzle18.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
-      List<Step> steps = lines.stream()
-          .map(LINE_PATTERN::matcher)
-          .peek(m -> {
-            if (!m.matches()) {
-              throw new AssertionError(m);
-            }
-          }).
-          map(m -> new Step(
-              NAME_TO_DIR.get(m.group(1)),
-              Integer.parseInt(m.group(2)),
-              Integer.parseInt(m.group(3), 16)))
-          .toList();
-      Point point = new Point(0, 0, 0);
-      Set<Point> points = new TreeSet<>(Set.of(point));
-      for (Step step : steps) {
-        for (int i = 0; i < step.n; i++) {
-          point = point.moved(step.dir).withColour(step.colour);
-          points.add(point);
-        }
+      for (boolean newParse : new boolean[] {false, true}) {
+        List<Step> steps = lines.stream()
+            .map(LINE_PATTERN::matcher)
+            .peek(m -> {
+              if (!m.matches()) {
+                throw new AssertionError(m);
+              }
+            }).
+            map(m -> newParse
+                ? Step.fromHex(Integer.parseInt(m.group(3), 16))
+                : new Step(
+                    NAME_TO_DIR.get(m.group(1)),
+                    Integer.parseInt(m.group(2))))
+            .toList();
+        solve(steps);
       }
-      int minX = points.stream().mapToInt(Point::x).min().getAsInt();
-      int minY = points.stream().mapToInt(Point::y).min().getAsInt();
-      points = points.stream().map(q -> q.shift(-minX, -minY)).collect(toCollection(TreeSet::new));
-      int maxX = points.stream().mapToInt(Point::x).max().getAsInt();
-      int maxY = points.stream().mapToInt(Point::y).max().getAsInt();
-      char[][] grid = new char[maxY + 1][maxX + 1];
-      for (char[] line : grid) {
-        Arrays.fill(line, '.');
-      }
-      for (Point p : points) {
-        grid[p.y][p.x] = '#';
-      }
-      // By construction we know there is at least one edge with y=0. We find a cell with y=1 that
-      // is empty and below a full cell with y=0. (Not completely accurate, but works for our
-      // example cases.) Then we fill starting from there.
-      int foundX = -1;
-      for (int x = 0; x < grid[0].length; x++) {
-        if (grid[0][x] == '#' && grid[1][x] == '.') {
-          foundX = x;
-          break;
-        }
-      }
-      assert foundX > 0;
-      Deque<Point> queue = new ArrayDeque<>(List.of(new Point(foundX, 1, 0)));
-      while (!queue.isEmpty()) {
-        Point p = queue.remove();
-        if (grid[p.y][p.x] == '.') {
-          grid[p.y][p.x] = '#';
-          if (p.x > 0) {
-            queue.add(p.moved(Dir.LEFT));
-          }
-          if (p.x + 1 < grid[0].length) {
-            queue.add(p.moved(Dir.RIGHT));
-          }
-          if (p.y > 0) {
-            queue.add(p.moved(Dir.UP));
-          }
-          if (p.y + 1 < grid.length) {
-            queue.add(p.moved(Dir.DOWN));
-          }
-        }
-      }
-      for (char[] line : grid) {
-        System.out.println(new String(line));
-      }
-      int count = 0;
-      for (char[] line : grid) {
-        count += new String(line).chars().filter(c -> c == '#').count();
-      }
-      System.out.println(STR."Filled cells \{count}");
     }
   }
 
-  record Point(int x, int y, int colour) implements Comparable<Point> {
+  private static void solve(List<Step> steps) {
+    // Construct a set of vertical lines and a set of horizontal lines. Each vertical line will
+    // have a horizontal line meeting it at each of its endpoints. For each y coordinate, visit
+    // the vertical lines that pass through that coordinate, in increasing x order. If the middle
+    // of the line passes through that y, then we switch between inside and outside. If it is an
+    // endpoint, then two cases: (1) the horizontal line joins it from the left: do nothing; (2)
+    // the horizontal line joins it from the right: continue from the other end of the horizontal
+    // line. In case (2), if the vertical line at the other end joins in the *same direction* as
+    // the vertical line at the near end, then insideness is unchanged, otherwise it flips.
+    // This is still massively inefficient in that we consider each y coordinate. We could jump to
+    // the next y coordinate where something changes, and multiply to fill in the gap. But this is
+    // good enough.
+    Point point = new Point(0, 0);
+    Map<Point, VLine> upLines = new TreeMap<>();    // line going up from the given point
+    Map<Point, VLine> downLines = new TreeMap<>();  // line going down from the given point
+    Map<Point, HLine> rightLines = new TreeMap<>(); // line going right from the given point
+    for (Step step : steps) {
+      Point newPoint = switch (step.dir) {
+        case UP -> {
+          Point p = new Point(point.x, point.y - step.n);
+          VLine line = new VLine(point.x, p.y, point.y);
+          upLines.put(point, line);
+          downLines.put(p, line);
+          yield p;
+        }
+        case DOWN -> {
+          Point p = new Point(point.x, point.y + step.n);
+          VLine line = new VLine(point.x, point.y, p.y);
+          upLines.put(p, line);
+          downLines.put(point, line);
+          yield p;
+        }
+        case LEFT -> {
+          Point p = new Point(point.x - step.n, point.y);
+          HLine line = new HLine(p.x, point.x);
+          rightLines.put(p, line);
+          yield p;
+        }
+        case RIGHT -> {
+          Point p = new Point(point.x + step.n, point.y);
+          HLine line = new HLine(point.x, p.x);
+          rightLines.put(point, line);
+          yield p;
+        }
+      };
+      point = newPoint;
+    }
+    int minY = rightLines.keySet().stream().mapToInt(Point::y).min().getAsInt();
+    int maxY = rightLines.keySet().stream().mapToInt(Point::y).max().getAsInt();
+    System.out.println(STR."\{minY} < y < \{maxY}");
+    long count = 0;
+    Comparator<VLine> xFirst = Comparator.comparing(VLine::x);
+    for (int y = minY; y <= maxY; y++) {
+      long thisCount = 0;
+      int yy = y;
+      List<VLine> vLinesAtY = downLines.values().stream()
+          .filter(line -> line.includes(yy))
+          .sorted(xFirst)
+          .toList();
+      assert !vLinesAtY.isEmpty();
+      Integer start = null;
+      for (int i = 0; i < vLinesAtY.size(); i++) {
+        // If start, we were in an inside area. Now if we are crossing the middle of a vertical
+        // line, we count the width to here and set start to null. But if this is the end of a vertical line,
+        // we still count its width to here, but the rest depends on whether we are exiting the inside
+        // (second vertical line going in opposite direction), or remaining in it (second vertical
+        // line going in same direction). If remaining, we should set start to just after the second
+        // vertical line. If leaving, we should set start to null.
+        // If start is null, we were in an outside area. If we are crossing the middle of a vertical
+        // line, we are now inside, and should set start to just after the line. If this is the end
+        // of a vertical line, then we skip to other vertical line. If it is going in the same
+        // direction, we are still outside; otherwise we are now inside starting just after the
+        // second line.
+        VLine vLine = vLinesAtY.get(i);
+        Point p = new Point(vLine.x, y);
+        LineState lineState = lineState(p, downLines, upLines);
+        if (lineState == LineState.MID) {
+          thisCount++;
+          if (start != null) {
+            thisCount += vLine.x - start;
+            start = null;
+          } else {
+            start = vLine.x + 1;
+          }
+        } else {
+          HLine hLine = rightLines.get(p);
+          assert hLine != null;
+          thisCount += hLine.xEnd - hLine.xStart + 1;
+          Point otherEnd = new Point(hLine.xEnd, y);
+          i++;
+          LineState otherLineState = lineState(otherEnd, downLines, upLines);
+          assert otherLineState != LineState.MID;
+          if (lineState == otherLineState) {
+            // Same direction, no effect on insideness. If we are inside, count the span up to
+            // the first line and change the start to after the second line.
+            if (start != null) {
+              thisCount += vLine.x - start;
+              start = otherEnd.x + 1;
+            }
+          } else {
+            // Opposite direction, switching insideness. If we were inside, count the span up to
+            // the first line and move outside. Otherwise, set start to after the second line.
+            if (start != null) {
+              thisCount += vLine.x - start;
+              start = null;
+            } else {
+              start = otherEnd.x + 1;
+            }
+          }
+        }
+      }
+      count += thisCount;
+    }
+    System.out.println(STR."Filled cells \{count}");
+  }
+
+  enum LineState {UP, DOWN, MID};
+
+  static LineState lineState(Point p, Map<Point, VLine> downLines, Map<Point, VLine> upLines) {
+    return downLines.containsKey(p)
+        ? LineState.DOWN
+        : upLines.containsKey(p)
+        ? LineState.UP : LineState.MID;
+  }
+
+  record Point(int x, int y) implements Comparable<Point> {
     private static final Comparator<Point> COMPARATOR =
         Comparator.comparingInt(Point::y).thenComparingInt(Point::x);
 
     Point moved(Dir dir) {
-      return new Point(x + dir.deltaX, y + dir.deltaY, colour);
+      return new Point(x + dir.deltaX, y + dir.deltaY);
     }
 
     Point shift(int deltaX, int deltaY) {
-      return new Point(x + deltaX, y + deltaY, colour);
-    }
-
-    Point withColour(int newColour) {
-      return new Point(x, y, newColour);
+      return new Point(x + deltaX, y + deltaY);
     }
 
     @Override
@@ -117,9 +180,37 @@ public class Puzzle18 {
     }
   }
 
+  record HLine(int xStart, int xEnd) {
+    HLine {
+      assert xStart < xEnd;
+    }
+  }
+
+  record VLine(int x, int yStart, int yEnd) {
+    VLine {
+      assert yStart < yEnd;
+    }
+
+    boolean includes(int y) {
+      return yStart <= y && y <= yEnd;
+    }
+  }
+
   private static final Pattern LINE_PATTERN = Pattern.compile("([LRUD]) ([0-9]+) \\(#([0-9a-f]{6})\\)");
 
-  record Step(Dir dir, int n, int colour) {}
+  record Step(Dir dir, int n) {
+    static Step fromHex(int hex) {
+      int n = hex >> 4;
+      Dir dir = switch (hex & 15) {
+        case 0 -> Dir.RIGHT;
+        case 1 -> Dir.DOWN;
+        case 2 -> Dir.LEFT;
+        case 3 -> Dir.UP;
+        default -> throw new AssertionError(hex & 15);
+      };
+      return new Step(dir, n);
+    }
+  }
 
   private static final ImmutableMap<String, Dir> NAME_TO_DIR =
       ImmutableMap.of("L", Dir.LEFT, "R", Dir.RIGHT, "U", Dir.UP, "D", Dir.DOWN);
