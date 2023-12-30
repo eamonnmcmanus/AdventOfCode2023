@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.joining;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -88,9 +89,10 @@ public class Puzzle19 {
       // `current` and that condition into a recursive call to find everything that matches that.
       // Otherwise, we'll update `current` with the complement of that condition.
       accepted = accepted.union(allAcceptedBy(workflows, current.intersection(rule.constraints), rule.target));
-      current = current.minus(rule.constraints);
+      current = current.minusRule(rule.constraints);
       // This isn't right. If the rule says a<1000, we want to subtract just a<1000, not the other
-      // conditions.
+      // conditions. Similarly, when we construct unions, trying to avoid duplication, we should not
+      // consider duplication from conditions that are not present.
     }
     return accepted.union(allAcceptedBy(workflows, current, workflow.defaultTarget));
   }
@@ -203,6 +205,10 @@ public class Puzzle19 {
       return value > moreThan && value < lessThan;
     }
 
+    boolean isDefault() {
+      return moreThan == 0 && lessThan == 4001;
+    }
+
     /**
      * The number of values that match the constraint. For {@literal 1 < x < 10}, the number of
      * values is 8. (This value plainly doesn't need to be a {@code long} but is declared so to
@@ -258,17 +264,11 @@ public class Puzzle19 {
     }
 
     Constraints with(char c, Constraint constraint) {
-      if (false) {
-        return new Constraints(
-            ImmutableMap.<Character, Constraint>builder()
-                .putAll(map)
-                .put(c, constraint)
-                .buildKeepingLast());
-      } else {
-        LinkedHashMap<Character, Constraint> newMap = new LinkedHashMap<>(map);
-        newMap.put(c, constraint);
-        return new Constraints(newMap);
-      }
+      return new Constraints(
+          ImmutableMap.<Character, Constraint>builder()
+              .putAll(map)
+              .put(c, constraint)
+              .buildKeepingLast());
     }
 
     boolean matches(Part part) {
@@ -386,6 +386,34 @@ public class Puzzle19 {
           .flatMap(c -> c.minus(constraints).constraintSet.stream())
           .collect(toImmutableSet());
       return new ConstraintSet(newConstraints);
+    }
+
+    /**
+     * Returns a {@link ConstraintSet} that matches any value matched by {@code this} but not a
+     * non-default constraint imposed by {@code that}. This is a hack because I realized that my
+     * modeling was incorrect. The idea is that if we have {@code a < 1000} in a rule then we'll
+     * want to add (intersect) that into the rule on one branch, and subtract it on the other, but
+     * we don't want to subtract e.g. {@code 0 < x < 4001} because that will exclude all {@code x}
+     * values.
+     */
+    ConstraintSet minusRule(Constraints that) {
+      Set<Map.Entry<Character, Constraint>> nonDefault = that.map.entrySet().stream()
+          .filter(entry -> !entry.getValue().isDefault())
+          .collect(toImmutableSet());
+      return switch (nonDefault.size()) {
+        case 0 -> this;
+        case 1 -> {
+          Map.Entry<Character, Constraint> only = Iterables.getOnlyElement(nonDefault);
+          char c = only.getKey();
+          Constraint ruleConstraint = only.getValue();
+          Set<Constraints> updated = constraintSet.stream()
+              .map(constraints -> constraints.with(c, Iterables.getOnlyElement(constraints.map.get(c).minus(ruleConstraint))))
+              .filter(constraints -> !constraints.isEmpty())
+              .collect(toImmutableSet());
+          yield new ConstraintSet(updated);
+        }
+        default -> throw new IllegalArgumentException(STR."\{this} minusRule \{that}");
+      };
     }
 
     ConstraintSet intersection(Constraints constraints) {

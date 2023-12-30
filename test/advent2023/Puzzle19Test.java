@@ -127,6 +127,14 @@ public class Puzzle19Test {
   }
 
   @Test
+  public void constraintSetMinus() {
+    ConstraintSet s = ConstraintSet.of(Constraints.of(0, 4001, 0, 4001, 0, 4001, 0, 1351));
+    Constraints m = Constraints.of(0, 4001, 0, 1000, 0, 4001, 0, 4001);
+    assertThat(s.minusRule(m))
+        .isEqualTo(ConstraintSet.of(Constraints.of(0, 4001, 999, 4001, 0, 4001, 0, 1351)));
+  }
+
+  @Test
   public void allAcceptedBy_simple() {
     Map<String, Workflow> workflows = parseWorkflows(List.of("in{s<1351:A,R}"));
     ConstraintSet set = allAcceptedBy(workflows);
