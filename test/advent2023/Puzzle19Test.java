@@ -1,6 +1,5 @@
 package advent2023;
 
-import static advent2023.Puzzle19.allAcceptedBy;
 import static advent2023.Puzzle19.parseRule;
 import static advent2023.Puzzle19.parseWorkflows;
 import static com.google.common.truth.Truth.assertThat;
@@ -134,6 +133,7 @@ public class Puzzle19Test {
         .isEqualTo(ConstraintSet.of(Constraints.of(0, 4001, 999, 4001, 0, 4001, 0, 1351)));
   }
 
+  /*
   @Test
   public void allAcceptedBy_simple() {
     Map<String, Workflow> workflows = parseWorkflows(List.of("in{s<1351:A,R}"));
@@ -155,6 +155,7 @@ public class Puzzle19Test {
     ConstraintSet set = allAcceptedBy(workflows);
     assertThat(set).isNull();
   }
+  */
 }
 /*
 px{a<2006:qkq,m>2090:A,rfg}

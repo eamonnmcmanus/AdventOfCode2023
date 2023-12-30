@@ -5,11 +5,15 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,9 +26,10 @@ import java.util.regex.Pattern;
 /**
  * @author Éamonn McManus
  */
+// This was a huge huge slog.
 public class Puzzle19 {
   public static void main(String[] args) throws Exception {
-    try (InputStream in = Puzzle19.class.getResourceAsStream("puzzle19-small.txt")) {
+    try (InputStream in = Puzzle19.class.getResourceAsStream("puzzle19.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
       int empty = lines.indexOf("");
@@ -39,6 +44,19 @@ public class Puzzle19 {
       }
       System.out.println(STR."Rating total \{sum}");
 
+      List<ConditionList> summary = summarize(workflows).stream().map(ConditionList::sorted).toList();
+      System.out.println(STR."Conditions \{Joiner.on("\n").join(summary)}");
+      System.out.println(STR."New rating total \{parts.stream().filter(part -> summary.stream().anyMatch(list -> list.matches(part))).mapToInt(Part::rating).sum()}");
+
+      List<Constraints> constraints = summary.stream().map(Constraints::from).toList();
+      System.out.println(STR."Constraints \{Joiner.on("\n").join(constraints)}");
+      System.out.println(STR."New new rating total \{parts.stream().filter(part -> constraints.stream().anyMatch(c -> c.matches(part))).mapToInt(Part::rating).sum()}");
+
+      ConstraintSet set = new ConstraintSet(new HashSet<>(constraints));
+      System.out.println(STR."New new new rating total \{parts.stream().filter(part -> set.matches(part)).mapToInt(Part::rating).sum()}");
+      System.out.println(STR."Size \{set.size()}");
+
+      /*
       ConstraintSet accepted = allAcceptedBy(workflows);
       int newSum = 0;
       for (Part part : parts) {
@@ -50,6 +68,7 @@ public class Puzzle19 {
       }
       System.out.println(STR."Rating total \{newSum}");
       System.out.println(STR."Accepting \{accepted}");
+      */
     }
   }
 
@@ -68,6 +87,32 @@ public class Puzzle19 {
     }
   }
 
+  private static List<ConditionList> summarize(Map<String, Workflow> workflows) {
+    return summarize(workflows, "in", ConditionList.EMPTY);
+  }
+
+  private static List<ConditionList> summarize(
+      Map<String, Workflow> workflows, String startLabel, ConditionList path) {
+    switch (startLabel) {
+      case "A" -> {
+        return List.of(path);
+      }
+      case "R" -> {
+        return List.of();
+      }
+    }
+    List<ConditionList> conditions = new ArrayList<>();
+    Workflow workflow = workflows.get(startLabel);
+    for (Rule rule : workflow.rules) {
+      ConditionList whenTrue = path.plus(rule.condition);
+      conditions.addAll(summarize(workflows, rule.target, whenTrue));
+      path = path.plus(rule.condition.inverse());
+    }
+    conditions.addAll(summarize(workflows, workflow.defaultTarget, path));
+    return conditions;
+  }
+
+  /*
   static ConstraintSet allAcceptedBy(Map<String, Workflow> workflows) {
     return allAcceptedBy(workflows, ConstraintSet.MATCH_ALL, "in");
   }
@@ -96,6 +141,7 @@ public class Puzzle19 {
     }
     return accepted.union(allAcceptedBy(workflows, current, workflow.defaultTarget));
   }
+  */
 
   private static final Pattern WORKFLOW_PATTERN = Pattern.compile("([a-z]+)\\{(.*)\\}");
 
@@ -157,19 +203,64 @@ public class Puzzle19 {
     }
   }
 
-  record Rule(Constraints constraints, String target) {
+  record Rule(Condition condition, String target) {
     boolean matches(Part part) {
-      return constraints.matches(part);
+      return condition.matches(part);
     }
 
     static Rule of(char category, char ltgt, int value, String target) {
-      int moreThan = 0, lessThan = 4001;
-      switch (ltgt) {
-        case '<' -> lessThan = value;
-        case '>' -> moreThan = value;
-      }
-      Constraints constraints = Constraints.MATCH_ALL.with(category, new Constraint(moreThan, lessThan));
-      return new Rule(constraints, target);
+      return new Rule(new Condition(category, ltgt, value), target);
+    }
+  }
+
+  record Condition(char cat, char ltgt, int value) implements Comparable<Condition> {
+    @Override public String toString() {
+      return STR."\{cat}\{ltgt}\{value}";
+    }
+
+    boolean matches(Part part) {
+      int v = part.get(cat);
+      return switch (ltgt) {
+        case '<' -> v < value;
+        case '>' -> v > value;
+        default -> throw new AssertionError(ltgt);
+      };
+    }
+
+    Condition inverse() {
+      // opposite of x < 5 is x > 4
+      // opposite of x > 5 is x < 6
+      return switch (ltgt) {
+        case '<' -> new Condition(cat, '>', value - 1);
+        case '>' -> new Condition(cat, '<', value + 1);
+        default -> throw new AssertionError(ltgt);
+      };
+    }
+
+    private static final Comparator<Condition> COMPARATOR =
+        Comparator.comparingInt((Condition c) -> "xmas".indexOf(c.cat))
+            .thenComparingInt(c -> "><".indexOf(c.ltgt))
+            .thenComparingInt(c -> (c.ltgt == '<') ? c.value : -c.value);
+
+    @Override
+    public int compareTo(Condition that) {
+      return COMPARATOR.compare(this, that);
+    }
+  }
+
+  record ConditionList(List<Condition> conditions) {
+    static final ConditionList EMPTY = new ConditionList(List.of());
+
+    ConditionList plus(Condition condition) {
+      return new ConditionList(ImmutableList.<Condition>builder().addAll(conditions).add(condition).build());
+    }
+
+    boolean matches(Part part) {
+      return conditions.stream().allMatch(c -> c.matches(part));
+    }
+
+    ConditionList sorted() {
+      return new ConditionList(conditions.stream().sorted().toList());
     }
   }
 
@@ -199,6 +290,14 @@ public class Puzzle19 {
       if (empty) {
         moreThan = lessThan = 0;
       }
+    }
+
+    static Constraint from(Condition condition) {
+      return switch (condition.ltgt) {
+        case '<' -> new Constraint(0, condition.value);
+        case '>' -> new Constraint(condition.value, 4001);
+        default -> throw new AssertionError(condition.ltgt);
+      };
     }
 
     boolean matches(int value) {
@@ -261,6 +360,14 @@ public class Puzzle19 {
               'm', new Constraint(mMoreThan, mLessThan),
               'a', new Constraint(aMoreThan, aLessThan),
               's', new Constraint(sMoreThan, sLessThan)));
+    }
+
+    static Constraints from(ConditionList conditions) {
+      Constraints c = MATCH_ALL;
+      for (Condition condition : conditions.conditions) {
+        c = c.with(condition.cat, c.map.get(condition.cat).intersection(Constraint.from(condition)));
+      }
+      return c;
     }
 
     Constraints with(char c, Constraint constraint) {
@@ -358,6 +465,10 @@ public class Puzzle19 {
 
     boolean matches(Part part) {
       return constraintSet.stream().anyMatch(c -> c.matches(part));
+    }
+
+    long size() {
+      return constraintSet.stream().mapToLong(constraint -> constraint.size()).sum();
     }
 
     /**
