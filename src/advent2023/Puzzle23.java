@@ -25,17 +25,20 @@ public class Puzzle23 {
       for (int i = 0; i < lines.size(); i++) {
         cells[i] = lines.get(i).toCharArray();
       }
-      new Puzzle23(cells).solve();
+      new Puzzle23(cells, false).solve();
+      new Puzzle23(cells, true).solve();
     }
   }
 
   private final char[][] cells;
+  private final boolean part2;
   private final MutableValueGraph<Node, Integer> graph;
   private final Node startNode;
   private final Node endNode;
 
-  Puzzle23(char[][] cells) {
+  Puzzle23(char[][] cells, boolean part2) {
     this.cells = cells;
+    this.part2 = part2;
 
     String topLine = new String(cells[0]);
     int topJ = topLine.indexOf('.');
@@ -46,7 +49,9 @@ public class Puzzle23 {
     assert botJ >= 0 && botJ == botLine.lastIndexOf('.');
     this.endNode = new Node(cells.length - 1, botJ);
 
-    this.graph = ValueGraphBuilder.<Node, Integer>directed().build();
+    this.graph =
+        (part2 ? ValueGraphBuilder.<Node, Integer>undirected() : ValueGraphBuilder.<Node, Integer>directed())
+        .build();
     this.graph.addNode(startNode);
     this.graph.addNode(endNode);
   }
@@ -58,7 +63,6 @@ public class Puzzle23 {
     int longest = Integer.MIN_VALUE;
     for (List<Node> path : allPaths) {
       int len = pathLength(path);
-      System.out.println(STR."Path \{pathToString(path)} = \{len}");
       longest = max(longest, len);
     }
     System.out.println(STR."Longest is \{longest}");
@@ -90,8 +94,10 @@ public class Puzzle23 {
     }
     List<List<Node>> paths = new ArrayList<>();
     for (Node next : graph.successors(last)) {
-      List<Node> newPath = ImmutableList.<Node>builder().addAll(incoming).add(next).build();
-      paths.addAll(allPaths(newPath));
+      if (!incoming.contains(next)) {
+        List<Node> newPath = ImmutableList.<Node>builder().addAll(incoming).add(next).build();
+        paths.addAll(allPaths(newPath));
+      }
     }
     return paths;
   }
