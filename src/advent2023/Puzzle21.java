@@ -80,8 +80,8 @@ public class Puzzle21 {
   enum Dir {
     LEFT(0, -1), RIGHT(0, +1), UP(-1, 0), DOWN(+1, 0);
 
-    private int deltaI;
-    private int deltaJ;
+    final int deltaI;
+    final int deltaJ;
 
     Dir(int deltaI, int deltaJ) {
       this.deltaI = deltaI;
