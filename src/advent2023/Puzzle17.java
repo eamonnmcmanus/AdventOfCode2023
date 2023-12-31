@@ -3,33 +3,25 @@ package advent2023;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.function.Consumer;
+import java.util.Set;
 
-/**
- * @author Éamonn McManus
+/*
+ * I gave up after doing this wrong and running out of energy. The solution here is based on
+ * https://advent-of-code.xavd.id/writeups/2023/day/17/
  */
 public class Puzzle17 {
-  /*
-  Dijkstra's Algorithm. We associate a distance estimate d with each node. At any point we have a
-  set S of nodes for which we know that d is in fact the minimum distance to the node. At each step
-  we add a node n to S for which we have determined that its d is in fact the minimum distance, and
-  we update its non-S neighbours so their d is the d from n, if that is less than the previous d
-  value. Then we pick a new n as the non-S node with the smallest d value. We know that that d is
-  the minimum value from any neighbour in S. If there were a path arriving from a neighbour not in S
-  then some point on that path must have a neighbour in S, with a d that is greater than n's. Fuh.
-  */
   public static void main(String[] args) throws Exception {
-    try (InputStream in = Puzzle17.class.getResourceAsStream("puzzle17-small.txt")) {
+    try (InputStream in = Puzzle17.class.getResourceAsStream("puzzle17.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
       Cell[][] cells = parseCellLines(lines);
       var puzzle = new Puzzle17(cells, cells.length, cells[0].length);
-      puzzle.solve();
+      puzzle.solve(0, 3);
+      puzzle.solve(4, 10);
     }
   }
 
@@ -43,122 +35,109 @@ public class Puzzle17 {
     this.maxJ = maxJ;
   }
 
-  void solve() {
-    PriorityQueue<Cell> queue = new PriorityQueue<>(Comparator.comparing((Cell c) -> c.d));
-    for (int i = 0; i < maxI; i++) {
-      for (int j = 0; j < maxJ; j++) {
-        Cell cell = cells[i][j];
-        cell.d = (i == 0 && j == 0) ? 0 : Long.MAX_VALUE;
-        queue.add(cell);
-      }
-    }
+  void solve(int minSteps, int maxSteps) {
+    PriorityQueue<State> queue = new PriorityQueue<>();
+    queue.add(new State(0, new Position(0, 0, Dir.RIGHT), 0));
+    queue.add(new State(0, new Position(0, 0, Dir.DOWN), 0));
+    Set<PositionAndSteps> seen = new HashSet<>();
     while (true) {
-      Cell cell = queue.remove();
-      if (cell.i == maxI - 1 && cell.j == maxJ - 1) {
+      State state = queue.remove();
+      Position pos = state.position;
+      if (pos.i == maxI - 1 && pos.j == maxJ - 1 && state.steps >= minSteps) {
+        System.out.println(STR."Solution is \{state.cost}");
         break;
       }
-      forEachNeighbour(
-          cell,
-          n -> {
-            if (canAdd(cell, n)) {
-              long newD = cell.d + n.cost;
-              if (newD < n.d) {
-                queue.remove(n);
-                n.d = newD;
-                n.parent = cell;
-                queue.add(n);
-              }
-            }
-          }
-      );
+      PositionAndSteps pas = new PositionAndSteps(pos, state.steps);
+      if (!seen.add(pas)) {
+        continue;
+      }
+      if (state.steps >= minSteps) {
+        Position left = pos.turnLeftAndAdvance();
+        if (validPosition(left)) {
+          queue.add(new State(state.cost + cells[left.i][left.j].cost, left, 1));
+        }
+        Position right = pos.turnRightAndAdvance();
+        if (validPosition(right)) {
+          queue.add(new State(state.cost + cells[right.i][right.j].cost, right, 1));
+        }
+      }
+      if (state.steps < maxSteps) {
+        Position forward = pos.advance();
+        if (validPosition(forward)) {
+          queue.add(new State(state.cost + cells[forward.i][forward.j].cost, forward, state.steps + 1));
+        }
+      }
     }
-    Cell goal = cells[maxI - 1][maxJ - 1];
-    System.out.println(STR."Purported solution \{goal.d}");
-    char[][] matrix = new char[maxI][maxJ];
-    for (char[] line : matrix) {
-      Arrays.fill(line, '.');
-    }
-    for (Cell cell = goal; cell != null; cell = cell.parent) {
-      matrix[cell.i][cell.j] = '#';
-    }
-    for (char[] line : matrix) {
-      System.out.println(new String(line));
-    }
-    long total = 0;
-    for (Cell cell = goal; cell.i != 0 || cell.j != 0; cell = cell.parent) {
-      total += cell.cost;
-    }
-    System.out.println(STR."Computed cost \{total}");
   }
 
-  boolean canAdd(Cell from, Cell to) {
-    return switch (from.consecutive()) {
-      case I -> from.i != to.i;
-      case J -> from.j != to.j;
-      case NONE -> true;
-    };
+  boolean validPosition(Position pos) {
+    return pos.i >= 0 && pos.i < maxI && pos.j >= 0 && pos.j < maxJ;
+  }
+
+  record Position(int i, int j, Dir dir) {
+    Position advance() {
+      return new Position(i + dir.deltaI, j + dir.deltaJ, dir);
+    }
+
+    Position turnLeftAndAdvance() {
+      Dir newDir = dir.turnLeft();
+      return new Position(i + newDir.deltaI, j + newDir.deltaJ, newDir);
+    }
+
+    Position turnRightAndAdvance() {
+      Dir newDir = dir.turnRight();
+      return new Position(i + newDir.deltaI, j + newDir.deltaJ, newDir);
+    }
+  }
+
+  record State(long cost, Position position, int steps) implements Comparable<State> {
+    private static final Comparator<State> COMPARATOR = Comparator.comparing(State::cost);
+
+    @Override
+    public int compareTo(State that) {
+      return COMPARATOR.compare(this, that);
+    }
+  }
+
+  record PositionAndSteps(Position position, int steps) {}
+
+  enum Dir {
+    LEFT(0, -1), RIGHT(0, +1), UP(-1, 0), DOWN(+1, 0);
+
+    private int deltaI;
+    private int deltaJ;
+
+    Dir(int deltaI, int deltaJ) {
+      this.deltaI = deltaI;
+      this.deltaJ = deltaJ;
+    }
+
+    Dir turnLeft() {
+      return switch (this) {
+        case LEFT -> DOWN;
+        case DOWN -> RIGHT;
+        case RIGHT -> UP;
+        case UP -> LEFT;
+      };
+    }
+
+    Dir turnRight() {
+      return switch (this) {
+        case LEFT -> UP;
+        case UP -> RIGHT;
+        case RIGHT -> DOWN;
+        case DOWN -> LEFT;
+      };
+    }
   }
 
   static class Cell {
-    final int i;
-    final int j;
-    final int cost;
-    long d;
-    Cell parent;
+    final long cost;
 
-    Cell(int i, int j, int cost) {
-      this.i = i;
-      this.j = j;
+    Cell(long cost) {
       this.cost = cost;
     }
-
-    enum Consecutive {I, J, NONE}
-
-    Consecutive consecutive() {
-      boolean maybeI = true;
-      boolean maybeJ = true;
-      int count = 0;
-      for (Cell p = parent; p != null && ++count < 4; p = p.parent) {
-        maybeI &= p.i == i;
-        maybeJ &= p.j == j;
-      }
-      if (count == 4) {
-        if (maybeI) {
-          return Consecutive.I;
-        } else if (maybeJ) {
-          return Consecutive.J;
-        }
-      }
-      return Consecutive.NONE;
-      /*
-      if (parent != null && parent.parent != null && parent.parent.parent != null) {
-        if (i == parent.i && i == parent.parent.i && i == parent.parent.parent.i) {
-          return Consecutive.I;
-        } else if (j == parent.j && j == parent.parent.j && j == parent.parent.parent.j) {
-          return Consecutive.J;
-        }
-      }
-      return Consecutive.NONE;
-      */
-    }
   }
-
-  void forEachNeighbour(Cell cell, Consumer<Cell> task) {
-    if (cell.i > 0) {
-      task.accept(cells[cell.i - 1][cell.j]);
-    }
-    if (cell.i + 1 < maxI) {
-      task.accept(cells[cell.i + 1][cell.j]);
-    }
-    if (cell.j > 0) {
-      task.accept(cells[cell.i][cell.j - 1]);
-    }
-    if (cell.j + 1 < maxJ) {
-      task.accept(cells[cell.i][cell.j + 1]);
-    }
-  }
-
-  enum Dir {LEFT, RIGHT, UP, DOWN}
 
   private static Cell[][] parseCellLines(List<String> lines) {
     Cell[][] cells = new Cell[lines.size()][lines.get(0).length()];
@@ -166,7 +145,7 @@ public class Puzzle17 {
       String input = lines.get(i);
       Cell[] output = cells[i];
       for (int j = 0; j < input.length(); j++) {
-        output[j] = new Cell(i, j, input.charAt(j) - '0');
+        output[j] = new Cell(input.charAt(j) - '0');
       }
     }
     return cells;
