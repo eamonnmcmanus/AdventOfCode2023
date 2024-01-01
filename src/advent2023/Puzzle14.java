@@ -1,7 +1,6 @@
 package advent2023;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.FormatProcessor.FMT;
 
 import java.io.InputStream;
 import java.util.ArrayList;

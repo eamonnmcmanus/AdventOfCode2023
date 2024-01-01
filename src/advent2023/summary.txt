@@ -1,0 +1,6 @@
+Solved all puzzles completely, except:
+17 (shortest path with constraints on consecutive moves): needed to consult somebody's solution
+20 (pulse propagation): suspected what the right approach would be but was insufficiently motivated to investigate in detail.
+   Confirmed that my suspicion was correct and used that to solve.
+21 (counting paths in a very large graph): was not motivated to solve this and just copied somebody's solution
+24 (hailstones): needed a hint for the algebra on this one
