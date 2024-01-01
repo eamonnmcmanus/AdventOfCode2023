@@ -1,10 +1,9 @@
 package advent2023;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.FormatProcessor.FMT;
 
+import com.google.common.math.LongMath;
 import java.io.InputStream;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,12 +25,13 @@ public class Puzzle20 {
     try (InputStream in = Puzzle20.class.getResourceAsStream("puzzle20.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
-      Map<String, Module> modules = parseModules(lines);
-      solvePart2(modules);
+      solvePart1(lines);
+      solvePart2(lines);
     }
   }
 
-  static void solvePart1(Map<String, Module> modules) {
+  static void solvePart1(List<String> lines) {
+    Map<String, Module> modules = parseModules(lines);
     long lowCount = 0;
     long highCount = 0;
     Set<String> ignored = new TreeSet<>();
@@ -56,15 +58,47 @@ public class Puzzle20 {
     System.out.println(STR."Low \{lowCount} high \{highCount} product \{lowCount * highCount}");
   }
 
-  static void solvePart2(Map<String, Module> modules) {
-    Set<String> ignored = new TreeSet<>();
-    System.out.println(STR."Started at \{LocalDateTime.now()}");
-    long startTime = System.nanoTime();
-    for (long i = 0; i < 10_000_000_000L; i++) {
-      if ((i & ((1L << 20) - 1)) == 0) {
-        long elapsed = (System.nanoTime() - startTime) / 1_000_000_000;
-        System.out.println(FMT."i=%,d\{i} elapsed %d\{elapsed / 60}:%02d\{elapsed % 60}");
-      }
+  /*
+  I suspected that the circuit was made up of cyclic subcircuits, so the final signal to rx would
+  happen only when each of those subcircuits finished its cycle at the same time. That would mean
+  the number of iterations ("button pushes") would be the LCM of those cycles. I could have
+  investigated that to confirm it, but instead I confirmed it by cheating, via
+  https://colab.sandbox.google.com/github/derailed-dash/Advent-of-Code/blob/master/src/AoC_2023/Dazbo%27s_Advent_of_Code_2023.ipynb#scrollTo=EFS4IeuPndFb
+  */
+  static void solvePart2(List<String> lines) {
+    Map<String, Module> modules = parseModules(lines);
+
+    // Verify that rx has exactly one input, call it vf, that is a Conjunction.
+    List<Map.Entry<String, Module>> rxInputs = modules.entrySet().stream()
+        .filter(e -> e.getValue().targetModules.contains("rx"))
+        .toList();
+    assert rxInputs.size() == 1 : rxInputs;
+    assert rxInputs.get(0).getValue() instanceof Conjunction;
+    String rxInput = rxInputs.get(0).getKey();
+    System.out.println(STR."Input to rx is \{rxInput}");
+
+    // Verify that vf has four inputs which are also Conjuctions.
+    List<Map.Entry<String, Module>> vfInputs = modules.entrySet().stream()
+        .filter(e -> e.getValue().targetModules.contains(rxInput))
+        .toList();
+    assert vfInputs.size() == 4;
+    assert vfInputs.stream().allMatch(e -> e.getValue() instanceof Conjunction);
+
+    // Observe when each of those inputs first sends a high pulse.
+    AtomicLong i = new AtomicLong();
+    Map<String, Long> first = new TreeMap<>();
+    for (var entry : vfInputs) {
+      entry.getValue().observers.add(
+          pulse -> {
+            if (pulse) {
+              System.out.println(STR."First high pulse for \{entry.getKey()} at i=\{i.get()}");
+              first.put(entry.getKey(), i.get());
+            }
+          }
+      );
+    }
+
+    for (i.set(1); i.get() < 1_000_000; i.incrementAndGet()) {
       List<Signal> signals = List.of(new Signal(null, "broadcaster", false));
       while (!signals.isEmpty()) {
         List<Signal> newSignals = new ArrayList<>();
@@ -72,36 +106,44 @@ public class Puzzle20 {
           String targetName = signal.targetModuleName;
           if (targetName.equals("rx")) {
             if (!signal.pulse) {
-              System.out.println(STR."Received after \{i + 1} pushes");
+              System.out.println(STR."Received after \{i.get()} pushes");
               break;
             }
           } else {
             Module target = modules.get(targetName);
-            if (target == null) {
-              if (ignored.add(signal.targetModuleName)) {
-                System.out.println(STR."Ignore \{signal.targetModuleName}");
-              }
-            } else {
+            if (target != null) {
               newSignals.addAll(target.receive(signal.source, signal.pulse));
             }
           }
         }
         signals = newSignals;
       }
+      if (first.size() == 4) {
+        break;
+      }
     }
 
+    long lcm = first.values().stream().reduce(1L, (a, b) -> lcm(a, b));
+    System.out.println(STR."LCM is \{lcm}");
+  }
+
+  static long lcm(long a, long b) {
+    long gcd = LongMath.gcd(a, b);
+    return a / gcd * b;
   }
 
   record Signal(Module source, String targetModuleName, boolean pulse) {}
 
   abstract static class Module {
     final Set<String> targetModules;
+    final List<Consumer<Boolean>> observers = new ArrayList<>(0);
 
     Module(Set<String> targetModules) {
       this.targetModules = targetModules;
     }
 
     List<Signal> send(boolean pulse) {
+      observers.forEach(o -> o.accept(pulse));
       return targetModules.stream().map(module -> new Signal(this, module, pulse)).toList();
     }
 
