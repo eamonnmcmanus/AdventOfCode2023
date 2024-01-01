@@ -13,6 +13,11 @@ import java.util.TreeSet;
 /**
  * @author Éamonn McManus
  */
+/*
+This was the last remaining puzzle and I just wasn't motivated to tackle Part 2.
+So I cheated and copied someone else's solution.
+https://github.com/ash42/adventofcode/tree/main/adventofcode2023/src/nl/michielgraat/adventofcode2023/day21
+*/
 public class Puzzle21 {
   public static void main(String[] args) throws Exception {
     String input = "puzzle21.txt";
