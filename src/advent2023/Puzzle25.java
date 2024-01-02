@@ -58,11 +58,27 @@ public class Puzzle25 {
     }
   }
 
+  /*
+   * This brute-force solution really shouldn't work but with the input I got it actually completed
+   * fairly quickly. (Every AoC user gets different input for each puzzle.) Apparently the very first
+   * edge it chose was in fact one of the ones that needed to be cut. So a solution was found in a
+   * bit more than a minute. I think the expected run time is more like four days.
+   *
+   * The approach is very naive. Check each combination of three edges, as follows. Traverse the
+   * graph from one end of one of the edges, ignoring the three edges (treating them as cut). Stop
+   * as soon as the other end of that edge is encountered, or both ends of one of the other two
+   * edges. If the traversal is complete without either of those happening then the three edges
+   * make up the cut we are looking for.
+   *
+   * Forum discussion suggests better approaches. One is to choose a large number of random pairs of
+   * nodes and compute the paths between them. Then consider cutting the edges that show up most
+   * often in those paths. I did not code that.
+   */
   private static void solve(List<Edge> edges) {
     long start = System.nanoTime();
     for (int i1 = 0; i1 < edges.size(); i1++) {
-      System.out.println(STR."Edge1 \{i1} of \{edges.size()}, elapsed \{(System.nanoTime() - start) / 1_000_000_000}");
       Edge edge1 = edges.get(i1);
+      System.out.println(STR."Edge1 \{i1 + 1} of \{edges.size()} (\{edge1}), elapsed \{(System.nanoTime() - start) / 1_000_000_000}");
       for (int i2 = i1 + 1; i2 < edges.size(); i2++) {
         if (i2 % 200 == 0) {
           System.out.println(STR."  Edge2 \{i2}, elapsed \{(System.nanoTime() - start) / 1_000_000_000}");
@@ -72,7 +88,7 @@ public class Puzzle25 {
           Edge edge3 = edges.get(i3);
           Set<Node> seen = new HashSet<>();
           if (visit(edge1.a, edge1, edge2, edge3, seen)) {
-            System.out.println(STR."Success with component of size \{seen.size()}");
+            System.out.println(STR."Success with component of size \{seen.size()}: \{edge1}, \{edge2}, \{edge3}");
             return;
           }
         }
@@ -123,19 +139,13 @@ public class Puzzle25 {
     }
   }
 
-  private static class Edge implements Comparable<Edge> {
-    final Node a;
-    final Node b;
-    boolean cut;
-
-    Edge(Node a, Node b) {
+  private record Edge(Node a, Node b) implements Comparable<Edge> {
+    Edge {
       if (a.compareTo(b) > 0) {
         Node t = a;
         a = b;
         b = t;
       }
-      this.a = a;
-      this.b = b;
     }
 
     private static final Comparator<Edge> COMPARATOR =

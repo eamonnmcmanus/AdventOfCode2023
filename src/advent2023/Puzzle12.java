@@ -14,6 +14,10 @@ import java.util.Map;
  * @author Éamonn McManus
  */
 public class Puzzle12 {
+  /*
+   * Straightforward recursive solution. The only wrinkle is that Part 2 requires memoization to be
+   * tractable.
+   */
   public static void main(String[] args) throws Exception {
     try (InputStream in = Puzzle12.class.getResourceAsStream("puzzle12.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
@@ -23,9 +27,13 @@ public class Puzzle12 {
       for (String line : lines) {
         String[] parts = line.split("\\s+");
         assert parts.length == 2;
+
+        // Part 1 of the puzzle.
         String springs = parts[0];
         List<Integer> spans = stream(parts[1].split(",")).map(Integer::parseInt).toList();
         total += combinations(springs, spans);
+
+        // Part 2 of the puzzle.
         String bigSprings = String.join("?", Collections.nCopies(5, springs));
         List<Integer> bigSpans = Collections.nCopies(5, spans).stream().flatMap(List::stream).toList();
         System.out.println(STR."Trying \{bigSprings} with \{bigSpans}");

@@ -41,6 +41,8 @@ public class Puzzle16 {
     }
   }
 
+  // A BFS to determine all the positions the given start beam can reach.
+  // A recursive DFS would also have been possible, and perhaps simpler.
   private static int solve(Beam startBeam, List<String> lines) {
     Set<Beam> beams = new HashSet<>();
     Deque<Beam> queue = new ArrayDeque<>();
@@ -57,6 +59,10 @@ public class Puzzle16 {
     return tiles.size();
   }
 
+  /**
+   * Given an incoming beam position, advances by one position. This may result in beam splitting,
+   * hence the list return type.
+   */
   private static List<Beam> advance(Beam beam, List<String> lines) {
     char c = lines.get(beam.y).charAt(beam.x);
     List<Beam> beams = switch (c) {

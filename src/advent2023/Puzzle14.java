@@ -21,8 +21,16 @@ public class Puzzle14 {
       for (int i = 0; i < lines.size(); i++) {
         chars[i] = lines.get(i).toCharArray();
       }
+
+      // Part 1
       tiltNorth(chars);
       System.out.println(STR."Load \{load(chars)}");
+
+      // Part 2
+      // The assumption here is that there is a cycle, such that the state repeats, possibly
+      // after an initial sequence of states that don't repeat. So we just need to find the length
+      // of that initial sequence and the length of the cycle, and be a bit careful about the exact
+      // calculation.
       Set<CharWrapper> seen = new LinkedHashSet<>();
       CharWrapper seenWrapper;
       while (true) {
@@ -123,6 +131,8 @@ public class Puzzle14 {
     tiltSouth(chars);
     tiltEast(chars);
   }
+
+  // Could probably have unified these four methods into a single one but I was lazy.
 
   private static void tiltNorth(char[][] chars) {
     boolean changed = true;

@@ -32,6 +32,8 @@ public class Puzzle8 {
       assert lines.get(1).isEmpty();
       String directions = lines.getFirst();
       Map<String, List<String>> map = parseMap(lines.subList(2, lines.size()));
+
+      // Part 1.
       long steps = 0;
       String node = "AAA";
       for (int dirIndex = 0; !node.equals("ZZZ"); dirIndex = (dirIndex + 1) % directions.length(), steps++) {
@@ -41,16 +43,28 @@ public class Puzzle8 {
       }
       System.out.println(STR."Steps \{steps}");
 
+      // Part 2.
       new Puzzle8(map, directions).solve();
     }
   }
 
+  /*
+   * The solution here isn't completely general. The idea is that we're going to go through some
+   * initial number of states and then each of the parallel paths is going to cycle, with different
+   * cycle lengths. The code here hardcodes that initial number as 3 based on observation. (I hadn't
+   * realized that everyone gets different input data, though it may be that they all have 3 initial
+   * states.) Then it also happens that each of the cycles reaches its Z state 3 steps before the
+   * end, though again that might not be true for all inputs. The two 3s cancel each other out so
+   * the solution is just the LCM of the cycle lengths.
+   */
   private void solve() {
     List<State> states = map.keySet().stream().filter(s -> s.endsWith("A")).map(s -> new State(s, 0)).toList();
     System.out.println(STR."States \{states}");
+    // Pass through the initial states before cycling begins.
     states = nextStates(states);
     states = nextStates(states);
     states = nextStates(states);
+    // Compute the cycle length for each of the parallel states.
     long lcm = 1;
     for (State state : states) {
       Cycle cycle = cycle(state);
@@ -61,8 +75,7 @@ public class Puzzle8 {
       lcm = lcm(lcm, cycle.states.size());
       System.out.println(STR."LCM now \{lcm}");
     }
-    System.out.println(STR."Solution maybe \{lcm - 1}");
-    // Solution is actually just lcm, 11678319315857.
+    System.out.println(STR."Solution maybe \{lcm}");
     // Looks like all of the cycle lengths have pairwise GCD 269.
   }
 
@@ -106,7 +119,7 @@ public class Puzzle8 {
     return switch (c) {
       case 'L' -> 0;
       case 'R' -> 1;
-      default -> throw new IllegalArgumentException("" + c);
+      default -> throw new AssertionError(c);
     };
   }
 

@@ -23,6 +23,9 @@ public class Puzzle10 {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
       List<List<EnumSet<Direction>>> grid = new ArrayList<>();
+
+      // Parse the map into a 2D representation where each cell is either null or says which way
+      // the pipe goes.
       int sourceI = -1;
       int sourceJ = -1;
       for (int i = 0; i < lines.size(); i++) {
@@ -43,6 +46,8 @@ public class Puzzle10 {
         }
         grid.add(dirs);
       }
+
+      // Figure out which kind of corner the source (S) cell should be.
       assert sourceI >= 0 && sourceJ >= 0;
       EnumSet<Direction> sourceDirs = EnumSet.noneOf(Direction.class);
       if (sourceI > 0 && grid.get(sourceI - 1).get(sourceJ).contains(DOWN)) {
@@ -59,13 +64,16 @@ public class Puzzle10 {
       }
       Direction dir = sourceDirs.iterator().next();
 
+      // We make an equivalent representation using Unicode box-drawing characters. This isn't
+      // necessary, but makes reading and debugging easier.
       char[][] pipe = new char[lines.size()][lines.getFirst().length()];
       for (char[] line : pipe) {
         Arrays.fill(line, ' ');
       }
       pipe[sourceI][sourceJ] = BOX_DRAWING.get(CHAR_TO_DIR.inverse().get(sourceDirs));
-      // pipe[sourceI][sourceJ] = true;
       System.out.println(STR."Source (\{sourceI}, \{sourceJ}), direction \{dir}");
+
+      // Solution for Part 1, and also fill in the pipe[][] array.
       int steps = 0;
       for (int i = sourceI, j = sourceJ;; ) {
         steps++;
@@ -79,11 +87,10 @@ public class Puzzle10 {
         if (i == sourceI && j == sourceJ) {
           break;
         }
-        // pipes[i][j] = true;
         EnumSet<Direction> dirs = grid.get(i).get(j);
         pipe[i][j] = BOX_DRAWING.get(CHAR_TO_DIR.inverse().get(dirs));
-        // System.out.println(STR."Now at (\{i},\{j}), dirs \{dirs}");
-        // now if we entered from the left, we were going right, so the new direction is the one that isn't RIGHT
+        // Now if we entered from the left, we were going right, so this is either {RIGHT, UP} or
+        // {RIGHT, DOWN}. The new direction is then UP or DOWN accordingly.
         dir = otherDir(dirs, dir.opposite());
       }
 
@@ -99,6 +106,9 @@ public class Puzzle10 {
       // tells us which starting corner (┏ or ┓) we encountered before. Then when we encounter the
       // corresponding ending corner (┛ or ┓), we switch insideness if the ending corner has the
       // opposite vertical direction from the starting one.
+      // A simpler idea that occurred to me later would be to scan diagonally rather than
+      // horizontally. Then we can just ignore corners as we track insideness. The same is true
+      // of Puzzle 18.
       for (char[] line : pipe) {
         boolean inside = false;
         Corner corner = Corner.NONE;
@@ -134,6 +144,7 @@ public class Puzzle10 {
         }
       }
 
+      // Print a pretty map.
       for (char[] line : pipe) {
         for (int j = 0; j < line.length; j++) {
           System.out.print(line[j]);

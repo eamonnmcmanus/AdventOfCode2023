@@ -21,6 +21,12 @@ import java.util.stream.IntStream;
  * @author Éamonn McManus
  */
 public class Puzzle22 {
+  /*
+   * I'm always a bit nervous when I have to deal with 3D, but here it was rather straightforward.
+   * The 3D bricks only move vertically, so we just need to know the (x,y) coordinates of each
+   * part of the brick and compare those with the bricks below.
+   * Total run time about 17 seconds.
+   */
   public static void main(String[] args) throws Exception {
     try (InputStream in = Puzzle22.class.getResourceAsStream("puzzle22.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);

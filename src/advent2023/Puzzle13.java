@@ -16,6 +16,8 @@ public class Puzzle13 {
     try (InputStream in = Puzzle13.class.getResourceAsStream("puzzle13.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
+
+      // Parsing
       List<List<String>> maps = new ArrayList<>();
       List<String> soFar = new ArrayList<>();
       for (String line : lines) {
@@ -27,11 +29,15 @@ public class Puzzle13 {
         }
       }
       maps.add(soFar);
+
+      // Part 1
       long total = 0;
       for (List<String> map : maps) {
         total += score(map, 0);
       }
       System.out.println(STR."Total \{total}");
+
+      // Part 2
       long smudgeTotal = 0;
       for (List<String> map : maps) {
         smudgeTotal += smudgeScore(map);
@@ -78,6 +84,7 @@ public class Puzzle13 {
         }
       }
     }
+    // Reflect the map around a diagonal in order to check for vertical reflections.
     char[][] inversion = new char[map.get(0).length()][map.size()];
     for (int i = 0; i < map.size(); i++) {
       for (int j = 0; j < map.get(i).length(); j++) {

@@ -26,8 +26,33 @@ import java.util.regex.Pattern;
 /**
  * @author Éamonn McManus
  */
-// This was a huge huge slog.
 public class Puzzle19 {
+  /*
+   * This was a huge huge slog.
+   *
+   * My initial idea was to represent each accepting state as e.g.
+   * {0<x<4001, 23<m<1009, 500<a<4001, 379<s<1729}. Then Part 2 reduces to finding the number
+   * of parameter values matched by these constraints. Of course more than one set of constraints
+   * can match a set of values so we must avoid overcounting. To do this we start with one
+   * constraint and add in all the others, proceeding by removing from the new constraint each
+   * range of values that is already covered by the previous ones. This is clumsy and sort of
+   * exponential (in general the removing ranges of one constraint from another can result in 16
+   * different sets of ranges). But it is tractable.
+   *
+   * My big mistake was to try to represent the states in the input DFA using the same notion, so
+   * m>1009 would be {0<x<4001, 1009<m<4001, 0<a<4001, 0<s<4001}. This does produce the right result
+   * when running individual xmas values through the DFA, but it doesn't work very well if we want to
+   * summarize them. When we arrive at a state, we will have a set of constraints that must be true
+   * to have got to that point. We can simply intersect that with the constraints on the set to
+   * determine what must be true for the state to succeed (jump to its label). But what about the
+   * other case, where we instead proceed to the next state in the list for the current label? I
+   * thought that was just the complement, but of course the complement is empty since 0<x<4001
+   * covers all possible x values. I now think I could probably have salvaged this fairly easily,
+   * with the right thing being to proceed with the union of the complements of each individual
+   * condition. But meanwhile I changed the code to use a literal representation of m>1009 and
+   * updated the logic accordingly. Thankfully, the remainder of the code then worked correctly to
+   * produce the result in less than a second.
+   */
   public static void main(String[] args) throws Exception {
     try (InputStream in = Puzzle19.class.getResourceAsStream("puzzle19.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
@@ -55,20 +80,6 @@ public class Puzzle19 {
       ConstraintSet set = new ConstraintSet(new HashSet<>(constraints));
       System.out.println(STR."New new new rating total \{parts.stream().filter(part -> set.matches(part)).mapToInt(Part::rating).sum()}");
       System.out.println(STR."Size \{set.size()}");
-
-      /*
-      ConstraintSet accepted = allAcceptedBy(workflows);
-      int newSum = 0;
-      for (Part part : parts) {
-        if (accepted.matches(part)) {
-          newSum += part.rating();
-        } else if (accept(part, workflows)) {
-          throw new AssertionError(STR."Should have been accepted: \{part} given \{accepted}");
-        }
-      }
-      System.out.println(STR."Rating total \{newSum}");
-      System.out.println(STR."Accepting \{accepted}");
-      */
     }
   }
 

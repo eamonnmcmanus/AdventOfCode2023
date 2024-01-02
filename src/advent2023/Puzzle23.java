@@ -30,15 +30,21 @@ public class Puzzle23 {
     }
   }
 
+  /*
+   * The main difficulty here was just parsing the text input into the correct graph. Once that was
+   * done it was pretty trivial to find the longest path through the graph; brute force sufficed,
+   * giving an immediate solution for Part 1 and taking about 30 seconds for Part 2.
+   * Part 2 basically just changed the graph from directed to undirected so coding it was almost trivial.
+   * (Almost, because I also had to add a `visited` set that was not needed with the DAG from Part 1.)
+   */
+
   private final char[][] cells;
-  private final boolean part2;
   private final MutableValueGraph<Node, Integer> graph;
   private final Node startNode;
   private final Node endNode;
 
   Puzzle23(char[][] cells, boolean part2) {
     this.cells = cells;
-    this.part2 = part2;
 
     String topLine = new String(cells[0]);
     int topJ = topLine.indexOf('.');

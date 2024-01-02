@@ -14,6 +14,8 @@ public class Puzzle3 {
     try (InputStream in = Puzzle3.class.getResourceAsStream("puzzle3.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
+
+      // Part 1
       int sum = 0;
       for (int i = 0; i < lines.size(); i++) {
         String line = lines.get(i);
@@ -33,7 +35,10 @@ public class Puzzle3 {
         }
       }
       System.out.println(STR."Sum is \{sum}");
+
+      // Part 2
       int ratioSum = 0;
+      // For each cell in the grid, record the number that starts in that cell, or 0 if none.
       int[][] ints = new int[lines.size()][lines.get(0).length()];
       for (int i = 0; i < lines.size(); i++) {
         String line = lines.get(i);
@@ -51,6 +56,7 @@ public class Puzzle3 {
           }
         }
       }
+      // Now scan for * symbols and find the adjacent numbers. This is a little tedious.
       for (int i = 0; i < lines.size(); i++) {
         String line = lines.get(i);
         for (int j = 0; j < line.length(); j++) {

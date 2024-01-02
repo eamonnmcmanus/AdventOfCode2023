@@ -63,7 +63,7 @@ public class Puzzle24 {
   t2 * [dy2 - dx2*dy1/dx1] = y1 - y2 + (x2 - x1)*(dy1/dx1)
   t2 = [y1 - y2 + (x2 - x1)*(dy1/dx1)] / [dy2 - dx2*dy1/dx1]
 
-  Remarkably, this algebra appears to be right first time.
+  Remarkably, this algebra appears to be right first time. :-)
   */
   static Intersection intersection(Hailstone h1, Hailstone h2) {
     double x1 = h1.startX;
@@ -93,7 +93,7 @@ public class Puzzle24 {
   /*
   For part 2, we are looking for a starting point h0=(x0,y0,z0) and a vector d0=(dx0,dy0,dz0) such
   that the line they define intersects each of the hailstone lines. In general, two 3D lines don't
-  intersect so what are the conditions so that the do?
+  intersect so what are the conditions so that they do?
 
   Consider the equations from before, supplemented by a z equation:
   x1 + t1*dx1 = x2 + t2*dx2
@@ -177,9 +177,7 @@ public class Puzzle24 {
           .subtract(x1.multiply(dy1));
     }
 
-    System.out.println(STR."My input matrix \{Arrays.deepToString(matrix)}");
     gauss(matrix);
-    System.out.println(STR."My matrix \{Arrays.deepToString(matrix)}");
 
     // This is copied, but I think the `gauss` algorithm could perhaps have done these extra calculations?
     BigDecimal y0 = matrix[3][4].divide(matrix[3][3], context);
@@ -203,10 +201,8 @@ public class Puzzle24 {
     BigDecimal cz1 = z1.add(t1.multiply(dz1));
     Hailstone two = hailstones.get(1);
     BigDecimal x2 = BigDecimal.valueOf(two.startX);
-    BigDecimal y2 = BigDecimal.valueOf(two.startY);
     BigDecimal z2 = BigDecimal.valueOf(two.startZ);
     BigDecimal dx2 = BigDecimal.valueOf(two.deltaX);
-    BigDecimal dy2 = BigDecimal.valueOf(two.deltaY);
     BigDecimal dz2 = BigDecimal.valueOf(two.deltaZ);
     BigDecimal t2 = x2.subtract(x0).divide(dx0.subtract(dx2), context);
     BigDecimal cz2 = z2.add(t2.multiply(dz2));

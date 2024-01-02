@@ -21,8 +21,10 @@ public class Puzzle4 {
     try (InputStream in = Puzzle4.class.getResourceAsStream("puzzle4.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
+
+      // Parse the input and solve Part 1.
       int sum = 0;
-      List<Card> cards = new ArrayList<Card>();
+      List<Card> cards = new ArrayList<>();
       for (String line : lines) {
         Matcher matcher = CARD_PATTERN.matcher(line);
         if (!matcher.matches()) {
@@ -38,13 +40,15 @@ public class Puzzle4 {
         cards.add(card);
       }
       System.out.println(STR."Sum is \{sum}");
+
+      // Part 2.
       int[] counts = new int[cards.size()];
       Arrays.fill(counts, 1);
       for (int i = 0; i < cards.size(); i++) {
         int score = cards.get(i).score();
-        System.out.println(STR."Score for card \{i + 1} is \{score}");
+        log(STR."Score for card \{i + 1} is \{score}");
         for (int j = 1; j <= score; j++) {
-          System.out.println(STR."  Update count for \{i + j + 1} from \{counts[i + j]} to \{2 * counts[i + j]}");
+          log(STR."  Update count for \{i + j + 1} from \{counts[i + j]} to \{2 * counts[i + j]}");
           counts[i + j] += counts[i];
         }
       }
@@ -67,5 +71,11 @@ public class Puzzle4 {
 
   private static Set<Integer> parseNumbers(String line) {
     return Arrays.stream(line.split(" +")).filter(s -> !s.isEmpty()).map(Integer::parseInt).collect(toSet());
+  }
+
+  private static void log(String message) {
+    if (false) {
+      System.out.println(message);
+    }
   }
 }

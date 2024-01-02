@@ -14,11 +14,20 @@ import java.util.regex.Pattern;
  * @author Éamonn McManus
  */
 public class Puzzle18 {
+  // For Part 1, I initially just made a char[][] containing the path, after shifting coordinates
+  // so they started at (0,0). (My input map, at least, included coordinates in all four quadrants.)
+  // Then I found the top left corner of the path and used a DFS to fill cells starting from the
+  // one just down and right of that corner. Obviously that doesn't scale to the giant path, though.
+  //
+  // I made an amusing mistake when switching to Part 2. It didn't seem necessary to shift the
+  // coordinates anymore, so I left them as-is. But then I used -1 as the `start` value when we are
+  // not inside the path! Oops. That's now `Integer start = null` below.
+
   public static void main(String[] args) throws Exception {
     try (InputStream in = Puzzle18.class.getResourceAsStream("puzzle18.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
-      for (boolean newParse : new boolean[] {false, true}) {
+      for (boolean part2 : new boolean[] {false, true}) {
         List<Step> steps = lines.stream()
             .map(LINE_PATTERN::matcher)
             .peek(m -> {
@@ -26,7 +35,7 @@ public class Puzzle18 {
                 throw new AssertionError(m);
               }
             }).
-            map(m -> newParse
+            map(m -> part2
                 ? Step.fromHex(Integer.parseInt(m.group(3), 16))
                 : new Step(
                     NAME_TO_DIR.get(m.group(1)),
@@ -38,7 +47,9 @@ public class Puzzle18 {
   }
 
   private static void solve(List<Step> steps) {
-    // Construct a set of vertical lines and a set of horizontal lines. Each vertical line will
+    // We calculate the internal area using the familiar notion that if you scan across from the
+    // edge then every line you cross switches you between outside and inside.
+    // We construct a set of vertical lines and a set of horizontal lines. Each vertical line will
     // have a horizontal line meeting it at each of its endpoints. For each y coordinate, visit
     // the vertical lines that pass through that coordinate, in increasing x order. If the middle
     // of the line passes through that y, then we switch between inside and outside. If it is an

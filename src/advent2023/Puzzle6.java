@@ -22,6 +22,8 @@ public class Puzzle6 {
       assert distStrings.get(0).equals("Distance:");
       List<Integer> dists = distStrings.stream().skip(1).map(Integer::parseInt).toList();
       assert times.size() == dists.size();
+
+      // Part 1
       int product = 1;
       for (int i = 0; i < times.size(); i++) {
         int time = times.get(i);
@@ -37,6 +39,7 @@ public class Puzzle6 {
       }
       System.out.println(STR."Product \{product}");
 
+      // Part 2
       String timeString = timeStrings.stream().skip(1).collect(joining(""));
       int time = Integer.parseInt(timeString);
       String distString = distStrings.stream().skip(1).collect(joining(""));

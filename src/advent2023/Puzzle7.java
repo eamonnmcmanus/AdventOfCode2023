@@ -26,11 +26,15 @@ public class Puzzle7 {
           .map(Puzzle7::parseHand)
           .sorted()
           .toList();
+
+      // Part 1
       long sum = 0;
       for (int i = 0; i < hands.size(); i++) {
         sum += (i + 1) * hands.get(i).bid;
       }
       System.out.println(STR."Sum: \{sum}");
+
+      // Part 2
       List<Hand> jokerHands = hands.stream().sorted(JOKER_HAND_COMPARATOR).toList();
       long jokerSum = 0;
       for (int i = 0; i < jokerHands.size(); i++) {
@@ -86,14 +90,18 @@ public class Puzzle7 {
         return Score.FIVE_OF_A_KIND;
       } else if (counts.contains(4)) {
         return Score.FOUR_OF_A_KIND;
-      } else if (counts.contains(2) && counts.contains(3)) {
-        return Score.FULL_HOUSE;
       } else if (counts.contains(3)) {
-        return Score.THREE_OF_A_KIND;
-      } else if (counts.contains(2) && counts.indexOf(2) != counts.lastIndexOf(2)) {
-        return Score.TWO_PAIR;
+        if (counts.contains(2)) {
+          return Score.FULL_HOUSE;
+        } else {
+          return Score.THREE_OF_A_KIND;
+        }
       } else if (counts.contains(2)) {
-        return Score.PAIR;
+        if (counts.indexOf(2) != counts.lastIndexOf(2)) {
+          return Score.TWO_PAIR;
+        } else {
+          return Score.PAIR;
+        }
       } else {
         return Score.HIGH_CARD;
       }

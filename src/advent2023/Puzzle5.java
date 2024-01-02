@@ -1,6 +1,7 @@
 package advent2023;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.FormatProcessor.FMT;
 
 import com.google.common.collect.ImmutableRangeMap;
 import com.google.common.collect.Range;
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
 public class Puzzle5 {
   public static void main(String[] args) throws Exception {
     try (InputStream in = Puzzle5.class.getResourceAsStream("puzzle5.txt")) {
+      // Parse the input
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
       String seedsLine = lines.get(0);
@@ -34,6 +36,8 @@ public class Puzzle5 {
         nameToMap.put(result.rangeMap.from, result.rangeMap);
         index = result.nextIndex;
       }
+
+      // Part 1
       long minLocation = seedNumbers.stream()
           .map(seedNumber -> lookup(seedNumber, nameToMap))
           .min(Comparator.naturalOrder())
@@ -44,7 +48,7 @@ public class Puzzle5 {
         long v = seedNumbers.get(i);
         max = Long.max(v, max);
       }
-      System.out.printf("max %,d\n", max);
+      System.out.println(FMT."max %,d\{max}");
       minLocation = Long.MAX_VALUE;
       for (int i = 0; i < seedNumbers.size(); i += 2) {
         long start = seedNumbers.get(i);
@@ -53,10 +57,10 @@ public class Puzzle5 {
         for (long j = 0; j <= len; j++) {
           // Rather than this brute-force search, we could change NumberRangeMap so that it can
           // look up an input range and return a list of output ranges. Then flatmap that through
-          // the remaining maps.
+          // the remaining maps. But brute force solves the problem in "only" 8 minutes.
           long seedNumber = start + j;
           if (false && (j & 1048575) == 0) {
-            System.out.printf("  ...%,d\n", seedNumber);
+            System.out.println(FMT."  ...%,d\{seedNumber}");
           }
           minLocation = Long.min(minLocation, lookup(seedNumber, nameToMap));
         }

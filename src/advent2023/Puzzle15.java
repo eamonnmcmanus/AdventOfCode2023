@@ -11,15 +11,22 @@ import java.util.List;
  * @author Éamonn McManus
  */
 public class Puzzle15 {
+  /*
+   * Nothing complicated here. Basically just translating the problem text into code.
+   */
   public static void main(String[] args) throws Exception {
     try (InputStream in = Puzzle15.class.getResourceAsStream("puzzle15.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8).trim();
       List<String> entries = List.of(lineString.split(","));
+
+      // Part 1
       int sum = 0;
       for (String s : entries) {
         sum += hash(s);
       }
       System.out.println(STR."Sum \{sum}");
+
+      // Part 2
       List<List<Lens>> boxes = new ArrayList<>();
       for (int i = 0; i < 256; i++) {
         boxes.add(new ArrayList<>());
