@@ -108,7 +108,8 @@ public class Puzzle10 {
       // opposite vertical direction from the starting one.
       // A simpler idea that occurred to me later would be to scan diagonally rather than
       // horizontally. Then we can just ignore corners as we track insideness. The same is true
-      // of Puzzle 18.
+      // of Puzzle 18. In both cases, there's an even simpler alternative, pointed out by @lowasser:
+      // https://en.wikipedia.org/wiki/Shoelace_formula
       for (char[] line : pipe) {
         boolean inside = false;
         Corner corner = Corner.NONE;

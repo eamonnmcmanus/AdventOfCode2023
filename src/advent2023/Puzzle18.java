@@ -60,6 +60,10 @@ public class Puzzle18 {
     // This is still massively inefficient in that we consider each y coordinate. We could jump to
     // the next y coordinate where something changes, and multiply to fill in the gap. But this is
     // good enough.
+    // As with Puzzle 10, the suggestion from @lowasser of using
+    // https://en.wikipedia.org/wiki/Shoelace_formula would be much simpler. Here we almost
+    // literally have the coordinates of the vertices of a polygon so we can just plug those into
+    // the formula. Because the path has thickness, there's a little extra complexity but not much.
     Point point = new Point(0, 0);
     Map<Point, VLine> upLines = new TreeMap<>();    // line going up from the given point
     Map<Point, VLine> downLines = new TreeMap<>();  // line going down from the given point

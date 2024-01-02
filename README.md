@@ -1,4 +1,33 @@
 These are my solutions to [Advent of Code 2023](https://adventofcode.com/2023).
+They are all coded in Java, needing Java 21 and `--enable-preview` (for string templates).
+
+# Index
+
+* [Day 1](https://adventofcode.com/2023/day/1): [solution](src/advent2023/Puzzle1.java) (extracting integers from strings).
+* [Day 2](https://adventofcode.com/2023/day/2): [solution](src/advent2023/Puzzle2.java) (possible draws from a bag of coloured cubes).
+* [Day 3](https://adventofcode.com/2023/day/3): [solution](src/advent2023/Puzzle3.java) (extracting integers from a grid with adjacent characters).
+* [Day 4](https://adventofcode.com/2023/day/4): [solution](src/advent2023/Puzzle4.java) (evaluating scratch cards).
+* [Day 5](https://adventofcode.com/2023/day/5): [solution](src/advent2023/Puzzle5.java) (tracing number ranges through a sequence of maps).
+* [Day 6](https://adventofcode.com/2023/day/6): [solution](src/advent2023/Puzzle6.java) (timing races).
+* [Day 7](https://adventofcode.com/2023/day/7): [solution](src/advent2023/Puzzle7.java) (evaluating poker hands).
+* [Day 8](https://adventofcode.com/2023/day/8): [solution](src/advent2023/Puzzle8.java) (sequences of left-right choices through a graph).
+* [Day 9](https://adventofcode.com/2023/day/9): [solution](src/advent2023/Puzzle9.java) (successive differences).
+* [Day 10](https://adventofcode.com/2023/day/10): [solution](src/advent2023/Puzzle10.java) (length and enclosed area of a path).
+* [Day 11](https://adventofcode.com/2023/day/11): [solution](src/advent2023/Puzzle11.java) (cosmic expansion).
+* [Day 12](https://adventofcode.com/2023/day/12): [solution](src/advent2023/Puzzle12.java) (matching wildcards against counts).
+* [Day 13](https://adventofcode.com/2023/day/13): [solution](src/advent2023/Puzzle13.java) (searching for reflections).
+* [Day 14](https://adventofcode.com/2023/day/14): [solution](src/advent2023/Puzzle14.java) (cycles of rolling rocks).
+* [Day 15](https://adventofcode.com/2023/day/15): [solution](src/advent2023/Puzzle15.java) (hashing).
+* [Day 16](https://adventofcode.com/2023/day/16): [solution](src/advent2023/Puzzle16.java) (tracing a beam with splitting).
+* [Day 17](https://adventofcode.com/2023/day/17): [solution](src/advent2023/Puzzle17.java) (least-cost path with constraints).
+* [Day 18](https://adventofcode.com/2023/day/18): [solution](src/advent2023/Puzzle18.java) (area enclosed by a path).
+* [Day 19](https://adventofcode.com/2023/day/19): [solution](src/advent2023/Puzzle19.java) (DFA with conditions on 4 variables).
+* [Day 20](https://adventofcode.com/2023/day/20): [solution](src/advent2023/Puzzle20.java) (cycling behaviour of circuits).
+* [Day 21](https://adventofcode.com/2023/day/21): [solution](src/advent2023/Puzzle21.java) (counting paths in a graph).
+* [Day 22](https://adventofcode.com/2023/day/22): [solution](src/advent2023/Puzzle22.java) (3D bricks falling vertically).
+* [Day 23](https://adventofcode.com/2023/day/23): [solution](src/advent2023/Puzzle23.java) (longest path through a graph).
+* [Day 24](https://adventofcode.com/2023/day/24): [solution](src/advent2023/Puzzle24.java) (intersections of 3D lines).
+* [Day 25](https://adventofcode.com/2023/day/25): [solution](src/advent2023/Puzzle25.java) (finding a 3-cut in a large graph).
 
 # Acknowledgements
 
