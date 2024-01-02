@@ -60,9 +60,10 @@ public class Puzzle25 {
 
   /*
    * This brute-force solution really shouldn't work but with the input I got it actually completed
-   * fairly quickly. (Every AoC user gets different input for each puzzle.) Apparently the very first
-   * edge it chose was in fact one of the ones that needed to be cut. So a solution was found in a
-   * bit more than a minute. I think the expected run time is more like four days.
+   * fairly quickly. (Every AoC user gets different input for each puzzle.) Apparently the very
+   * first edge it chose was in fact one of the ones that needed to be cut. So a solution was found
+   * in a bit more than a minute. I think the expected run time is more like four days
+   * single-threaded, some number of hours multi-threaded.
    *
    * The approach is very naive. Check each combination of three edges, as follows. Traverse the
    * graph from one end of one of the edges, ignoring the three edges (treating them as cut). Stop
