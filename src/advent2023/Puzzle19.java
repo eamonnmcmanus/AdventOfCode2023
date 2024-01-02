@@ -41,9 +41,9 @@ public class Puzzle19 {
    *
    * My big mistake was to try to represent the states in the input DFA using the same notion, so
    * m>1009 would be {0<x<4001, 1009<m<4001, 0<a<4001, 0<s<4001}. This does produce the right result
-   * when running individual xmas values through the DFA, but it doesn't work very well if we want to
-   * summarize them. When we arrive at a state, we will have a set of constraints that must be true
-   * to have got to that point. We can simply intersect that with the constraints on the set to
+   * when running individual xmas values through the DFA, but it doesn't work very well if we want
+   * to summarize them. When we arrive at a state, we will have a set of constraints that must be
+   * true to have got to that point. We can simply intersect that with the constraints on the set to
    * determine what must be true for the state to succeed (jump to its label). But what about the
    * other case, where we instead proceed to the next state in the list for the current label? I
    * thought that was just the complement, but of course the complement is empty since 0<x<4001
@@ -52,6 +52,22 @@ public class Puzzle19 {
    * condition. But meanwhile I changed the code to use a literal representation of m>1009 and
    * updated the logic accordingly. Thankfully, the remainder of the code then worked correctly to
    * produce the result in less than a second.
+   *
+   * In hindsight I could have solved this much more simply, thanks to two key insights. We don't
+   * need the whole business with ConstraintSet and intersection and so on. Instead we just need to
+   * record, for each node in the DFA, the list of individual constraints that lead to it, like
+   * m>1000,m<2000,x>3000. That list may contain redundancies (m>1000,m>2000) or contradictions
+   * (m>2000,m<1000) but it doesn't matter. When building the graph, at each non-terminal node we
+   * branch into adding a condition (like m>1000) and connecting to the labeled node, or adding the
+   * complement of the condition (like m<1001) and connecting to the next node in the list for the
+   * current line. The first insight, obvious in retrospect, is that the sets of xmas values
+   * accepted by each accepting state are mutually exclusive. I had spent a lot of time worrying
+   * unnecessarily about overcounting because I thought the same xmas values might be accepted by
+   * more than one terminal state. The second insight is that we don't even need to calculate the
+   * final ranges of values accepted by a given accepting state. Since the xmas variables are
+   * independent of each other, we can simply apply the list of conditions to all x values from 1 to
+   * 4000, all m values, etc, and multiply the resulting counts together.
+   *
    */
   public static void main(String[] args) throws Exception {
     try (InputStream in = Puzzle19.class.getResourceAsStream("puzzle19.txt")) {
