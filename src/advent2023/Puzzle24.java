@@ -166,12 +166,12 @@ public class Puzzle24 {
       BigDecimal dx2 = BigDecimal.valueOf(two.deltaX);
       BigDecimal dy2 = BigDecimal.valueOf(two.deltaY);
       // (y1-y2)*dx0 + (x2-x1)*dy0 + (dy2-dy1)*x0 + (dx1-dx2)*y0 = y1*dx1 - y2*dx2 + x2*dy2 - x1*dy1
-      // variables are (dx0, dy0, x0, y0) in that order
-      matrix[i][0] = y1.subtract(y2);   // (y1-y2)*dx0
-      matrix[i][1] = x2.subtract(x1);   // (x2-x1)*dy0
-      matrix[i][2] = dy2.subtract(dy1); // (dy2-dy1)*x0
-      matrix[i][3] = dx1.subtract(dx2); // (dx1-dx2)*y0
-      matrix[i][4] = y1.multiply(dx1)
+      // Variables are (dx0, dy0, x0, y0) in that order. [4] is the RHS of each equation.
+      matrix[i][0] = y1.subtract(y2);   //   (y1-y2)*dx0
+      matrix[i][1] = x2.subtract(x1);   // + (x2-x1)*dy0
+      matrix[i][2] = dy2.subtract(dy1); // + (dy2-dy1)*x0
+      matrix[i][3] = dx1.subtract(dx2); // + (dx1-dx2)*y0
+      matrix[i][4] = y1.multiply(dx1)   // = y1*dx1 - y2*dx2 + x2*dy2 - x1*dy1
           .subtract(y2.multiply(dx2))
           .add(x2.multiply(dy2))
           .subtract(x1.multiply(dy1));
