@@ -1,5 +1,7 @@
 package advent2022;
 
+import static java.lang.Character.digit;
+import static java.lang.Character.isDigit;
 import static java.lang.StringTemplate.STR;
 import static java.util.stream.Collectors.joining;
 
@@ -91,7 +93,7 @@ public class Puzzle13 {
     }
   }
 
-  private sealed interface ListOrInt extends Comparable<ListOrInt> permits Int, LList {}
+  private sealed interface ListOrInt extends Comparable<ListOrInt> {}
 
   private record Int(int i) implements ListOrInt {
     @Override public String toString() {
@@ -124,8 +126,8 @@ public class Puzzle13 {
     public int compareTo(ListOrInt that) {
       return switch (that) {
         case LList(List<ListOrInt> thatList) ->
-          Comparators.lexicographical(
-              Comparator.<ListOrInt>naturalOrder()).compare(this.list, thatList);
+          Comparators.lexicographical(Comparator.<ListOrInt>naturalOrder())
+              .compare(this.list, thatList);
         case Int(int thatI) -> compareTo(LList.of(thatI));
       };
     }
@@ -177,13 +179,9 @@ public class Puzzle13 {
       assert isDigit(line.charAt(index));
       int value = 0;
       do {
-        value = value * 10 + line.charAt(index++) - '0';
+        value = value * 10 + digit(line.charAt(index++), 10);
       } while (isDigit(line.charAt(index)));
       return new Int(value);
-    }
-
-    private static boolean isDigit(char c) {
-      return '0' <= c && c <= '9';
     }
 
     private IllegalArgumentException parseError(String message) {
