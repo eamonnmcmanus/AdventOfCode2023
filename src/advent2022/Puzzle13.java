@@ -87,25 +87,28 @@ public class Puzzle13 {
     }
   }
 
-  record Pair(LList lhs, LList rhs) {
+  record Pair(ListOrInt lhs, ListOrInt rhs) {
     boolean inOrder() {
       return lhs.compareTo(rhs) <= 0;
     }
   }
 
-  private sealed interface ListOrInt extends Comparable<ListOrInt> {}
+  private sealed interface ListOrInt extends Comparable<ListOrInt> {
+    @Override
+    default int compareTo(ListOrInt that) {
+      return switch (new Pair(this, that)) {
+        case Pair(Int(int thisI), Int(int thatI)) -> Integer.compare(thisI, thatI);
+        case Pair(LList(var thisL), LList(var thatL)) ->
+          Comparators.lexicographical(Comparator.<ListOrInt>naturalOrder()).compare(thisL, thatL);
+        case Pair(Int thisI, LList thatL) -> LList.of(thisI).compareTo(thatL);
+        case Pair(LList thisL, Int thatI) -> thisL.compareTo(LList.of(thatI));
+      };
+    }
+  }
 
   private record Int(int i) implements ListOrInt {
     @Override public String toString() {
       return Integer.toString(i);
-    }
-
-    @Override
-    public int compareTo(ListOrInt that) {
-      return switch (that) {
-        case Int(int thatI) -> Integer.compare(this.i, thatI);
-        case LList _ -> LList.of(i).compareTo(that);
-      };
     }
   }
 
@@ -120,16 +123,6 @@ public class Puzzle13 {
 
     @Override public String toString() {
       return list.stream().map(Object::toString).collect(joining(",", "[", "]"));
-    }
-
-    @Override
-    public int compareTo(ListOrInt that) {
-      return switch (that) {
-        case LList(List<ListOrInt> thatList) ->
-          Comparators.lexicographical(Comparator.<ListOrInt>naturalOrder())
-              .compare(this.list, thatList);
-        case Int(int thatI) -> compareTo(LList.of(thatI));
-      };
     }
   }
 
