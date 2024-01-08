@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- Build with Java ≥ 21. Run an individual puzzle like this:
-     mvn exec:exec -Dexec.mainClass=advent2023.Puzzle3
+     mvn compile exec:exec -Dexec.mainClass=advent2023.Puzzle3
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
