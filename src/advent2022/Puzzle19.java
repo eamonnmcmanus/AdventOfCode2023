@@ -47,14 +47,40 @@ public class Puzzle19 {
         List<String> lines = CharStreams.readLines(r);
         List<Blueprint> blueprints = lines.stream().map(line -> parseBlueprint(line)).toList();
         System.out.println(blueprints);
-        for (Blueprint blueprint : blueprints) {
-          check(blueprint, 24);
-        }
+        part1(name, blueprints);
+        part2(name, blueprints);
       }
     }
   }
 
-  private static void check(Blueprint blueprint, int minutes) {
+  private static void part1(String name, List<Blueprint> blueprints) {
+    long sum = blueprints.stream().mapToLong(bp -> bp.id * max(name, bp, 24)).sum();
+    System.out.println(STR."For \{name}, sum is \{sum}");
+  }
+
+  private static void part2(String name, List<Blueprint> blueprints) {
+    if (!name.equals("problem")) {
+      // The samples actually provoke a much longer run time than the problems.
+      return;
+    }
+    long product = blueprints.stream().limit(3).mapToLong(bp -> max(name, bp, 32)).reduce(1L, (a, b) -> a * b);
+    System.out.println(STR."For \{name}, product is \{product}");
+  }
+
+  // This is pretty hokey and literal, but it gets the right result. We basically track all the
+  // possible states after each minute, with two optimizations: (1) if a state has fewer resources
+  // of every type than another state in the same minute, there is no point in keeping it; (2)
+  // there is no point in having more ore robots than the maximum amount of ore that any maufacture
+  // needs, and so on for the other robot types. We handle (1) in an ugly quadratic way, though it
+  // is fairly easy to imagine optimized data structures that would be at least somewhat better.
+  private static long max(String name, Blueprint blueprint, int minutes) {
+    // There is no point in manufacturing more ore robots than the maximum ore cost of any robot
+    // kind, and so on for the others. So determine what those maxima are.
+    List<Resources> costs = List.of(
+        blueprint.oreRobotCost, blueprint.clayRobotCost, blueprint.obsidianRobotCost, blueprint.geodeRobotCost);
+    int maxOreCost = costs.stream().mapToInt(Resources::ore).max().getAsInt();
+    int maxClayCost = costs.stream().mapToInt(Resources::clay).max().getAsInt();
+    int maxObsidianCost = costs.stream().mapToInt(Resources::obsidian).max().getAsInt();
     List<Status> statuses = List.of(Status.INITIAL);
     for (int i = 1; i <= minutes; i++) {
       List<Status> newStatuses = new ArrayList<>();
@@ -63,7 +89,7 @@ public class Puzzle19 {
         // Consider doing nothing.
         addStatus(newStatuses, newStatus);
         // Consider building an ore robot.
-        if (status.resources.contains(blueprint.oreRobotCost)) {
+        if (status.oreRobots < maxOreCost && status.resources.contains(blueprint.oreRobotCost)) {
           addStatus(
               newStatuses,
               new Status(
@@ -75,7 +101,7 @@ public class Puzzle19 {
                   newStatus.geodes));
         }
         // Consider building a clay robot.
-        if (status.resources.contains(blueprint.clayRobotCost)) {
+        if (status.clayRobots < maxClayCost && status.resources.contains(blueprint.clayRobotCost)) {
           addStatus(
               newStatuses,
               new Status(
@@ -87,7 +113,7 @@ public class Puzzle19 {
                   newStatus.geodes));
         }
         // Consider building an obsidian robot.
-        if (status.resources.contains(blueprint.obsidianRobotCost)) {
+        if (status.obsidianRobots < maxObsidianCost && status.resources.contains(blueprint.obsidianRobotCost)) {
           addStatus(
               newStatuses,
               new Status(
@@ -114,6 +140,7 @@ public class Puzzle19 {
       statuses = newStatuses;
       System.out.println(STR."After minute \{i}, number of statuses is \{statuses.size()}");
     }
+    return statuses.stream().mapToInt(Status::geodes).max().getAsInt();
   }
 
   private static void addStatus(List<Status> statuses, Status status) {
