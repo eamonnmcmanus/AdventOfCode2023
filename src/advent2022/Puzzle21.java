@@ -121,7 +121,7 @@ public class Puzzle21 {
   }
 
   // We have something like foo / 4 = 600, where op is /, rhs is 4, and target is 600, and we want
-  // to return 150.
+  // to return 2400.
   private static long invertOp(OpKind op, long rhs, long target) {
     return switch (op) {
       case PLUS -> target - rhs;            // foo + 4 = 600 => foo = 600 - 4
