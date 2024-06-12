@@ -58,11 +58,11 @@ public class Puzzle7 {
         DirNode root = buildHierarchy(lines);
         List<Long> sizes = allSizes(root);
         long smallSum = sizes.stream().mapToLong(x -> x).filter(x -> x <= 100_000).sum();
-        System.out.println(STR."For \{name}, small sum is \{smallSum}");
+        System.out.println("For " + name + ", small sum is " + smallSum);
         long free = 70_000_000 - totalSize(root);
         long needed = 30_000_000 - free;
         long bigSum = sizes.stream().mapToLong(x -> x).filter(x -> x >= needed).min().getAsLong();
-        System.out.println(STR."For \{name}, big sum is \{bigSum}");
+        System.out.println("For " + name + ", big sum is " + bigSum);
       }
     }
   }
@@ -105,7 +105,7 @@ public class Puzzle7 {
       } else if (line.startsWith("dir ")) {
         String dirName = line.substring(4);
         if (current.contents.containsKey(dirName)) {
-          System.out.println(STR."Already saw dir \{dirName}");
+          System.out.println("Already saw dir " + dirName);
         } else {
           current.contents.put(dirName, new DirNode(current));
         }
@@ -115,7 +115,7 @@ public class Puzzle7 {
         int size = Integer.parseInt(matcher.group(1));
         String fileName = matcher.group(2);
         if (current.contents.containsKey(fileName)) {
-          System.out.println(STR."Already saw file \{fileName};");
+          System.out.println("Already saw file " + fileName + ";");
         } else {
           current.contents.put(fileName, new FileNode(size));
         }

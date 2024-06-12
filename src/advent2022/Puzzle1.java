@@ -55,9 +55,9 @@ public class Puzzle1 {
             .map(group -> group.stream().mapToLong(Long::parseLong).sum())
             .sorted()
             .toList();
-        System.out.println(STR."Max for \{name} is \{totals.getLast()}");
+        System.out.println("Max for " + name + " is " + totals.getLast());
         long topThree = totals.stream().skip(totals.size() - 3).mapToLong(Long::valueOf).sum();
-        System.out.println(STR."Sum of top three is \{topThree}");
+        System.out.println("Sum of top three is " + topThree);
       }
     }
   }

@@ -41,7 +41,7 @@ public class Puzzle24 {
         }
       }
     }
-    System.out.println(STR."Count is \{count}");
+    System.out.println("Count is " + count);
   }
 
   /*
@@ -193,7 +193,7 @@ public class Puzzle24 {
         .subtract(matrix[0][2].multiply(x0))
         .subtract(matrix[0][1].multiply(dy0))
         .divide(matrix[0][0], context);
-    System.out.println(STR."y0 \{y0} x0 \{x0} dy0 \{dy0} dx0 \{dx0}");
+    System.out.println("y0 " + y0 + " x0 " + x0 + " dy0 " + dy0 + " dx0 " + dx0);
 
     BigDecimal z1 = BigDecimal.valueOf(one.startZ);
     BigDecimal dz1 = BigDecimal.valueOf(one.deltaZ);
@@ -210,7 +210,7 @@ public class Puzzle24 {
     // dz0 = (cz2-cz1)/(t2-t1); z0 = cz1 - dz0*t1.
     BigDecimal dz0 = cz2.subtract(cz1).divide(t2.subtract(t1), context);
     BigDecimal z0 = cz1.subtract(dz0.multiply(t1));
-    System.out.println(STR."x0 \{x0} y0 \{y0} z0 \{z0} dx0 \{dx0} dy0 \{dy0} dz0 \{dz0}");
+    System.out.println("x0 " + x0 + " y0 " + y0 + " z0 " + z0 + " dx0 " + dx0 + " dy0 " + dy0 + " dz0 " + dz0);
 
     System.out.println(x0.add(y0).add(z0).setScale(0, RoundingMode.HALF_UP));
   }

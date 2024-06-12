@@ -39,21 +39,21 @@ public class Puzzle4 {
         }
         cards.add(card);
       }
-      System.out.println(STR."Sum is \{sum}");
+      System.out.println("Sum is " + sum);
 
       // Part 2.
       int[] counts = new int[cards.size()];
       Arrays.fill(counts, 1);
       for (int i = 0; i < cards.size(); i++) {
         int score = cards.get(i).score();
-        log(STR."Score for card \{i + 1} is \{score}");
+        log("Score for card " + i + 1 + " is " + score);
         for (int j = 1; j <= score; j++) {
-          log(STR."  Update count for \{i + j + 1} from \{counts[i + j]} to \{2 * counts[i + j]}");
+          log("  Update count for " + i + j + 1 + " from " + counts[i + j] + " to " + 2 * counts[i + j]);
           counts[i + j] += counts[i];
         }
       }
       int countSum = Arrays.stream(counts).sum();
-      System.out.println(STR."Count sum is \{countSum}");
+      System.out.println("Count sum is " + countSum);
     }
   }
 

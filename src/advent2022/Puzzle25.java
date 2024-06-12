@@ -44,7 +44,7 @@ public class Puzzle25 {
       try (Reader r = entry.getValue().call()) {
         List<String> lines = CharStreams.readLines(r);
         long sum = lines.stream().mapToLong(s -> parseSnafu(s)).sum();
-        System.out.println(STR."Decimal sum \{sum}, SNAFU equivalent \{toSnafu(sum)}");
+        System.out.println("Decimal sum " + sum + ", SNAFU equivalent " + toSnafu(sum));
       }
     }
   }

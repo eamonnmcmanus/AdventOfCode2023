@@ -71,7 +71,7 @@ public class Puzzle18 {
     for (Coord cube : cubes) {
       count += Sets.difference(cube.neighbours(), cubes).size();
     }
-    System.out.println(STR."Faces for \{name}: \{count}");
+    System.out.println("Faces for " + name + ": " + count);
   }
 
   private static void part2(String name, Set<Coord> cubes) {
@@ -87,7 +87,7 @@ public class Puzzle18 {
     }
     Coord min = new Coord(minX, minY, minZ);
     Coord max = new Coord(maxX, maxY, maxZ);
-    System.out.println(STR."For \{name} span is \{min} to \{max}");
+    System.out.println("For " + name + " span is " + min + " to " + max);
     Filler filler = new Filler(cubes, min, max);
     filler.fill(min);
     Set<Coord> outside = filler.fill;
@@ -95,7 +95,7 @@ public class Puzzle18 {
     for (Coord cube : cubes) {
       count += cube.neighbours().stream().filter(outside::contains).count();
     }
-    System.out.println(STR."Outside faces for \{name}: \{count}");
+    System.out.println("Outside faces for " + name + ": " + count);
   }
 
   private static class Filler {
@@ -129,7 +129,7 @@ public class Puzzle18 {
 
   record Coord(int x, int y, int z) {
     @Override public String toString() {
-      return STR."(\{x},\{y},\{z})";
+      return "(" + x + "," + y + "," + z + ")";
     }
 
     Set<Coord> neighbours() {

@@ -41,7 +41,7 @@ public class Puzzle21 {
         }
       }
       if (startI < 0) {
-        throw new AssertionError(STR."Could not find start in \{lines}");
+        throw new AssertionError("Could not find start in " + lines);
       }
       solve(cells, startI, startJ, input.contains("small") ? 6 : 64);
     }
@@ -79,7 +79,7 @@ public class Puzzle21 {
       }
       starting = new ArrayDeque<>(next);
     }
-    System.out.println(STR."Count \{starting.size()}");
+    System.out.println("Count " + starting.size());
   }
 
   enum Dir {

@@ -32,7 +32,7 @@ public class Puzzle7 {
       for (int i = 0; i < hands.size(); i++) {
         sum += (i + 1) * hands.get(i).bid;
       }
-      System.out.println(STR."Sum: \{sum}");
+      System.out.println("Sum: " + sum);
 
       // Part 2
       List<Hand> jokerHands = hands.stream().sorted(JOKER_HAND_COMPARATOR).toList();
@@ -40,7 +40,7 @@ public class Puzzle7 {
       for (int i = 0; i < jokerHands.size(); i++) {
         jokerSum += (i + 1) * jokerHands.get(i).bid;
       }
-      System.out.println(STR."Joker sum: \{jokerSum}");
+      System.out.println("Joker sum: " + jokerSum);
     }
   }
 

@@ -36,9 +36,9 @@ public class Puzzle6 {
       try (Reader r = entry.getValue().call()) {
         List<String> lines = CharStreams.readLines(r);
         List<Integer> packetStarts = lines.stream().map(line -> findStart(line, 4)).toList();
-        System.out.println(STR."Packet starts for \{name}: \{packetStarts}");
+        System.out.println("Packet starts for " + name + ": " + packetStarts);
         List<Integer> messageStarts = lines.stream().map(line -> findStart(line, 14)).toList();
-        System.out.println(STR."Message starts for \{name}: \{messageStarts}");
+        System.out.println("Message starts for " + name + ": " + messageStarts);
       }
     }
   }

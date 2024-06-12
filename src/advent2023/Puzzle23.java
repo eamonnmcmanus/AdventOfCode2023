@@ -65,13 +65,13 @@ public class Puzzle23 {
   void solve() {
     buildGraph(startNode, new HashSet<>(List.of(startNode, endNode)));
     List<List<Node>> allPaths = allPaths(List.of(startNode));
-    System.out.println(STR."Found \{allPaths.size()} paths");
+    System.out.println("Found " + allPaths.size() + " paths");
     int longest = Integer.MIN_VALUE;
     for (List<Node> path : allPaths) {
       int len = pathLength(path);
       longest = max(longest, len);
     }
-    System.out.println(STR."Longest is \{longest}");
+    System.out.println("Longest is " + longest);
   }
 
   String pathToString(List<Node> path) {
@@ -80,7 +80,7 @@ public class Puzzle23 {
       Node prev = path.get(i - 1);
       Node cur = path.get(i);
       int len = graph.edgeValue(prev, cur).get();
-      sb.append(STR." -> \{cur}[\{len}]");
+      sb.append(" -> " + cur + "[" + len + "]");
     }
     return sb.toString();
   }
@@ -210,7 +210,7 @@ public class Puzzle23 {
 
   record Node(int i, int j) {
     @Override public String toString() {
-      return STR."(\{i},\{j})";
+      return "(" + i + "," + j + ")";
     }
   }
 

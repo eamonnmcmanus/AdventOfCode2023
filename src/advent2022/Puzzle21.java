@@ -53,27 +53,27 @@ public class Puzzle21 {
                     node -> node.name(),
                     node -> node,
                     (a, b) -> {
-                      throw new AssertionError(STR."Duplicate \{a}");
+                      throw new AssertionError("Duplicate " + a);
                     },
                     TreeMap::new));
         long result = evaluate(graph, "root");
-        System.out.println(STR."Result for \{name} is \{result}");
+        System.out.println("Result for " + name + " is " + result);
         foldConstants(graph, "root");
-        System.out.println(STR."Result for \{name} after rewriting is \{result}");
+        System.out.println("Result for " + name + " after rewriting is " + result);
         Op root = (Op) graph.get("root");
         long constant;
         Op var;
-        if (graph.get(root.lhs) instanceof Int(_, var n)) {
+        if (graph.get(root.lhs) instanceof Int(var unused, var n)) {
           constant = n;
           var = (Op) graph.get(root.rhs);
-        } else if (graph.get(root.rhs) instanceof Int(_, var n)) {
+        } else if (graph.get(root.rhs) instanceof Int(var unused, var n)) {
           constant = n;
           var = (Op) graph.get(root.lhs);
         } else {
-          throw new AssertionError(STR."Unexpected root \{root}");
+          throw new AssertionError("Unexpected root " + root);
         }
         long solution = solve(graph, var, constant);
-        System.out.println(STR."Solution is \{solution}");
+        System.out.println("Solution is " + solution);
       }
     }
   }
@@ -96,14 +96,14 @@ public class Puzzle21 {
     Node rhs = graph.get(node.rhs);
     record Simple(Node lhs, OpKind op, long rhs, boolean end) {}
     Simple rewritten = switch (lhs) {
-      case Op _ ->
+      case Op unused ->
         switch (rhs) {
-          case Int(_, var n) -> new Simple(lhs, OpKind.of(node.op), n, false);
+          case Int(var unused1, var n) -> new Simple(lhs, OpKind.of(node.op), n, false);
           default -> throw new AssertionError(rhs);
         };
       case Int(var lhsName, var lhsN) ->
         switch (rhs) {
-          case Op _ -> new Simple(rhs, OpKind.ofReverse(node.op), lhsN, false);
+          case Op unused -> new Simple(rhs, OpKind.ofReverse(node.op), lhsN, false);
           case Int(var rhsName, var rhsN) -> {
             if (lhsName.equals("humn")) {
               yield new Simple(lhs, OpKind.of(node.op), rhsN, true);
@@ -136,8 +136,8 @@ public class Puzzle21 {
 
   private static long evaluate(Map<String, Node> graph, String root) {
     return switch (graph.get(root)) {
-      case Int(_, var n) -> n;
-      case Op(_, String lhs, char op, String rhs) -> op(evaluate(graph, lhs), op, evaluate(graph, rhs));
+      case Int(var unused, var n) -> n;
+      case Op(var unused, String lhs, char op, String rhs) -> op(evaluate(graph, lhs), op, evaluate(graph, rhs));
     };
   }
 
@@ -176,11 +176,11 @@ public class Puzzle21 {
   }
 
   private static void foldConstants(Map<String, Node> graph, String root) {
-    if (graph.get(root) instanceof Op(_, String lhs, char op, String rhs)) {
+    if (graph.get(root) instanceof Op(var unused, String lhs, char op, String rhs)) {
       foldConstants(graph, lhs);
       foldConstants(graph, rhs);
-      if (graph.get(lhs) instanceof Int(_, var left)
-          && graph.get(rhs) instanceof Int(_, var right)
+      if (graph.get(lhs) instanceof Int(var unused1, var left)
+          && graph.get(rhs) instanceof Int(var unused2, var right)
           && !lhs.equals("humn")
           && !rhs.equals("humn")) {
         graph.put(root, new Int(root, op(left, op, right)));
@@ -202,7 +202,7 @@ public class Puzzle21 {
 
   record Op(String name, String lhs, char op, String rhs) implements Node {
     @Override public String toString() {
-      return STR."(\{lhs} \{op} \{rhs})";
+      return "(" + lhs + " " + op + " " + rhs + ")";
     }
   }
 

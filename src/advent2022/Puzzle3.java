@@ -52,7 +52,7 @@ public class Puzzle3 {
           char c = Iterables.getOnlyElement(intersection);
           sumPart1 += priority(c);
         }
-        System.out.println(STR."Part 1 sum for \{name} is \{sumPart1}");
+        System.out.println("Part 1 sum for " + name + " is " + sumPart1);
 
         // Part 2
         long sumPart2 = 0;
@@ -65,7 +65,7 @@ public class Puzzle3 {
           var c = Iterables.getOnlyElement(intersection);
           sumPart2 += priority(c);
         }
-        System.out.println(STR."Part 2 sum for \{name} is \{sumPart2}");
+        System.out.println("Part 2 sum for " + name + " is " + sumPart2);
       }
     }
   }

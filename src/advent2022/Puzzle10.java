@@ -207,8 +207,8 @@ public class Puzzle10 {
             cycle++;
           }
         }
-        System.out.println(STR."For \{name}, total signal strength \{total}, final cycle \{cycle}");
-        System.out.println(STR."For \{name}, grid:");
+        System.out.println("For " + name + ", total signal strength " + total + ", final cycle " + cycle);
+        System.out.println("For " + name + ", grid:");
         for (char[] line : grid) {
           System.out.println(new String(line));
         }

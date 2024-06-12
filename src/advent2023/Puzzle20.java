@@ -46,7 +46,7 @@ public class Puzzle20 {
           Module target = modules.get(signal.targetModuleName);
           if (target == null) {
             if (ignored.add(signal.targetModuleName)) {
-              System.out.println(STR."Ignore \{signal.targetModuleName}");
+              System.out.println("Ignore " + signal.targetModuleName);
             }
           } else {
             newSignals.addAll(target.receive(signal.source, signal.pulse));
@@ -55,7 +55,7 @@ public class Puzzle20 {
         signals = newSignals;
       }
     }
-    System.out.println(STR."Low \{lowCount} high \{highCount} product \{lowCount * highCount}");
+    System.out.println("Low " + lowCount + " high " + highCount + " product " + lowCount * highCount);
   }
 
   /*
@@ -75,7 +75,7 @@ public class Puzzle20 {
     assert rxInputs.size() == 1 : rxInputs;
     assert rxInputs.get(0).getValue() instanceof Conjunction;
     String rxInput = rxInputs.get(0).getKey();
-    System.out.println(STR."Input to rx is \{rxInput}");
+    System.out.println("Input to rx is " + rxInput);
 
     // Verify that vf has four inputs which are also Conjuctions.
     List<Map.Entry<String, Module>> vfInputs = modules.entrySet().stream()
@@ -91,7 +91,7 @@ public class Puzzle20 {
       entry.getValue().observers.add(
           pulse -> {
             if (pulse) {
-              System.out.println(STR."First high pulse for \{entry.getKey()} at i=\{i.get()}");
+              System.out.println("First high pulse for " + entry.getKey() + " at i=" + i.get());
               first.put(entry.getKey(), i.get());
             }
           }
@@ -106,7 +106,7 @@ public class Puzzle20 {
           String targetName = signal.targetModuleName;
           if (targetName.equals("rx")) {
             if (!signal.pulse) {
-              System.out.println(STR."Received after \{i.get()} pushes");
+              System.out.println("Received after " + i.get() + " pushes");
               break;
             }
           } else {
@@ -124,7 +124,7 @@ public class Puzzle20 {
     }
 
     long lcm = first.values().stream().reduce(1L, (a, b) -> lcm(a, b));
-    System.out.println(STR."LCM is \{lcm}");
+    System.out.println("LCM is " + lcm);
   }
 
   static long lcm(long a, long b) {

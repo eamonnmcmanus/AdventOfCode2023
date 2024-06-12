@@ -70,7 +70,7 @@ public class Puzzle16 {
   private void part1(String name) {
     Map<ValveSet, Long> bestSets = bestSets(30);
     long max = Collections.max(bestSets.values());
-    System.out.println(STR."Max for \{name} part 1 is \{max}");
+    System.out.println("Max for " + name + " part 1 is " + max);
   }
 
   // For part 2, we compute all the possible sets of valves that can be open after 26 minutes, and
@@ -92,7 +92,7 @@ public class Puzzle16 {
         }
       }
     }
-    System.out.println(STR."Max for \{name} part 2 is \{max}");
+    System.out.println("Max for " + name + " part 2 is " + max);
   }
 
   private Map<ValveSet, Long> bestSets(int steps) {
@@ -161,7 +161,7 @@ public class Puzzle16 {
 
   record Valve(int valveNumber, String name, int flowRate) {
     @Override public String toString() {
-      return STR."\{name}(\{flowRate})";
+      return name + "(" + flowRate + ")";
     }
 
     @Override public boolean equals(Object o) {

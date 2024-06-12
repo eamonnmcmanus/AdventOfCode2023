@@ -46,7 +46,7 @@ public class Puzzle12 {
 
         // Part 1
         ImmutableList<Node> shortestPath = shortestPath(map.graph, map.start, map.end);
-        System.out.println(STR."For \{name}, shortest path has length \{shortestPath.size() - 1}");
+        System.out.println("For " + name + ", shortest path has length " + (shortestPath.size() - 1));
 
         // Part 2
         int shortest = Integer.MAX_VALUE;
@@ -57,7 +57,7 @@ public class Puzzle12 {
             shortest = min(shortest, length);
           }
         }
-        System.out.println(STR."For \{name}, shortest path from any \"a\" is \{shortest}");
+        System.out.println("For " + name + ", shortest path from any \"a\" is " + shortest);
       }
     }
   }
@@ -160,7 +160,7 @@ public class Puzzle12 {
   record Node(int i, int j, int height) {
     @Override public String toString() {
       char c = (height == 1000) ? 'S' : (char) height;
-      return STR."(\{i},\{j})\{c}";
+      return "(" + i + "," + j + ")" + c;
     }
   }
 

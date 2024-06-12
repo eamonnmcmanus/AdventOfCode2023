@@ -35,9 +35,9 @@ public class Puzzle14 {
       try (Reader r = entry.getValue().call()) {
         List<String> lines = CharStreams.readLines(r);
         int countPart1 = solve(lines, false);
-        System.out.println(STR."For \{name}, part 1 count is \{countPart1}");
+        System.out.println("For " + name + ", part 1 count is " + countPart1);
         int countPart2 = solve(lines, true);
-        System.out.println(STR."For \{name}, part 2 count is \{countPart2}");
+        System.out.println("For " + name + ", part 2 count is " + countPart2);
       }
     }
   }
@@ -114,7 +114,7 @@ public class Puzzle14 {
             grid[from.y][x] = '#';
           }
         } else {
-          throw new IllegalStateException(STR."Diagonal line \{from.x},\{from.y} -> \{to.x},\{to.y}");
+          throw new IllegalStateException("Diagonal line " + from.x + "," + from.y + " -> " + to.x + "," + to.y);
         }
       }
     }

@@ -42,11 +42,11 @@ public class Puzzle4 {
         long count1 = rangePairs.stream()
             .filter(pair -> pair.one.encloses(pair.two) || pair.two.encloses(pair.one))
             .count();
-        System.out.println(STR."For \{name}, count of enclosing ranges is \{count1}");
+        System.out.println("For " + name + ", count of enclosing ranges is " + count1);
         long count2 = rangePairs.stream()
             .filter(pair -> pair.one.isConnected(pair.two) && !pair.one.intersection(pair.two).isEmpty())
             .count();
-        System.out.println(STR."For \{name}, count of overlapping ranges is \{count2}");
+        System.out.println("For " + name + ", count of overlapping ranges is " + count2);
       }
     }
   }
@@ -62,7 +62,7 @@ public class Puzzle4 {
   private static Range<Integer> parseRange(String s) {
     Matcher matcher = RANGE_PATTERN.matcher(s);
     if (!matcher.matches()) {
-      throw new IllegalStateException(STR."'\{s}'");
+      throw new IllegalStateException("'" + s + "'");
     }
     return Range.closed(Integer.valueOf(matcher.group(1)), Integer.valueOf(matcher.group(2)));
   }

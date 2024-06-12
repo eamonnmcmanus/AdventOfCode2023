@@ -41,7 +41,7 @@ public class Puzzle8 {
         int index = indexFor(directions.charAt(dirIndex));
         node = fork.get(index);
       }
-      System.out.println(STR."Steps \{steps}");
+      System.out.println("Steps " + steps);
 
       // Part 2.
       new Puzzle8(map, directions).solve();
@@ -59,7 +59,7 @@ public class Puzzle8 {
    */
   private void solve() {
     List<State> states = map.keySet().stream().filter(s -> s.endsWith("A")).map(s -> new State(s, 0)).toList();
-    System.out.println(STR."States \{states}");
+    System.out.println("States " + states);
     // Pass through the initial states before cycling begins.
     states = nextStates(states);
     states = nextStates(states);
@@ -68,21 +68,21 @@ public class Puzzle8 {
     long lcm = 1;
     for (State state : states) {
       Cycle cycle = cycle(state);
-      System.out.println(STR."Start at \{state}, cycle starts at \{cycle.startIndex}, length \{cycle.states.size()} - \{cycle.startIndex} = \{cycle.states.size() - cycle.startIndex}");
-      System.out.println(STR."Last in cycle is \{cycle.states.getLast()}");
+      System.out.println("Start at " + state + ", cycle starts at " + cycle.startIndex + ", length " + cycle.states.size() + " - " + cycle.startIndex + " = " + (cycle.states.size() - cycle.startIndex));
+      System.out.println("Last in cycle is " + cycle.states.getLast());
       int stopIndex = IntStream.range(0, Integer.MAX_VALUE).filter(i -> cycle.states.get(i).node.endsWith("Z")).findFirst().getAsInt();
-      System.out.println(STR."Stop index is \{stopIndex}");
+      System.out.println("Stop index is " + stopIndex);
       lcm = lcm(lcm, cycle.states.size());
-      System.out.println(STR."LCM now \{lcm}");
+      System.out.println("LCM now " + lcm);
     }
-    System.out.println(STR."Solution maybe \{lcm}");
+    System.out.println("Solution maybe " + lcm);
     // Looks like all of the cycle lengths have pairwise GCD 269.
   }
 
   private static long lcm(long a, long b) {
     long gcd = LongMath.gcd(a, b);
     if (gcd != 1) {
-      System.out.println(STR."GCD of \{a} and \{b} is \{gcd}");
+      System.out.println("GCD of " + a + " and " + b + " is " + gcd);
     }
     return a / gcd * b;
   }

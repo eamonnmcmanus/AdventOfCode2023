@@ -40,7 +40,7 @@ public class Puzzle2 {
           Item us = XYZ_MAP.get(codes.get(1));
           sumPart1 += us.score + game(us, them).score;
         }
-        System.out.println(STR."Part 1 sum for \{name} is \{sumPart1}");
+        System.out.println("Part 1 sum for " + name + " is " + sumPart1);
 
         // Part 2
         long sumPart2 = 0;
@@ -52,7 +52,7 @@ public class Puzzle2 {
           Item us = play(result, them);
           sumPart2 += us.score + result.score;
         }
-        System.out.println(STR."Part 2 sum for \{name} is \{sumPart2}");
+        System.out.println("Part 2 sum for " + name + " is " + sumPart2);
       }
     }
   }

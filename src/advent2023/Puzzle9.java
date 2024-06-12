@@ -20,14 +20,14 @@ public class Puzzle9 {
       for (String line : lines) {
         List<Long> numbers = Arrays.stream(line.split("\\s+")).map(Long::parseLong).toList();
         long extra = extrapolate(numbers);
-        System.out.println(STR."Extrapolate \{numbers} to \{extra}");
+        System.out.println("Extrapolate " + numbers + " to " + extra);
         sum += extra;
         long backwardsExtra = extrapolateBackwards(numbers);
-        System.out.println(STR."Extrapolate \{numbers} backwards to \{backwardsExtra}");
+        System.out.println("Extrapolate " + numbers + " backwards to " + backwardsExtra);
         backwardsSum += backwardsExtra;
       }
-      System.out.println(STR."Sum \{sum}");
-      System.out.println(STR."Backwards sum \{backwardsSum}");
+      System.out.println("Sum " + sum);
+      System.out.println("Backwards sum " + backwardsSum);
     }
   }
 

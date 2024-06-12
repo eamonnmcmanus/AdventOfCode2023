@@ -79,10 +79,10 @@ public class Puzzle11 {
         }
         List<Monkey> monkeys = groups.stream().map(line -> parseMonkey(line)).toList();
         long monkeyBusiness1 = solve(monkeys, false);
-        System.out.println(STR."Monkey business for \{name}, Part 1 = \{monkeyBusiness1}");
+        System.out.println("Monkey business for " + name + ", Part 1 = " + monkeyBusiness1);
         monkeys = groups.stream().map(line -> parseMonkey(line)).toList();
         long monkeyBusiness2 = solve(monkeys, true);
-        System.out.println(STR."Monkey business for \{name}, Part 2 = \{monkeyBusiness2}");
+        System.out.println("Monkey business for " + name + ", Part 2 = " + monkeyBusiness2);
       }
     }
   }
@@ -113,7 +113,7 @@ public class Puzzle11 {
       }
     }
     List<Long> counts = countMap.values().stream().sorted(Comparator.reverseOrder()).limit(2).toList();
-    System.out.println(STR."Multiply \{counts}");
+    System.out.println("Multiply " + counts);
     return Math.multiplyExact(counts.get(0), counts.get(1));
   }
 

@@ -22,7 +22,7 @@ public class Puzzle16 {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
       int tiles = solve(new Beam(0, 0, Dir.RIGHT), lines);
-      System.out.println(STR."Total \{tiles}");
+      System.out.println("Total " + tiles);
 
       int best = -1;
       for (int x = 0; x < lines.get(0).length(); x++) {
@@ -37,7 +37,7 @@ public class Puzzle16 {
         int t2 = solve(new Beam(lines.get(0).length() - 1, y, Dir.LEFT), lines);
         best = max(best, t2);
       }
-      System.out.println(STR."Best total \{best}");
+      System.out.println("Best total " + best);
     }
   }
 

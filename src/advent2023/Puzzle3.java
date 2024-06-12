@@ -34,7 +34,7 @@ public class Puzzle3 {
           }
         }
       }
-      System.out.println(STR."Sum is \{sum}");
+      System.out.println("Sum is " + sum);
 
       // Part 2
       int ratioSum = 0;
@@ -100,7 +100,7 @@ public class Puzzle3 {
           }
         }
       }
-      System.out.println(STR."Ratio sum \{ratioSum}");
+      System.out.println("Ratio sum " + ratioSum);
     }
   }
 

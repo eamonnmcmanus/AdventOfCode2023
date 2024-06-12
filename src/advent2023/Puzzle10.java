@@ -71,7 +71,7 @@ public class Puzzle10 {
         Arrays.fill(line, ' ');
       }
       pipe[sourceI][sourceJ] = BOX_DRAWING.get(CHAR_TO_DIR.inverse().get(sourceDirs));
-      System.out.println(STR."Source (\{sourceI}, \{sourceJ}), direction \{dir}");
+      System.out.println("Source (" + sourceI + ", " + sourceJ + "), direction " + dir);
 
       // Solution for Part 1, and also fill in the pipe[][] array.
       int steps = 0;
@@ -94,7 +94,7 @@ public class Puzzle10 {
         dir = otherDir(dirs, dir.opposite());
       }
 
-      System.out.println(STR."Total steps \{steps}, halfway \{steps / 2}");
+      System.out.println("Total steps " + steps + ", halfway " + steps / 2);
 
       int insideCount = 0;
       enum Corner {NONE, FROM_ABOVE, FROM_BELOW}
@@ -153,12 +153,12 @@ public class Puzzle10 {
         System.out.println();
       }
 
-      System.out.println(STR."Inside count \{insideCount}");
+      System.out.println("Inside count " + insideCount);
     }
   }
 
   private static Direction otherDir(EnumSet<Direction> dirs, Direction dir) {
-    assert dirs.contains(dir) : STR."Dirs \{dirs} dir \{dir}";
+    assert dirs.contains(dir) : "Dirs " + dirs + " dir " + dir;
     var copy = EnumSet.copyOf(dirs);
     copy.remove(dir);
     return copy.iterator().next();

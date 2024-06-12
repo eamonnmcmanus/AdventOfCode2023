@@ -43,12 +43,12 @@ public class Puzzle24 {
         Coord start = new Coord(0, -1);
         Coord end = new Coord(blizzardMap.maxX - 1, blizzardMap.maxY);
         var stepsPart1 = steps(blizzardMap, start, end);
-        System.out.println(STR."Part 1 steps for \{name}: \{stepsPart1.steps}");
+        System.out.println("Part 1 steps for " + name + ": " + stepsPart1.steps);
         var stepsPart2a = steps(stepsPart1.blizzardMap, end, start);
-        System.out.println(STR."Part 2a steps for \{name}: \{stepsPart2a.steps}");
+        System.out.println("Part 2a steps for " + name + ": " + stepsPart2a.steps);
         var stepsPart2b = steps(stepsPart2a.blizzardMap, start, end);
-        System.out.println(STR."Part 2b steps for \{name}: \{stepsPart2b.steps}");
-        System.out.println(STR."Total part 2 steps for \{name}: \{stepsPart1.steps + stepsPart2a.steps + stepsPart2b.steps}");
+        System.out.println("Part 2b steps for " + name + ": " + stepsPart2b.steps);
+        System.out.println("Total part 2 steps for " + name + ": " + stepsPart1.steps + stepsPart2a.steps + stepsPart2b.steps);
       }
     }
   }

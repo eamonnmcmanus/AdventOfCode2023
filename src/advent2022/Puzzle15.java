@@ -86,7 +86,7 @@ public class Puzzle15 {
       }
     }
     int size = ranges.asRanges().stream().mapToInt(r -> size(r)).sum();
-    System.out.println(STR."Part 1 result for \{name} is \{size}");
+    System.out.println("Part 1 result for " + name + " is " + size);
   }
 
   private static void part2(String name, List<Sensor> sensors) {
@@ -112,10 +112,10 @@ public class Puzzle15 {
                 .toList());
       }
     }
-    System.out.println(STR."For \{name}, found \{found}");
+    System.out.println("For " + name + ", found " + found);
     if (found.size() == 1) {
       Coord coord = Iterables.getOnlyElement(found);
-      System.out.println(STR."Tuning frequency \{coord.x * 4_000_000L + coord.y}");
+      System.out.println("Tuning frequency " + coord.x * 4_000_000L + coord.y);
     }
   }
 

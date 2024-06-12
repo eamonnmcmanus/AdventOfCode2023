@@ -35,14 +35,14 @@ public class Puzzle13 {
       for (List<String> map : maps) {
         total += score(map, 0);
       }
-      System.out.println(STR."Total \{total}");
+      System.out.println("Total " + total);
 
       // Part 2
       long smudgeTotal = 0;
       for (List<String> map : maps) {
         smudgeTotal += smudgeScore(map);
       }
-      System.out.println(STR."Smudge total \{smudgeTotal}");
+      System.out.println("Smudge total " + smudgeTotal);
     }
   }
 

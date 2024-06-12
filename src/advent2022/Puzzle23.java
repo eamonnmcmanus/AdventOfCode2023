@@ -56,7 +56,7 @@ public class Puzzle23 {
     for (int round = 1; round <= 10; round++) {
       grid = grid.nextRound();
     }
-    System.out.println(STR."For \{name} part 1, final empty tile count \{grid.emptyCount()}");
+    System.out.println("For " + name + " part 1, final empty tile count " + grid.emptyCount());
   }
 
   private static void part2(String name, Grid grid) {
@@ -70,7 +70,7 @@ public class Puzzle23 {
       round++;
     }
     System.out.println(
-        STR."For \{name} part 2, no movement on round \{round}, final grid \{grid.topLeft()}..\{grid.bottomRight()}");
+        "For " + name + " part 2, no movement on round " + round + ", final grid " + grid.topLeft() + ".." + grid.bottomRight());
   }
 
   static Grid parseGrid(List<String> lines) {

@@ -24,7 +24,7 @@ public class Puzzle15 {
       for (String s : entries) {
         sum += hash(s);
       }
-      System.out.println(STR."Sum \{sum}");
+      System.out.println("Sum " + sum);
 
       // Part 2
       List<List<Lens>> boxes = new ArrayList<>();
@@ -58,7 +58,7 @@ public class Puzzle15 {
           power += (i + 1) * (j + 1) * lenses.get(j).n();
         }
       }
-      System.out.println(STR."Power: \{power}");
+      System.out.println("Power: " + power);
     }
   }
 

@@ -44,7 +44,7 @@ public class Puzzle17 {
       State state = queue.remove();
       Position pos = state.position;
       if (pos.i == maxI - 1 && pos.j == maxJ - 1 && state.steps >= minSteps) {
-        System.out.println(STR."Solution is \{state.cost}");
+        System.out.println("Solution is " + state.cost);
         break;
       }
       PositionAndSteps pas = new PositionAndSteps(pos, state.steps);

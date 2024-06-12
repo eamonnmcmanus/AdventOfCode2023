@@ -37,14 +37,14 @@ public class Puzzle6 {
         assert count > 0;
         product *= count;
       }
-      System.out.println(STR."Product \{product}");
+      System.out.println("Product " + product);
 
       // Part 2
       String timeString = timeStrings.stream().skip(1).collect(joining(""));
       int time = Integer.parseInt(timeString);
       String distString = distStrings.stream().skip(1).collect(joining(""));
       long dist = Long.parseLong(distString);
-      System.out.println(STR."Time \{time} dist \{dist}");
+      System.out.println("Time " + time + " dist " + dist);
       int count = 0;
       for (long j = 1; j < time; j++) {
         if (j * (time - j) > dist) {
@@ -52,7 +52,7 @@ public class Puzzle6 {
         }
       }
       assert count > 0;
-      System.out.println(STR."New count \{count}");
+      System.out.println("New count " + count);
     }
   }
 }

@@ -56,8 +56,8 @@ public class Puzzle11 {
     Set<Integer> jGaps = IntStream.range(0, lines.get(0).length())
         .filter(j -> lines.stream().noneMatch(line -> line.charAt(j) == '#'))
         .boxed().collect(toImmutableSet());
-    System.out.println(STR."i gaps \{iGaps}");
-    System.out.println(STR."j gaps \{jGaps}");
+    System.out.println("i gaps " + iGaps);
+    System.out.println("j gaps " + jGaps);
 
     long total = 0;
     for (int i = 0; i < galaxies.size(); i++) {
@@ -65,7 +65,7 @@ public class Puzzle11 {
         total += distance(galaxies.get(i), galaxies.get(j), iGaps, jGaps);
       }
     }
-    System.out.println(STR."With gap multiplier \{gapMultiplier}, total distance \{total} between \{galaxies.size()} galaxies");
+    System.out.println("With gap multiplier " + gapMultiplier + ", total distance " + total + " between " + galaxies.size() + " galaxies");
     // Not: 396735318
     // Coded a second way below before realizing that I was being foiled by silent int overflow.
 
@@ -94,7 +94,7 @@ public class Puzzle11 {
         newTotal += adjustedGalaxies.get(i).dist(adjustedGalaxies.get(j));
       }
     }
-    System.out.println(STR."Alternative total distance \{newTotal} between \{adjustedGalaxies.size()} galaxies");
+    System.out.println("Alternative total distance " + newTotal + " between " + adjustedGalaxies.size() + " galaxies");
   }
 
   private int distance(Coord a, Coord b, Set<Integer> iGaps, Set<Integer> jGaps) {

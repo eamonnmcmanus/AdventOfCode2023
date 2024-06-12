@@ -59,7 +59,7 @@ public class Puzzle5 {
           }
         }
         String tops = piles.stream().map(pile -> pile.getLast()).map(Object::toString).collect(joining(""));
-        System.out.println(STR."Part 1 tops for \{name}: \{tops}");
+        System.out.println("Part 1 tops for " + name + ": " + tops);
 
         piles = parsePiles(pileStrings, nPiles);
         for (Move move : moves) {
@@ -70,7 +70,7 @@ public class Puzzle5 {
           piles.get(move.to - 1).addAll(moved.reversed());
         }
         tops = piles.stream().map(pile -> pile.getLast()).map(Object::toString).collect(joining(""));
-        System.out.println(STR."Part 2 tops for \{name}: \{tops}");
+        System.out.println("Part 2 tops for " + name + ": " + tops);
       }
     }
   }
@@ -78,7 +78,7 @@ public class Puzzle5 {
   private static List<? extends List<Character>> parsePiles(List<String> pileStrings, int nPiles) {
     List<? extends List<Character>> piles = IntStream
         .range(0, nPiles)
-        .mapToObj(_ -> new ArrayList<Character>())
+        .mapToObj(unused -> new ArrayList<Character>())
         .toList();
     for (String s : pileStrings) {
       for (int i = 0; i < nPiles; i++) {

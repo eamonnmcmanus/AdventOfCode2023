@@ -78,7 +78,7 @@ public class Puzzle9 {
         tailCoords.add(tail);
       }
     }
-    System.out.println(STR."Number of Part 1 tail positions for \{name} is \{tailCoords.size()}");
+    System.out.println("Number of Part 1 tail positions for " + name + " is " + tailCoords.size());
   }
 
   private static void part2(String name, List<Move> moves) {
@@ -95,7 +95,7 @@ public class Puzzle9 {
         tailCoords.add(knots[9]);
       }
     }
-    System.out.println(STR."Number of Part 2 tail positions for \{name} is \{tailCoords.size()}");
+    System.out.println("Number of Part 2 tail positions for " + name + " is " + tailCoords.size());
   }
 
   private static Coord newTail(Coord head, Coord tail) {
@@ -119,7 +119,7 @@ public class Puzzle9 {
         newTail = new Coord(tail.x + deltaX, tail.y + deltaY);
       }
       assert abs(head.x - newTail.x) <= 1 && abs(head.y - newTail.y) <= 1
-          : STR."head \{head} tail \{tail} newTail \{newTail}";
+          : "head " + head + " tail " + tail + " newTail " + newTail;
     } else {
       newTail = tail;
     }

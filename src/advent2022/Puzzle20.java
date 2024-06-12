@@ -42,11 +42,11 @@ public class Puzzle20 {
   }
 
   private static void part1(String name, List<String> lines) {
-    solve(STR."\{name} part 1", lines, 1, 1);
+    solve(name + " part 1", lines, 1, 1);
   }
 
   private static void part2(String name, List<String> lines) {
-    solve(STR."\{name} part 2", lines, 811589153, 10);
+    solve(name + " part 2", lines, 811589153, 10);
   }
 
   // The logic for moves is a little tricky. First, we can reduce the move amount so its absolute
@@ -147,7 +147,7 @@ public class Puzzle20 {
     long n1000 = order.get(1000 % order.size());
     long n2000 = order.get(2000 % order.size());
     long n3000 = order.get(3000 % order.size());
-    System.out.println(STR."For \{what}, N=\{order.size()}, numbers are \{n1000},\{n2000},\{n3000} summing to \{n1000 + n2000 + n3000}");
+    System.out.println("For " + what + ", N=" + order.size() + ", numbers are " + n1000 + "," + n2000 + "," + n3000 + " summing to " + n1000 + n2000 + n3000);
 
   }
 

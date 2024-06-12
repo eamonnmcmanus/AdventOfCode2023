@@ -47,8 +47,8 @@ public class Puzzle8 {
             }
           }
         }
-        System.out.println(STR."Visible for \{name}: \{count}");
-        System.out.println(STR."Best score for \{name}: \{maxScore} at \{maxI},\{maxJ}");
+        System.out.println("Visible for " + name + ": " + count);
+        System.out.println("Best score for " + name + ": " + maxScore + " at " + maxI + "," + maxJ);
       }
     }
   }

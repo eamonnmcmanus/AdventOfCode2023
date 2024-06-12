@@ -24,7 +24,7 @@ public class Puzzle14 {
 
       // Part 1
       tiltNorth(chars);
-      System.out.println(STR."Load \{load(chars)}");
+      System.out.println("Load " + load(chars));
 
       // Part 2
       // The assumption here is that there is a cycle, such that the state repeats, possibly
@@ -50,9 +50,9 @@ public class Puzzle14 {
       // seen.size() is 9 and cycleStart is 2. So the zero-origin index of the ith iteration is
       // 2 + (i - 2 - 1) % 7. For example, for the 11th it is 2 + 1. In general it is
       // cycleStart + (i - cycleStart - 1) % (seen.size() - cycleStart).
-      System.out.println(STR."Cycle after \{seen.size()} iterations, starting at \{cycleStart}");
+      System.out.println("Cycle after " + seen.size() + " iterations, starting at " + cycleStart);
       int billionI = cycleStart + (1_000_000_000 - cycleStart - 1) % (seen.size() - cycleStart);
-      System.out.println(STR."Load for billionth same as for i=\{billionI} = \{load(seenList.get(billionI).chars)}");
+      System.out.println("Load for billionth same as for i=" + billionI + " = " + load(seenList.get(billionI).chars));
     }
   }
 

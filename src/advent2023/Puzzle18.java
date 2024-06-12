@@ -101,7 +101,7 @@ public class Puzzle18 {
     }
     int minY = rightLines.keySet().stream().mapToInt(Point::y).min().getAsInt();
     int maxY = rightLines.keySet().stream().mapToInt(Point::y).max().getAsInt();
-    System.out.println(STR."\{minY} < y < \{maxY}");
+    System.out.println(minY + " < y < " + maxY);
     long count = 0;
     Comparator<VLine> xFirst = Comparator.comparing(VLine::x);
     for (int y = minY; y <= maxY; y++) {
@@ -165,7 +165,7 @@ public class Puzzle18 {
       }
       count += thisCount;
     }
-    System.out.println(STR."Filled cells \{count}");
+    System.out.println("Filled cells " + count);
   }
 
   enum LineState {UP, DOWN, MID};

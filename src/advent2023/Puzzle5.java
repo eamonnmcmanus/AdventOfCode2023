@@ -1,7 +1,6 @@
 package advent2023;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.FormatProcessor.FMT;
 
 import com.google.common.collect.ImmutableRangeMap;
 import com.google.common.collect.Range;
@@ -42,30 +41,30 @@ public class Puzzle5 {
           .map(seedNumber -> lookup(seedNumber, nameToMap))
           .min(Comparator.naturalOrder())
           .get();
-      System.out.println(STR."Min location is \{minLocation}");
+      System.out.println("Min location is " + minLocation);
       long max = 0;
       for (int i = 1; i < seedNumbers.size(); i += 2) {
         long v = seedNumbers.get(i);
         max = Long.max(v, max);
       }
-      System.out.println(FMT."max %,d\{max}");
+      System.out.printf("max %,d\n", max);
       minLocation = Long.MAX_VALUE;
       for (int i = 0; i < seedNumbers.size(); i += 2) {
         long start = seedNumbers.get(i);
         long len = seedNumbers.get(i + 1);
-        System.out.println(STR."Looking at \{start} with len \{len}");
+        System.out.println("Looking at " + start + " with len " + len);
         for (long j = 0; j <= len; j++) {
           // Rather than this brute-force search, we could change NumberRangeMap so that it can
           // look up an input range and return a list of output ranges. Then flatmap that through
           // the remaining maps. But brute force solves the problem in "only" 8 minutes.
           long seedNumber = start + j;
           if (false && (j & 1048575) == 0) {
-            System.out.println(FMT."  ...%,d\{seedNumber}");
+            System.out.printf("  ...%,d\n", seedNumber);
           }
           minLocation = Long.min(minLocation, lookup(seedNumber, nameToMap));
         }
       }
-      System.out.println(STR."Min location now is \{minLocation}");
+      System.out.println("Min location now is " + minLocation);
     }
   }
 

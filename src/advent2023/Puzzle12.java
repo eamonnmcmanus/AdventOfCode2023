@@ -36,11 +36,11 @@ public class Puzzle12 {
         // Part 2 of the puzzle.
         String bigSprings = String.join("?", Collections.nCopies(5, springs));
         List<Integer> bigSpans = Collections.nCopies(5, spans).stream().flatMap(List::stream).toList();
-        System.out.println(STR."Trying \{bigSprings} with \{bigSpans}");
+        System.out.println("Trying " + bigSprings + " with " + bigSpans);
         bigTotal += combinations(bigSprings, bigSpans);
       }
-      System.out.println(STR."Combinations \{total}");
-      System.out.println(STR."Big combinations \{bigTotal}");
+      System.out.println("Combinations " + total);
+      System.out.println("Big combinations " + bigTotal);
       // Cache is a bit clunky. Dynamic programming would have been more elegant.
     }
   }

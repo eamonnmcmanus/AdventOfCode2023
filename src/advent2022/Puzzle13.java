@@ -2,7 +2,6 @@ package advent2022;
 
 import static java.lang.Character.digit;
 import static java.lang.Character.isDigit;
-import static java.lang.StringTemplate.STR;
 import static java.util.stream.Collectors.joining;
 
 import com.google.common.collect.Comparators;
@@ -71,7 +70,7 @@ public class Puzzle13 {
             .filter(i -> pairs.get(i).inOrder())
             .map(i -> i + 1)
             .reduce(0, Math::addExact);
-        System.out.println(STR."Sum for \{name} is \{sum}");
+        System.out.println("Sum for " + name + " is " + sum);
 
         LList div1 = LList.of(LList.of(2));
         LList div2 = LList.of(LList.of(6));
@@ -82,7 +81,7 @@ public class Puzzle13 {
         int index2 = sorted.indexOf(div2);
         assert index1 >= 0 && index2 >= 0;
         long key = (long) (index1 + 1) * (index2 + 1);
-        System.out.println(STR."Decoder key for \{name} is \{key}");
+        System.out.println("Decoder key for " + name + " is " + key);
       }
     }
   }
@@ -178,7 +177,7 @@ public class Puzzle13 {
     }
 
     private IllegalArgumentException parseError(String message) {
-      return new IllegalArgumentException(STR."\{message}, at index \{index} of \{line}");
+      return new IllegalArgumentException(message + ", at index " + index + " of " + line);
     }
   }
 }

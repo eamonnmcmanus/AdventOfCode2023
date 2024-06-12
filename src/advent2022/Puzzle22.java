@@ -71,7 +71,7 @@ public class Puzzle22 {
 
   private static void part1(String name, List<Action> actions, List<String> gridLines) {
     Node topLeft = buildPart1Graph(gridLines);
-    traverse(STR."\{name} part 1", topLeft, actions);
+    traverse(name + " part 1", topLeft, actions);
   }
 
   private static void part2(String name, List<Action> actions, List<String> gridLines) {
@@ -84,7 +84,7 @@ public class Puzzle22 {
         break;
       }
     }
-    traverse(STR."\{name} part 2", topLeft, actions);
+    traverse(name + " part 2", topLeft, actions);
   }
 
   private static void traverse(String what, Node topLeft, List<Action> actions) {
@@ -94,7 +94,7 @@ public class Puzzle22 {
     }
     Node pos = dirPos.pos;
     int password = 1000 * (pos.y + 1) + 4 * (pos.x + 1) + dirPos.dir.facing();
-    System.out.println(STR."\{what} ended at \{dirPos} => \{password}");
+    System.out.println(what + " ended at " + dirPos + " => " + password);
   }
 
   record DirPos(Dir dir, Node pos) {}
@@ -468,12 +468,12 @@ public class Puzzle22 {
 
     void putNext(Dir dir, DirPos dirPos) {
       Object old = next.put(dir, dirPos);
-      assert old == null : STR."\{this} \{dir} \{old} -> \{dirPos}";
+      assert old == null : this + " " + dir + " " + old + " -> " + dirPos;
     }
 
     @Override
     public String toString() {
-      return STR."\{free ? '.' : '#'}(\{x},\{y})";
+      return free ? "." : "#" + "(" + x + "," + y + ")";
     }
   }
 }

@@ -55,7 +55,7 @@ public class Puzzle19 {
 
   private static void part1(String name, List<Blueprint> blueprints) {
     long sum = blueprints.stream().mapToLong(bp -> bp.id * max(name, bp, 24)).sum();
-    System.out.println(STR."For \{name}, sum is \{sum}");
+    System.out.println("For " + name + ", sum is " + sum);
   }
 
   private static void part2(String name, List<Blueprint> blueprints) {
@@ -64,7 +64,7 @@ public class Puzzle19 {
       return;
     }
     long product = blueprints.stream().limit(3).mapToLong(bp -> max(name, bp, 32)).reduce(1L, (a, b) -> a * b);
-    System.out.println(STR."For \{name}, product is \{product}");
+    System.out.println("For " + name + ", product is " + product);
   }
 
   // This is pretty hokey and literal, but it gets the right result. We basically track all the
@@ -138,7 +138,7 @@ public class Puzzle19 {
         }
       }
       statuses = newStatuses;
-      System.out.println(STR."After minute \{i}, number of statuses is \{statuses.size()}");
+      System.out.println("After minute " + i + ", number of statuses is " + statuses.size());
     }
     return statuses.stream().mapToInt(Status::geodes).max().getAsInt();
   }

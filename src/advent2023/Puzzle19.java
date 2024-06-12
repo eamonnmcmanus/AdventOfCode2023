@@ -83,19 +83,19 @@ public class Puzzle19 {
           sum += part.rating();
         }
       }
-      System.out.println(STR."Rating total \{sum}");
+      System.out.println("Rating total " + sum);
 
       List<ConditionList> summary = summarize(workflows).stream().map(ConditionList::sorted).toList();
-      System.out.println(STR."Conditions \{Joiner.on("\n").join(summary)}");
-      System.out.println(STR."New rating total \{parts.stream().filter(part -> summary.stream().anyMatch(list -> list.matches(part))).mapToInt(Part::rating).sum()}");
+      System.out.println("Conditions " + Joiner.on("\n").join(summary));
+      System.out.println("New rating total " + parts.stream().filter(part -> summary.stream().anyMatch(list -> list.matches(part))).mapToInt(Part::rating).sum());
 
       List<Constraints> constraints = summary.stream().map(Constraints::from).toList();
-      System.out.println(STR."Constraints \{Joiner.on("\n").join(constraints)}");
-      System.out.println(STR."New new rating total \{parts.stream().filter(part -> constraints.stream().anyMatch(c -> c.matches(part))).mapToInt(Part::rating).sum()}");
+      System.out.println("Constraints " + Joiner.on("\n").join(constraints));
+      System.out.println("New new rating total " + parts.stream().filter(part -> constraints.stream().anyMatch(c -> c.matches(part))).mapToInt(Part::rating).sum());
 
       ConstraintSet set = new ConstraintSet(new HashSet<>(constraints));
-      System.out.println(STR."New new new rating total \{parts.stream().filter(part -> set.matches(part)).mapToInt(Part::rating).sum()}");
-      System.out.println(STR."Size \{set.size()}");
+      System.out.println("New new new rating total " + parts.stream().filter(part -> set.matches(part)).mapToInt(Part::rating).sum());
+      System.out.println("Size " + set.size());
     }
   }
 
@@ -242,7 +242,7 @@ public class Puzzle19 {
 
   record Condition(char cat, char ltgt, int value) implements Comparable<Condition> {
     @Override public String toString() {
-      return STR."\{cat}\{ltgt}\{value}";
+      return cat + ltgt + "" + value + "";
     }
 
     boolean matches(Part part) {
@@ -476,7 +476,7 @@ public class Puzzle19 {
           Constraints intersection = a.get(i).intersection(a.get(j));
           if (!intersection.isEmpty()) {
             throw new IllegalArgumentException(
-                STR."Overlapping sets \{a.get(i)} and \{a.get(j)} => \{intersection}");
+                "Overlapping sets " + a.get(i) + " and " + a.get(j) + " => " + intersection);
           }
         }
       }
@@ -550,7 +550,7 @@ public class Puzzle19 {
               .collect(toImmutableSet());
           yield new ConstraintSet(updated);
         }
-        default -> throw new IllegalArgumentException(STR."\{this} minusRule \{that}");
+        default -> throw new IllegalArgumentException(this + " minusRule " + that);
       };
     }
 

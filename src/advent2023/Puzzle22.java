@@ -51,7 +51,7 @@ public class Puzzle22 {
         count++;
       }
     }
-    System.out.println(STR."Part 1 \{count}");
+    System.out.println("Part 1 " + count);
   }
 
   static void part2(List<Brick> bricks) {
@@ -77,7 +77,7 @@ public class Puzzle22 {
         otherBricks.removeAll(drops.keySet());
       }
     }
-    System.out.println(STR."Part 2 \{total}");
+    System.out.println("Part 2 " + total);
   }
 
   static Map<Coord, NavigableSet<Brick>> computeMap(List<Brick> bricks) {
@@ -162,7 +162,7 @@ public class Puzzle22 {
     }
 
     @Override public String toString() {
-      return STR."\{xStart},\{yStart},\{zStart}~\{xEnd},\{yEnd},\{zEnd}";
+      return xStart + "," + yStart + "," + zStart + "~" + xEnd + "," + yEnd + "," + zEnd;
     }
   }
 

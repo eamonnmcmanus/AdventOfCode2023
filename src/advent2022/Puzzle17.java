@@ -99,7 +99,7 @@ public class Puzzle17 {
     for (int i = 0; i < 2022; i++) {
       pile.addRock();
     }
-    System.out.println(STR."Pile height for \{name} is \{pile.height()}");
+    System.out.println("Pile height for " + name + " is " + pile.height());
   }
 
   // For Part 2, we use a heuristic that may not be entirely sound but appears to work. For each
@@ -141,7 +141,7 @@ public class Puzzle17 {
     for (i = 0; i < 100_000_000; i++) {
       state = pile.state();
       if (cycleMap.containsKey(state)) {
-        System.out.println(STR."Cycle detected at i=\{i}: \{state}");
+        System.out.println("Cycle detected at i=" + i + ": " + state);
         break;
       }
       cycleMap.put(state, pile.height());
@@ -179,7 +179,7 @@ public class Puzzle17 {
     int incomplete = Math.toIntExact((target - x1) % cl);
     int h3 = cycleMap.get(states.get(x1 + incomplete)) - h1;
     long total = h1 + heightFromCycles + h3;
-    System.out.println(STR."Big pile height for \{name} is \{total}");
+    System.out.println("Big pile height for " + name + " is " + total);
   }
 
   record CycleKey(int rockI, int jetI, List<Integer> columnHeights) {}
