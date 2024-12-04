@@ -1,7 +1,6 @@
 package advent2024;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 import static java.lang.Math.incrementExact;
 
 import com.google.common.collect.ImmutableMap;
@@ -14,7 +13,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
 
 /**
  * @author Éamonn McManus
@@ -94,10 +92,7 @@ public class Puzzle4 {
     }
 
     char get(int line, int col) {
-      if (line < 0
-          || line >= lines.size()
-          || col < 0
-          || col >= lines.getFirst().length()) {
+      if (line < 0 || line >= lines.size() || col < 0 || col >= lines.getFirst().length()) {
         return ' ';
       }
       return lines.get(line).charAt(col);
