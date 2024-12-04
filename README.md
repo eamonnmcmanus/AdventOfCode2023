@@ -1,5 +1,7 @@
 These are my solutions to [Advent of Code 2023](https://adventofcode.com/2023).
-They are all coded in Java, needing Java 21 and `--enable-preview` (for string templates).
+They are all coded in Java, needing Java 21 at least.
+
+The repo also contains solutions to the 2022 puzzles, and 2024 solutions are ongoing.
 
 # Index
 
