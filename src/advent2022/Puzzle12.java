@@ -65,6 +65,7 @@ public class Puzzle12 {
   }
 
   private static ImmutableList<Node> shortestPath(Graph<Node> graph, Node start, Node end) {
+    // https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
     Map<Node, Integer> distance = new HashMap<>();
     for (Node node : graph.nodes()) {
       distance.put(node, Integer.MAX_VALUE);

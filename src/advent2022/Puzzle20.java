@@ -51,7 +51,7 @@ public class Puzzle20 {
   }
 
   // The logic for moves is a little tricky. First, we can reduce the move amount so its absolute
-  // value is less than the list size N. For once Java's % operator does what we want here: a shift
+  // value is less than the list size N. For once, Java's % operator does what we want here: a shift
   // of -8 with N=7 is the same as a shift of -1, and indeed -8 % 7 = -1.
   // There's a gotcha that I wasted a lot of time on, though, which is that the modulus is one less
   // than the list size. If you have a list of 7 elements then moving an element right 6 times is

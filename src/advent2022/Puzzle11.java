@@ -89,6 +89,10 @@ public class Puzzle11 {
   }
 
   private static long solve(List<Monkey> monkeys, boolean part2) {
+    // Each monkey tests divisibility by a distinct prime number. If we multiply all those numbers
+    // together, that gives us a modulus we can use to prevent the worry level from getting too big.
+    // The divisibility checks will have the same result on the residue as they would have had on
+    // the original worry level.
     int modulus =
         monkeys.stream()
             .mapToInt(Monkey::divisibleBy)
