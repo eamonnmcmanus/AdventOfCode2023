@@ -56,8 +56,10 @@ public class Puzzle23 {
     this.endNode = new Node(cells.length - 1, botJ);
 
     this.graph =
-        (part2 ? ValueGraphBuilder.<Node, Integer>undirected() : ValueGraphBuilder.<Node, Integer>directed())
-        .build();
+        (part2
+                ? ValueGraphBuilder.<Node, Integer>undirected()
+                : ValueGraphBuilder.<Node, Integer>directed())
+            .build();
     this.graph.addNode(startNode);
     this.graph.addNode(endNode);
   }
@@ -107,7 +109,6 @@ public class Puzzle23 {
     }
     return paths;
   }
-
 
   /*
      It looks as if the path are designed to be directed graphs: there are no forks where you can
@@ -178,7 +179,6 @@ public class Puzzle23 {
         len++;
       }
     }
-
   }
 
   record Move(int i, int j, Dir dir) {
@@ -209,7 +209,8 @@ public class Puzzle23 {
   }
 
   record Node(int i, int j) {
-    @Override public String toString() {
+    @Override
+    public String toString() {
       return "(" + i + "," + j + ")";
     }
   }
@@ -217,7 +218,10 @@ public class Puzzle23 {
   static final String ARROWS = "<>^v";
 
   enum Dir {
-    LEFT(0, -1, '<'), RIGHT(0, +1, '>'), UP(-1, 0, '^'), DOWN(+1, 0, 'v');
+    LEFT(0, -1, '<'),
+    RIGHT(0, +1, '>'),
+    UP(-1, 0, '^'),
+    DOWN(+1, 0, 'v');
 
     final int deltaI;
     final int deltaJ;

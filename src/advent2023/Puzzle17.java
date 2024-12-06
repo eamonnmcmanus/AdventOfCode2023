@@ -64,7 +64,8 @@ public class Puzzle17 {
       if (state.steps < maxSteps) {
         Position forward = pos.advance();
         if (validPosition(forward)) {
-          queue.add(new State(state.cost + cells[forward.i][forward.j].cost, forward, state.steps + 1));
+          queue.add(
+              new State(state.cost + cells[forward.i][forward.j].cost, forward, state.steps + 1));
         }
       }
     }
@@ -102,7 +103,10 @@ public class Puzzle17 {
   record PositionAndSteps(Position position, int steps) {}
 
   enum Dir {
-    LEFT(0, -1), RIGHT(0, +1), UP(-1, 0), DOWN(+1, 0);
+    LEFT(0, -1),
+    RIGHT(0, +1),
+    UP(-1, 0),
+    DOWN(+1, 0);
 
     private int deltaI;
     private int deltaJ;

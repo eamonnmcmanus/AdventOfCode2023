@@ -139,7 +139,10 @@ public class Puzzle9 {
   record Move(Dir dir, int amount) {}
 
   enum Dir {
-    R(+1, 0), L(-1, 0), U(0, -1), D(0, +1);
+    R(+1, 0),
+    L(-1, 0),
+    U(0, -1),
+    D(0, +1);
 
     static final ImmutableMap<String, Dir> NAME_TO_DIR =
         stream(values()).collect(toImmutableMap(Dir::name, dir -> dir));

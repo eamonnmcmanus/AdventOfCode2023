@@ -1,6 +1,5 @@
 package advent2024;
 
-
 import advent2024.CharGrid.Coord;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.CharStreams;

@@ -62,10 +62,11 @@ public class Puzzle22 {
 
     long total = 0;
     for (Brick destroy : bricks) {
-      List<Brick> otherBricks = bricks.stream()
-          .filter(b -> b != destroy)
-          .map(Brick::copy)
-          .collect(toCollection(ArrayList::new));
+      List<Brick> otherBricks =
+          bricks.stream()
+              .filter(b -> b != destroy)
+              .map(Brick::copy)
+              .collect(toCollection(ArrayList::new));
       while (true) {
         Map<Coord, NavigableSet<Brick>> map = computeMap(otherBricks);
         Map<Brick, Integer> drops = computeDrops(otherBricks, map, null);
@@ -96,9 +97,7 @@ public class Puzzle22 {
   }
 
   static Map<Brick, Integer> computeDrops(
-      List<Brick> bricks,
-      Map<Coord, NavigableSet<Brick>> map,
-      Brick ignore) {
+      List<Brick> bricks, Map<Coord, NavigableSet<Brick>> map, Brick ignore) {
     Map<Brick, Integer> drops = new LinkedHashMap<>();
     for (Brick brick : bricks) {
       if (brick == ignore) {
@@ -161,7 +160,8 @@ public class Puzzle22 {
       zEnd -= drop;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
       return xStart + "," + yStart + "," + zStart + "~" + xEnd + "," + yEnd + "," + zEnd;
     }
   }

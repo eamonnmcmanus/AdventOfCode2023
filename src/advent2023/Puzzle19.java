@@ -85,16 +85,29 @@ public class Puzzle19 {
       }
       System.out.println("Rating total " + sum);
 
-      List<ConditionList> summary = summarize(workflows).stream().map(ConditionList::sorted).toList();
+      List<ConditionList> summary =
+          summarize(workflows).stream().map(ConditionList::sorted).toList();
       System.out.println("Conditions " + Joiner.on("\n").join(summary));
-      System.out.println("New rating total " + parts.stream().filter(part -> summary.stream().anyMatch(list -> list.matches(part))).mapToInt(Part::rating).sum());
+      System.out.println(
+          "New rating total "
+              + parts.stream()
+                  .filter(part -> summary.stream().anyMatch(list -> list.matches(part)))
+                  .mapToInt(Part::rating)
+                  .sum());
 
       List<Constraints> constraints = summary.stream().map(Constraints::from).toList();
       System.out.println("Constraints " + Joiner.on("\n").join(constraints));
-      System.out.println("New new rating total " + parts.stream().filter(part -> constraints.stream().anyMatch(c -> c.matches(part))).mapToInt(Part::rating).sum());
+      System.out.println(
+          "New new rating total "
+              + parts.stream()
+                  .filter(part -> constraints.stream().anyMatch(c -> c.matches(part)))
+                  .mapToInt(Part::rating)
+                  .sum());
 
       ConstraintSet set = new ConstraintSet(new HashSet<>(constraints));
-      System.out.println("New new new rating total " + parts.stream().filter(part -> set.matches(part)).mapToInt(Part::rating).sum());
+      System.out.println(
+          "New new new rating total "
+              + parts.stream().filter(part -> set.matches(part)).mapToInt(Part::rating).sum());
       System.out.println("Size " + set.size());
     }
   }
@@ -188,7 +201,8 @@ public class Puzzle19 {
 
   static Workflow parseWorkflow(String line) {
     List<String> ruleStrings = List.of(line.split(","));
-    List<Rule> rules = ruleStrings.stream().limit(ruleStrings.size() - 1).map(Puzzle19::parseRule).toList();
+    List<Rule> rules =
+        ruleStrings.stream().limit(ruleStrings.size() - 1).map(Puzzle19::parseRule).toList();
     return new Workflow(rules, ruleStrings.getLast());
   }
 
@@ -207,14 +221,16 @@ public class Puzzle19 {
     return lines.stream().map(Puzzle19::parsePart).toList();
   }
 
-  private static final Pattern PART_PATTERN = Pattern.compile("\\{x=([0-9]+),m=([0-9]+),a=([0-9]+),s=([0-9]+)\\}");
+  private static final Pattern PART_PATTERN =
+      Pattern.compile("\\{x=([0-9]+),m=([0-9]+),a=([0-9]+),s=([0-9]+)\\}");
 
   private static Part parsePart(String line) {
     Matcher matcher = PART_PATTERN.matcher(line);
     if (!matcher.matches()) {
       throw new AssertionError(line);
     }
-    List<String> groups = List.of(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
+    List<String> groups =
+        List.of(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
     List<Integer> values = groups.stream().map(Integer::parseInt).toList();
     return Part.of(values.get(0), values.get(1), values.get(2), values.get(3));
   }
@@ -241,7 +257,8 @@ public class Puzzle19 {
   }
 
   record Condition(char cat, char ltgt, int value) implements Comparable<Condition> {
-    @Override public String toString() {
+    @Override
+    public String toString() {
       return cat + ltgt + "" + value + "";
     }
 
@@ -279,7 +296,8 @@ public class Puzzle19 {
     static final ConditionList EMPTY = new ConditionList(List.of());
 
     ConditionList plus(Condition condition) {
-      return new ConditionList(ImmutableList.<Condition>builder().addAll(conditions).add(condition).build());
+      return new ConditionList(
+          ImmutableList.<Condition>builder().addAll(conditions).add(condition).build());
     }
 
     boolean matches(Part part) {
@@ -312,8 +330,10 @@ public class Puzzle19 {
     static final Constraint EMPTY = new Constraint(0, 0);
 
     Constraint {
-      boolean empty = moreThan == Integer.MAX_VALUE || lessThan == Integer.MIN_VALUE
-          || moreThan + 1 >= lessThan;
+      boolean empty =
+          moreThan == Integer.MAX_VALUE
+              || lessThan == Integer.MIN_VALUE
+              || moreThan + 1 >= lessThan;
       if (empty) {
         moreThan = lessThan = 0;
       }
@@ -348,13 +368,11 @@ public class Puzzle19 {
       return size() == 0;
     }
 
-    /**
-     * A new constraint that matches anything that both {@code this} and {@code that} match.
-     */
+    /** A new constraint that matches anything that both {@code this} and {@code that} match. */
     Constraint intersection(Constraint that) {
-      Constraint result = new Constraint(
-          Math.max(this.moreThan, that.moreThan),
-          Math.min(this.lessThan, that.lessThan));
+      Constraint result =
+          new Constraint(
+              Math.max(this.moreThan, that.moreThan), Math.min(this.lessThan, that.lessThan));
       return result.isEmpty() ? EMPTY : result;
     }
 
@@ -373,14 +391,29 @@ public class Puzzle19 {
   }
 
   record Constraints(Map<Character, Constraint> map) {
-    static final Constraints EMPTY = new Constraints(
-        ImmutableMap.of('x', Constraint.EMPTY, 'm', Constraint.EMPTY, 'a', Constraint.EMPTY, 's', Constraint.EMPTY));
+    static final Constraints EMPTY =
+        new Constraints(
+            ImmutableMap.of(
+                'x',
+                Constraint.EMPTY,
+                'm',
+                Constraint.EMPTY,
+                'a',
+                Constraint.EMPTY,
+                's',
+                Constraint.EMPTY));
 
     static final Constraints MATCH_ALL = Constraints.of(0, 4001, 0, 4001, 0, 4001, 0, 4001);
 
     static Constraints of(
-        int xMoreThan, int xLessThan, int mMoreThan, int mLessThan,
-        int aMoreThan, int aLessThan, int sMoreThan, int sLessThan) {
+        int xMoreThan,
+        int xLessThan,
+        int mMoreThan,
+        int mLessThan,
+        int aMoreThan,
+        int aLessThan,
+        int sMoreThan,
+        int sLessThan) {
       return new Constraints(
           ImmutableMap.of(
               'x', new Constraint(xMoreThan, xLessThan),
@@ -392,7 +425,9 @@ public class Puzzle19 {
     static Constraints from(ConditionList conditions) {
       Constraints c = MATCH_ALL;
       for (Condition condition : conditions.conditions) {
-        c = c.with(condition.cat, c.map.get(condition.cat).intersection(Constraint.from(condition)));
+        c =
+            c.with(
+                condition.cat, c.map.get(condition.cat).intersection(Constraint.from(condition)));
       }
       return c;
     }
@@ -409,9 +444,7 @@ public class Puzzle19 {
       return part.keySet().stream().allMatch(c -> map.get(c).matches(part.get(c)));
     }
 
-    /**
-     * The number of combinations of variable values that match the constraints.
-     */
+    /** The number of combinations of variable values that match the constraints. */
     long size() {
       return map.values().stream().mapToLong(Constraint::size).reduce(1, (a, b) -> a * b);
     }
@@ -420,12 +453,11 @@ public class Puzzle19 {
       return size() == 0;
     }
 
-    /**
-     * An instance that matches the values that both {@code this} and {@code that} match.
-     */
+    /** An instance that matches the values that both {@code this} and {@code that} match. */
     Constraints intersection(Constraints that) {
       Map<Character, Constraint> result =
-          map.keySet().stream().map(c -> Map.entry(c, this.map.get(c).intersection(that.map.get(c))))
+          map.keySet().stream()
+              .map(c -> Map.entry(c, this.map.get(c).intersection(that.map.get(c))))
               .collect(toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
       boolean empty = result.values().stream().anyMatch(Constraint::isEmpty);
       return empty ? EMPTY : new Constraints(result);
@@ -433,9 +465,9 @@ public class Puzzle19 {
 
     /**
      * Returns a {@link ConstraintSet} that matches any value matched by {@code this} but not by
-     * {@code that}. In general this will consist of up to 16 constraints, the product of
-     * two constraints for each variable, matching values less than the intersection or more than
-     * the intersection.
+     * {@code that}. In general this will consist of up to 16 constraints, the product of two
+     * constraints for each variable, matching values less than the intersection or more than the
+     * intersection.
      */
     ConstraintSet minus(Constraints that) {
       Set<Constraint> xMinus = this.map.get('x').minus(that.map.get('x'));
@@ -447,7 +479,8 @@ public class Puzzle19 {
         for (Constraint m : mMinus) {
           for (Constraint a : aMinus) {
             for (Constraint s : sMinus) {
-              Constraints constraints = new Constraints(ImmutableMap.of('x', x, 'm', m, 'a', a, 's', s));
+              Constraints constraints =
+                  new Constraints(ImmutableMap.of('x', x, 'm', m, 'a', a, 's', s));
               newConstraints.add(constraints);
             }
           }
@@ -503,7 +536,8 @@ public class Puzzle19 {
      * anything matched by the given {@code constraints}.
      */
     ConstraintSet plus(Constraints constraints) {
-      // We want to remove from `constraints` any ranges that are already present in `constraintSet`.
+      // We want to remove from `constraints` any ranges that are already present in
+      // `constraintSet`.
       // The result is in general a set of disjoint Contraints. For each Constraints in
       // `constraintSet`, we will remove its elements from `remaining`. The end result is a set
       // where no element has any values in common with `constraintSet`.
@@ -520,9 +554,10 @@ public class Puzzle19 {
     }
 
     ConstraintSet minus(Constraints constraints) {
-      Set<Constraints> newConstraints = constraintSet.stream()
-          .flatMap(c -> c.minus(constraints).constraintSet.stream())
-          .collect(toImmutableSet());
+      Set<Constraints> newConstraints =
+          constraintSet.stream()
+              .flatMap(c -> c.minus(constraints).constraintSet.stream())
+              .collect(toImmutableSet());
       return new ConstraintSet(newConstraints);
     }
 
@@ -535,19 +570,26 @@ public class Puzzle19 {
      * values.
      */
     ConstraintSet minusRule(Constraints that) {
-      Set<Map.Entry<Character, Constraint>> nonDefault = that.map.entrySet().stream()
-          .filter(entry -> !entry.getValue().isDefault())
-          .collect(toImmutableSet());
+      Set<Map.Entry<Character, Constraint>> nonDefault =
+          that.map.entrySet().stream()
+              .filter(entry -> !entry.getValue().isDefault())
+              .collect(toImmutableSet());
       return switch (nonDefault.size()) {
         case 0 -> this;
         case 1 -> {
           Map.Entry<Character, Constraint> only = Iterables.getOnlyElement(nonDefault);
           char c = only.getKey();
           Constraint ruleConstraint = only.getValue();
-          Set<Constraints> updated = constraintSet.stream()
-              .map(constraints -> constraints.with(c, Iterables.getOnlyElement(constraints.map.get(c).minus(ruleConstraint))))
-              .filter(constraints -> !constraints.isEmpty())
-              .collect(toImmutableSet());
+          Set<Constraints> updated =
+              constraintSet.stream()
+                  .map(
+                      constraints ->
+                          constraints.with(
+                              c,
+                              Iterables.getOnlyElement(
+                                  constraints.map.get(c).minus(ruleConstraint))))
+                  .filter(constraints -> !constraints.isEmpty())
+                  .collect(toImmutableSet());
           yield new ConstraintSet(updated);
         }
         default -> throw new IllegalArgumentException(this + " minusRule " + that);
@@ -555,10 +597,11 @@ public class Puzzle19 {
     }
 
     ConstraintSet intersection(Constraints constraints) {
-      ImmutableSet<Constraints> newConstraints = constraintSet.stream()
-          .map(c -> c.intersection(constraints))
-          .filter(c -> !c.isEmpty())
-          .collect(toImmutableSet());
+      ImmutableSet<Constraints> newConstraints =
+          constraintSet.stream()
+              .map(c -> c.intersection(constraints))
+              .filter(c -> !c.isEmpty())
+              .collect(toImmutableSet());
       return new ConstraintSet(newConstraints);
     }
 

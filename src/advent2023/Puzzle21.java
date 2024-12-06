@@ -48,7 +48,8 @@ public class Puzzle21 {
   }
 
   record Plot(int i, int j) implements Comparable<Plot> {
-    private static final Comparator<Plot> COMPARATOR = Comparator.comparingInt(Plot::i).thenComparingInt(Plot::j);
+    private static final Comparator<Plot> COMPARATOR =
+        Comparator.comparingInt(Plot::i).thenComparingInt(Plot::j);
 
     @Override
     public int compareTo(Plot that) {
@@ -72,7 +73,11 @@ public class Puzzle21 {
         for (Dir dir : Dir.VALUES) {
           int newI = state.i + dir.deltaI;
           int newJ = state.j + dir.deltaJ;
-          if (newI >= 0 && newI < cells.length && newJ >= 0 && newJ < cells[0].length && cells[newI][newJ] != '#') {
+          if (newI >= 0
+              && newI < cells.length
+              && newJ >= 0
+              && newJ < cells[0].length
+              && cells[newI][newJ] != '#') {
             next.add(new State(newI, newJ, steps));
           }
         }
@@ -83,7 +88,10 @@ public class Puzzle21 {
   }
 
   enum Dir {
-    LEFT(0, -1), RIGHT(0, +1), UP(-1, 0), DOWN(+1, 0);
+    LEFT(0, -1),
+    RIGHT(0, +1),
+    UP(-1, 0),
+    DOWN(+1, 0);
 
     final int deltaI;
     final int deltaJ;

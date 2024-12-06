@@ -52,7 +52,11 @@ public class Puzzle14 {
       // cycleStart + (i - cycleStart - 1) % (seen.size() - cycleStart).
       System.out.println("Cycle after " + seen.size() + " iterations, starting at " + cycleStart);
       int billionI = cycleStart + (1_000_000_000 - cycleStart - 1) % (seen.size() - cycleStart);
-      System.out.println("Load for billionth same as for i=" + billionI + " = " + load(seenList.get(billionI).chars));
+      System.out.println(
+          "Load for billionth same as for i="
+              + billionI
+              + " = "
+              + load(seenList.get(billionI).chars));
     }
   }
 

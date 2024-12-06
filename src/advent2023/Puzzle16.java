@@ -54,7 +54,8 @@ public class Puzzle16 {
       }
       queue.addAll(advance(beam, lines));
     }
-    Set<Coord> tiles = beams.stream().map(b -> new Coord(b.x, b.y)).collect(toCollection(TreeSet::new));
+    Set<Coord> tiles =
+        beams.stream().map(b -> new Coord(b.x, b.y)).collect(toCollection(TreeSet::new));
 
     return tiles.size();
   }
@@ -65,38 +66,41 @@ public class Puzzle16 {
    */
   private static List<Beam> advance(Beam beam, List<String> lines) {
     char c = lines.get(beam.y).charAt(beam.x);
-    List<Beam> beams = switch (c) {
-      case '.' -> List.of(beam.advance());
-      case '-' -> {
-        if (beam.dir == Dir.LEFT || beam.dir == Dir.RIGHT) {
-          yield List.of(beam.advance());
-        } else {
-          yield List.of(beam.moveLeft(), beam.moveRight());
-        }
-      }
-      case '|' -> {
-        if (beam.dir == Dir.UP || beam.dir == Dir.DOWN) {
-          yield List.of(beam.advance());
-        } else {
-          yield List.of(beam.moveUp(), beam.moveDown());
-        }
-      }
-      case '/' -> List.of(
-          switch (beam.dir) {
-            case LEFT -> beam.moveDown();
-            case RIGHT -> beam.moveUp();
-            case UP -> beam.moveRight();
-            case DOWN -> beam.moveLeft();
-          });
-      case '\\' -> List.of(
-          switch (beam.dir) {
-            case LEFT -> beam.moveUp();
-            case RIGHT -> beam.moveDown();
-            case UP -> beam.moveLeft();
-            case DOWN -> beam.moveRight();
-          });
-      default -> throw new AssertionError(c);
-    };
+    List<Beam> beams =
+        switch (c) {
+          case '.' -> List.of(beam.advance());
+          case '-' -> {
+            if (beam.dir == Dir.LEFT || beam.dir == Dir.RIGHT) {
+              yield List.of(beam.advance());
+            } else {
+              yield List.of(beam.moveLeft(), beam.moveRight());
+            }
+          }
+          case '|' -> {
+            if (beam.dir == Dir.UP || beam.dir == Dir.DOWN) {
+              yield List.of(beam.advance());
+            } else {
+              yield List.of(beam.moveUp(), beam.moveDown());
+            }
+          }
+          case '/' ->
+              List.of(
+                  switch (beam.dir) {
+                    case LEFT -> beam.moveDown();
+                    case RIGHT -> beam.moveUp();
+                    case UP -> beam.moveRight();
+                    case DOWN -> beam.moveLeft();
+                  });
+          case '\\' ->
+              List.of(
+                  switch (beam.dir) {
+                    case LEFT -> beam.moveUp();
+                    case RIGHT -> beam.moveDown();
+                    case UP -> beam.moveLeft();
+                    case DOWN -> beam.moveRight();
+                  });
+          default -> throw new AssertionError(c);
+        };
     return beams.stream()
         .filter(b -> b.x >= 0 && b.x < lines.get(0).length() && b.y >= 0 && b.y < lines.size())
         .toList();
@@ -125,7 +129,8 @@ public class Puzzle16 {
   }
 
   record Coord(int x, int y) implements Comparable<Coord> {
-    private static final Comparator<Coord> COMPARATOR = Comparator.comparing(Coord::y).thenComparing(Coord::x);
+    private static final Comparator<Coord> COMPARATOR =
+        Comparator.comparing(Coord::y).thenComparing(Coord::x);
 
     @Override
     public int compareTo(Coord that) {
@@ -134,7 +139,10 @@ public class Puzzle16 {
   }
 
   enum Dir {
-    LEFT(-1, 0), RIGHT(+1, 0), UP(0, -1), DOWN(0, +1);
+    LEFT(-1, 0),
+    RIGHT(+1, 0),
+    UP(0, -1),
+    DOWN(0, +1);
 
     final int deltaX;
     final int deltaY;
