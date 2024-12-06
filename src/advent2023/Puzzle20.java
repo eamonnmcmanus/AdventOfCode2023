@@ -4,7 +4,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.math.LongMath;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +54,8 @@ public class Puzzle20 {
         signals = newSignals;
       }
     }
-    System.out.println("Low " + lowCount + " high " + highCount + " product " + lowCount * highCount);
+    System.out.println(
+        "Low " + lowCount + " high " + highCount + " product " + lowCount * highCount);
   }
 
   /*
@@ -69,18 +69,18 @@ public class Puzzle20 {
     Map<String, Module> modules = parseModules(lines);
 
     // Verify that rx has exactly one input, call it vf, that is a Conjunction.
-    List<Map.Entry<String, Module>> rxInputs = modules.entrySet().stream()
-        .filter(e -> e.getValue().targetModules.contains("rx"))
-        .toList();
+    List<Map.Entry<String, Module>> rxInputs =
+        modules.entrySet().stream().filter(e -> e.getValue().targetModules.contains("rx")).toList();
     assert rxInputs.size() == 1 : rxInputs;
     assert rxInputs.get(0).getValue() instanceof Conjunction;
     String rxInput = rxInputs.get(0).getKey();
     System.out.println("Input to rx is " + rxInput);
 
     // Verify that vf has four inputs which are also Conjuctions.
-    List<Map.Entry<String, Module>> vfInputs = modules.entrySet().stream()
-        .filter(e -> e.getValue().targetModules.contains(rxInput))
-        .toList();
+    List<Map.Entry<String, Module>> vfInputs =
+        modules.entrySet().stream()
+            .filter(e -> e.getValue().targetModules.contains(rxInput))
+            .toList();
     assert vfInputs.size() == 4;
     assert vfInputs.stream().allMatch(e -> e.getValue() instanceof Conjunction);
 
@@ -88,14 +88,16 @@ public class Puzzle20 {
     AtomicLong i = new AtomicLong();
     Map<String, Long> first = new TreeMap<>();
     for (var entry : vfInputs) {
-      entry.getValue().observers.add(
-          pulse -> {
-            if (pulse) {
-              System.out.println("First high pulse for " + entry.getKey() + " at i=" + i.get());
-              first.put(entry.getKey(), i.get());
-            }
-          }
-      );
+      entry
+          .getValue()
+          .observers
+          .add(
+              pulse -> {
+                if (pulse) {
+                  System.out.println("First high pulse for " + entry.getKey() + " at i=" + i.get());
+                  first.put(entry.getKey(), i.get());
+                }
+              });
     }
 
     for (i.set(1); i.get() < 1_000_000; i.incrementAndGet()) {
@@ -157,7 +159,8 @@ public class Puzzle20 {
       super(otherModules);
     }
 
-    @Override List<Signal> receive(Module source, boolean pulse) {
+    @Override
+    List<Signal> receive(Module source, boolean pulse) {
       if (!pulse) {
         state = !state;
         return send(state);
@@ -174,7 +177,8 @@ public class Puzzle20 {
       super(otherModules);
     }
 
-    @Override List<Signal> receive(Module source, boolean pulse) {
+    @Override
+    List<Signal> receive(Module source, boolean pulse) {
       inputs.put(source, pulse);
       // If all the inputs are high (!values.contains(false)) then the output should be low.
       boolean output = inputs.values().contains(false);
@@ -187,7 +191,8 @@ public class Puzzle20 {
       super(otherModules);
     }
 
-    @Override List<Signal> receive(Module source, boolean pulse) {
+    @Override
+    List<Signal> receive(Module source, boolean pulse) {
       return send(pulse);
     }
   }

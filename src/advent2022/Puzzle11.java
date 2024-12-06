@@ -60,7 +60,8 @@ public class Puzzle11 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle11.class.getResourceAsStream("puzzle11.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle11.class.getResourceAsStream("puzzle11.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -88,12 +89,15 @@ public class Puzzle11 {
   }
 
   private static long solve(List<Monkey> monkeys, boolean part2) {
-    int modulus = monkeys.stream()
-        .mapToInt(Monkey::divisibleBy)
-        .reduce(1, (a, b) -> {
-          assert IntMath.isPrime(b) && IntMath.gcd(a, b) == 1;
-          return Math.multiplyExact(a, b);
-        });
+    int modulus =
+        monkeys.stream()
+            .mapToInt(Monkey::divisibleBy)
+            .reduce(
+                1,
+                (a, b) -> {
+                  assert IntMath.isPrime(b) && IntMath.gcd(a, b) == 1;
+                  return Math.multiplyExact(a, b);
+                });
     Map<Monkey, Long> countMap = new HashMap<>();
     int rounds = part2 ? 10_000 : 20;
     for (int round = 1; round <= rounds; round++) {
@@ -112,15 +116,17 @@ public class Puzzle11 {
         }
       }
     }
-    List<Long> counts = countMap.values().stream().sorted(Comparator.reverseOrder()).limit(2).toList();
+    List<Long> counts =
+        countMap.values().stream().sorted(Comparator.reverseOrder()).limit(2).toList();
     System.out.println("Multiply " + counts);
     return Math.multiplyExact(counts.get(0), counts.get(1));
   }
 
   // Monkey 0:;  Starting items: 79, 98;  Operation: new = old * 19;  Test: divisible by 23;\
   //     If true: throw to monkey 2;    If false: throw to monkey 3
-  private static final Pattern MONKEY_PATTERN = Pattern.compile(
-      """
+  private static final Pattern MONKEY_PATTERN =
+      Pattern.compile(
+          """
       .*Starting items: ([^;]*);.*Operation: new = ([^;]*);.*Test: divisible by (\\d+);\
       .*If true: throw to monkey (\\d+);.*If false: throw to monkey (\\d+)\
       """);
@@ -128,10 +134,11 @@ public class Puzzle11 {
   private static Monkey parseMonkey(String line) {
     Matcher matcher = MONKEY_PATTERN.matcher(line);
     checkArgument(matcher.matches(), "%s does not match /%s/", line, MONKEY_PATTERN);
-    Deque<Long> items = Splitter.on(", ")
-        .splitToStream(matcher.group(1))
-        .map(Long::valueOf)
-        .collect(toCollection(ArrayDeque::new));
+    Deque<Long> items =
+        Splitter.on(", ")
+            .splitToStream(matcher.group(1))
+            .map(Long::valueOf)
+            .collect(toCollection(ArrayDeque::new));
     Function<Long, Long> operation = parseOperation(matcher.group(2));
     int divisibleBy = Integer.parseInt(matcher.group(3));
     int trueTarget = Integer.parseInt(matcher.group(4));

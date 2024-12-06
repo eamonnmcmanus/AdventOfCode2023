@@ -18,7 +18,8 @@ import java.util.regex.Pattern;
  * @author Éamonn McManus
  */
 public class Puzzle21 {
-  private static final String SAMPLE = """
+  private static final String SAMPLE =
+      """
       root: pppw + sjmn
       dbpl: 5
       cczh: sllz + lgvd
@@ -39,23 +40,25 @@ public class Puzzle21 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle21.class.getResourceAsStream("puzzle21.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle21.class.getResourceAsStream("puzzle21.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
       String name = entry.getKey();
       try (Reader r = entry.getValue().call()) {
         List<String> lines = CharStreams.readLines(r);
-        Map<String, Node> graph = lines.stream()
-            .map(line -> parseNode(line))
-            .collect(
-                toMap(
-                    node -> node.name(),
-                    node -> node,
-                    (a, b) -> {
-                      throw new AssertionError("Duplicate " + a);
-                    },
-                    TreeMap::new));
+        Map<String, Node> graph =
+            lines.stream()
+                .map(line -> parseNode(line))
+                .collect(
+                    toMap(
+                        node -> node.name(),
+                        node -> node,
+                        (a, b) -> {
+                          throw new AssertionError("Duplicate " + a);
+                        },
+                        TreeMap::new));
         long result = evaluate(graph, "root");
         System.out.println("Result for " + name + " is " + result);
         foldConstants(graph, "root");
@@ -95,26 +98,27 @@ public class Puzzle21 {
     Node lhs = graph.get(node.lhs);
     Node rhs = graph.get(node.rhs);
     record Simple(Node lhs, OpKind op, long rhs, boolean end) {}
-    Simple rewritten = switch (lhs) {
-      case Op unused ->
-        switch (rhs) {
-          case Int(var unused1, var n) -> new Simple(lhs, OpKind.of(node.op), n, false);
-          default -> throw new AssertionError(rhs);
+    Simple rewritten =
+        switch (lhs) {
+          case Op unused ->
+              switch (rhs) {
+                case Int(var unused1, var n) -> new Simple(lhs, OpKind.of(node.op), n, false);
+                default -> throw new AssertionError(rhs);
+              };
+          case Int(var lhsName, var lhsN) ->
+              switch (rhs) {
+                case Op unused -> new Simple(rhs, OpKind.ofReverse(node.op), lhsN, false);
+                case Int(var rhsName, var rhsN) -> {
+                  if (lhsName.equals("humn")) {
+                    yield new Simple(lhs, OpKind.of(node.op), rhsN, true);
+                  } else if (rhsName.equals("humn")) {
+                    yield new Simple(rhs, OpKind.ofReverse(node.op), lhsN, true);
+                  } else {
+                    throw new AssertionError(node);
+                  }
+                }
+              };
         };
-      case Int(var lhsName, var lhsN) ->
-        switch (rhs) {
-          case Op unused -> new Simple(rhs, OpKind.ofReverse(node.op), lhsN, false);
-          case Int(var rhsName, var rhsN) -> {
-            if (lhsName.equals("humn")) {
-              yield new Simple(lhs, OpKind.of(node.op), rhsN, true);
-            } else if (rhsName.equals("humn")) {
-              yield new Simple(rhs, OpKind.ofReverse(node.op), lhsN, true);
-            } else {
-              throw new AssertionError(node);
-            }
-          }
-        };
-    };
     long newTarget = invertOp(rewritten.op, rewritten.rhs, target);
     // The recursion here is a little clunky but it works.
     return rewritten.end ? newTarget : solve(graph, (Op) rewritten.lhs, newTarget);
@@ -124,20 +128,21 @@ public class Puzzle21 {
   // to return 2400.
   private static long invertOp(OpKind op, long rhs, long target) {
     return switch (op) {
-      case PLUS -> target - rhs;            // foo + 4 = 600 => foo = 600 - 4
-      case MINUS -> target + rhs;           // foo - 4 = 600 => foo = 600 + 4
-      case REVERSE_MINUS -> rhs - target;   // 4 - foo = 600 => foo = 4 - 600
-      case TIMES -> target / rhs;           // foo * 4 = 600 => foo = 600 / 4
+      case PLUS -> target - rhs; // foo + 4 = 600 => foo = 600 - 4
+      case MINUS -> target + rhs; // foo - 4 = 600 => foo = 600 + 4
+      case REVERSE_MINUS -> rhs - target; // 4 - foo = 600 => foo = 4 - 600
+      case TIMES -> target / rhs; // foo * 4 = 600 => foo = 600 / 4
       case DIVIDE -> Math.multiplyExact(target, rhs);
-                                            // foo / 4 = 600 => foo = 600 * 4
-      case REVERSE_DIVIDE -> rhs / target;  // 4 / foo = 600 => foo = 4 / 600
+      // foo / 4 = 600 => foo = 600 * 4
+      case REVERSE_DIVIDE -> rhs / target; // 4 / foo = 600 => foo = 4 / 600
     };
   }
 
   private static long evaluate(Map<String, Node> graph, String root) {
     return switch (graph.get(root)) {
       case Int(var unused, var n) -> n;
-      case Op(var unused, String lhs, char op, String rhs) -> op(evaluate(graph, lhs), op, evaluate(graph, rhs));
+      case Op(var unused, String lhs, char op, String rhs) ->
+          op(evaluate(graph, lhs), op, evaluate(graph, rhs));
     };
   }
 
@@ -152,7 +157,12 @@ public class Puzzle21 {
   }
 
   enum OpKind {
-    PLUS, MINUS, REVERSE_MINUS, TIMES, DIVIDE, REVERSE_DIVIDE;
+    PLUS,
+    MINUS,
+    REVERSE_MINUS,
+    TIMES,
+    DIVIDE,
+    REVERSE_DIVIDE;
 
     static OpKind of(char c) {
       return switch (c) {
@@ -195,13 +205,15 @@ public class Puzzle21 {
   }
 
   record Int(String name, long n) implements Node {
-    @Override public String toString() {
+    @Override
+    public String toString() {
       return Long.toString(n);
     }
   }
 
   record Op(String name, String lhs, char op, String rhs) implements Node {
-    @Override public String toString() {
+    @Override
+    public String toString() {
       return "(" + lhs + " " + op + " " + rhs + ")";
     }
   }
@@ -216,7 +228,8 @@ public class Puzzle21 {
     }
     Matcher opMatcher = OP.matcher(line);
     if (opMatcher.matches()) {
-      return new Op(opMatcher.group(1), opMatcher.group(2), opMatcher.group(3).charAt(0), opMatcher.group(4));
+      return new Op(
+          opMatcher.group(1), opMatcher.group(2), opMatcher.group(3).charAt(0), opMatcher.group(4));
     }
     throw new IllegalArgumentException("Can't parse: line");
   }

@@ -22,10 +22,7 @@ public class Puzzle7 {
     try (InputStream in = Puzzle7.class.getResourceAsStream("puzzle7.txt")) {
       String lineString = new String(in.readAllBytes(), UTF_8);
       List<String> lines = List.of(lineString.split("\n"));
-      List<Hand> hands = lines.stream()
-          .map(Puzzle7::parseHand)
-          .sorted()
-          .toList();
+      List<Hand> hands = lines.stream().map(Puzzle7::parseHand).sorted().toList();
 
       // Part 1
       long sum = 0;
@@ -119,9 +116,8 @@ public class Puzzle7 {
       }
       // Enumerating the cases is just a bit too tedious. It's always most beneficial to add the
       // jokers to the most-frequent card. So just do that and see what the result is.
-      Multiset.Entry<Card> biggest = cardSet.entrySet().stream()
-          .max(Comparator.comparing(Multiset.Entry::getCount))
-          .get();
+      Multiset.Entry<Card> biggest =
+          cardSet.entrySet().stream().max(Comparator.comparing(Multiset.Entry::getCount)).get();
       cardSet.add(biggest.getElement(), jokers);
       return scoreFor(cardSet);
     }
@@ -133,7 +129,13 @@ public class Puzzle7 {
   }
 
   enum Score {
-    HIGH_CARD, PAIR, TWO_PAIR, THREE_OF_A_KIND, FULL_HOUSE, FOUR_OF_A_KIND, FIVE_OF_A_KIND
+    HIGH_CARD,
+    PAIR,
+    TWO_PAIR,
+    THREE_OF_A_KIND,
+    FULL_HOUSE,
+    FOUR_OF_A_KIND,
+    FIVE_OF_A_KIND
   }
 
   private static final Comparator<Card> JOKER_COMPARATOR =
@@ -159,8 +161,19 @@ public class Puzzle7 {
       };
 
   enum Card {
-    TWO("2"), THREE("3"), FOUR("4"), FIVE("5"), SIX("6"), SEVEN("7"), EIGHT("8"), NINE("9"),
-    TEN("T"), JACK("J"), QUEEN("Q"), KING("K"), ACE("A");
+    TWO("2"),
+    THREE("3"),
+    FOUR("4"),
+    FIVE("5"),
+    SIX("6"),
+    SEVEN("7"),
+    EIGHT("8"),
+    NINE("9"),
+    TEN("T"),
+    JACK("J"),
+    QUEEN("Q"),
+    KING("K"),
+    ACE("A");
 
     private final String name;
 

@@ -35,7 +35,8 @@ public class Puzzle12 {
 
         // Part 2 of the puzzle.
         String bigSprings = String.join("?", Collections.nCopies(5, springs));
-        List<Integer> bigSpans = Collections.nCopies(5, spans).stream().flatMap(List::stream).toList();
+        List<Integer> bigSpans =
+            Collections.nCopies(5, spans).stream().flatMap(List::stream).toList();
         System.out.println("Trying " + bigSprings + " with " + bigSpans);
         bigTotal += combinations(bigSprings, bigSpans);
       }
@@ -53,7 +54,8 @@ public class Puzzle12 {
     return combinations(line, spans, false, new HashMap<>());
   }
 
-  private static long combinations(String line, List<Integer> spans, boolean inSpan, Map<State, Long> cache) {
+  private static long combinations(
+      String line, List<Integer> spans, boolean inSpan, Map<State, Long> cache) {
     State state = new State(line, spans, inSpan);
     Long cached = cache.get(state);
     if (cached != null) {
@@ -64,7 +66,8 @@ public class Puzzle12 {
     return count;
   }
 
-  private static long combinationsUncached(String line, List<Integer> spans, boolean inSpan, Map<State, Long> cache) {
+  private static long combinationsUncached(
+      String line, List<Integer> spans, boolean inSpan, Map<State, Long> cache) {
     if (line.isEmpty()) {
       boolean success = inSpan ? spans.equals(ZERO_LIST) : spans.isEmpty();
       return success ? 1 : 0;
@@ -74,10 +77,11 @@ public class Puzzle12 {
         if (spans.isEmpty() || (inSpan && spans.getFirst() == 0)) {
           return 0;
         }
-        List<Integer> newSpans = ImmutableList.<Integer>builder()
-            .add(spans.get(0) - 1)
-            .addAll(spans.subList(1, spans.size()))
-            .build();
+        List<Integer> newSpans =
+            ImmutableList.<Integer>builder()
+                .add(spans.get(0) - 1)
+                .addAll(spans.subList(1, spans.size()))
+                .build();
         return combinations(line.substring(1), newSpans, true, cache);
       }
       case '.' -> {

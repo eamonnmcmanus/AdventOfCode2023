@@ -35,7 +35,8 @@ public class Puzzle12 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle12.class.getResourceAsStream("puzzle12.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle12.class.getResourceAsStream("puzzle12.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -46,7 +47,8 @@ public class Puzzle12 {
 
         // Part 1
         ImmutableList<Node> shortestPath = shortestPath(map.graph, map.start, map.end);
-        System.out.println("For " + name + ", shortest path has length " + (shortestPath.size() - 1));
+        System.out.println(
+            "For " + name + ", shortest path has length " + (shortestPath.size() - 1));
 
         // Part 2
         int shortest = Integer.MAX_VALUE;
@@ -94,10 +96,11 @@ public class Puzzle12 {
       if (current == start) {
         break;
       }
-      Node next = graph.predecessors(current).stream()
-          .filter(n -> distance.get(n) == distance.get(current) - 1)
-          .findFirst()
-          .get();
+      Node next =
+          graph.predecessors(current).stream()
+              .filter(n -> distance.get(n) == distance.get(current) - 1)
+              .findFirst()
+              .get();
       path.add(next);
     }
     return ImmutableList.copyOf(path.reversed());
@@ -158,7 +161,8 @@ public class Puzzle12 {
   }
 
   record Node(int i, int j, int height) {
-    @Override public String toString() {
+    @Override
+    public String toString() {
       char c = (height == 1000) ? 'S' : (char) height;
       return "(" + i + "," + j + ")" + c;
     }

@@ -28,7 +28,8 @@ public class Puzzle20 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle20.class.getResourceAsStream("puzzle20.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle20.class.getResourceAsStream("puzzle20.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -104,9 +105,9 @@ public class Puzzle20 {
           continue;
         }
         Node insertAfter = node;
-        if (shift > halfN) {           // if N = 7, +5 is equivalent to -1
+        if (shift > halfN) { // if N = 7, +5 is equivalent to -1
           shift = -n + 1 + shift;
-        } else if (shift < -halfN) {   // if N = 7, -5 is equivalent to +1
+        } else if (shift < -halfN) { // if N = 7, -5 is equivalent to +1
           shift = n - 1 + shift;
         }
         // This optimization of going in the shorter direction isn't really needed. At best it
@@ -147,8 +148,21 @@ public class Puzzle20 {
     long n1000 = order.get(1000 % order.size());
     long n2000 = order.get(2000 % order.size());
     long n3000 = order.get(3000 % order.size());
-    System.out.println("For " + what + ", N=" + order.size() + ", numbers are " + n1000 + "," + n2000 + "," + n3000 + " summing to " + n1000 + n2000 + n3000);
-
+    System.out.println(
+        "For "
+            + what
+            + ", N="
+            + order.size()
+            + ", numbers are "
+            + n1000
+            + ","
+            + n2000
+            + ","
+            + n3000
+            + " summing to "
+            + n1000
+            + n2000
+            + n3000);
   }
 
   private static class Node {

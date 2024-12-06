@@ -21,7 +21,8 @@ import java.util.stream.IntStream;
  * @author Éamonn McManus
  */
 public class Puzzle5 {
-  private static final String SAMPLE = """
+  private static final String SAMPLE =
+      """
           [D]
       [N] [C]
       [Z] [M] [P]
@@ -58,7 +59,8 @@ public class Puzzle5 {
             piles.get(move.to - 1).add(piles.get(move.from - 1).removeLast());
           }
         }
-        String tops = piles.stream().map(pile -> pile.getLast()).map(Object::toString).collect(joining(""));
+        String tops =
+            piles.stream().map(pile -> pile.getLast()).map(Object::toString).collect(joining(""));
         System.out.println("Part 1 tops for " + name + ": " + tops);
 
         piles = parsePiles(pileStrings, nPiles);
@@ -69,17 +71,16 @@ public class Puzzle5 {
           }
           piles.get(move.to - 1).addAll(moved.reversed());
         }
-        tops = piles.stream().map(pile -> pile.getLast()).map(Object::toString).collect(joining(""));
+        tops =
+            piles.stream().map(pile -> pile.getLast()).map(Object::toString).collect(joining(""));
         System.out.println("Part 2 tops for " + name + ": " + tops);
       }
     }
   }
 
   private static List<? extends List<Character>> parsePiles(List<String> pileStrings, int nPiles) {
-    List<? extends List<Character>> piles = IntStream
-        .range(0, nPiles)
-        .mapToObj(unused -> new ArrayList<Character>())
-        .toList();
+    List<? extends List<Character>> piles =
+        IntStream.range(0, nPiles).mapToObj(unused -> new ArrayList<Character>()).toList();
     for (String s : pileStrings) {
       for (int i = 0; i < nPiles; i++) {
         int ii = i * 4 + 1;

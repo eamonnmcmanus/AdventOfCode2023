@@ -48,7 +48,15 @@ public class Puzzle4 {
         int score = cards.get(i).score();
         log("Score for card " + i + 1 + " is " + score);
         for (int j = 1; j <= score; j++) {
-          log("  Update count for " + i + j + 1 + " from " + counts[i + j] + " to " + 2 * counts[i + j]);
+          log(
+              "  Update count for "
+                  + i
+                  + j
+                  + 1
+                  + " from "
+                  + counts[i + j]
+                  + " to "
+                  + 2 * counts[i + j]);
           counts[i + j] += counts[i];
         }
       }
@@ -70,7 +78,10 @@ public class Puzzle4 {
   }
 
   private static Set<Integer> parseNumbers(String line) {
-    return Arrays.stream(line.split(" +")).filter(s -> !s.isEmpty()).map(Integer::parseInt).collect(toSet());
+    return Arrays.stream(line.split(" +"))
+        .filter(s -> !s.isEmpty())
+        .map(Integer::parseInt)
+        .collect(toSet());
   }
 
   private static void log(String message) {

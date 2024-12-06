@@ -19,7 +19,8 @@ import java.util.regex.Pattern;
  * @author Éamonn McManus
  */
 public class Puzzle7 {
-  private static final String SAMPLE = """
+  private static final String SAMPLE =
+      """
       $ cd /
       $ ls
       dir a
@@ -81,11 +82,13 @@ public class Puzzle7 {
   }
 
   private static long totalSize(DirNode root) {
-    return root.contents.values().stream().mapToLong(
-        node -> switch (node) {
-          case DirNode dir -> totalSize(dir);
-          case FileNode file -> file.size;
-        })
+    return root.contents.values().stream()
+        .mapToLong(
+            node ->
+                switch (node) {
+                  case DirNode dir -> totalSize(dir);
+                  case FileNode file -> file.size;
+                })
         .sum();
   }
 

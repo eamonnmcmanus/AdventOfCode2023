@@ -1,6 +1,5 @@
 package advent2022;
 
-
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 import com.google.common.collect.ImmutableMap;
@@ -35,7 +34,8 @@ public class Puzzle23 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle23.class.getResourceAsStream("puzzle23.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle23.class.getResourceAsStream("puzzle23.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -70,7 +70,14 @@ public class Puzzle23 {
       round++;
     }
     System.out.println(
-        "For " + name + " part 2, no movement on round " + round + ", final grid " + grid.topLeft() + ".." + grid.bottomRight());
+        "For "
+            + name
+            + " part 2, no movement on round "
+            + round
+            + ", final grid "
+            + grid.topLeft()
+            + ".."
+            + grid.bottomRight());
   }
 
   static Grid parseGrid(List<String> lines) {
@@ -87,7 +94,10 @@ public class Puzzle23 {
   }
 
   enum Dir {
-    NORTH, SOUTH, WEST, EAST;
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST;
 
     static final Dir[] VALUES = values();
   }
@@ -102,11 +112,12 @@ public class Puzzle23 {
   static final Coord SW = new Coord(-1, +1);
   static final List<Coord> ADJACENT = List.of(NE, N, NW, E, W, SE, S, SW);
 
-  static final Map<Dir, List<Coord>> ADJACENT_IN_DIR = ImmutableMap.of(
-      Dir.NORTH, List.of(NE, N, NW),
-      Dir.SOUTH, List.of(SE, S, SW),
-      Dir.WEST, List.of(NW, W, SW),
-      Dir.EAST, List.of(NE, E, SE));
+  static final Map<Dir, List<Coord>> ADJACENT_IN_DIR =
+      ImmutableMap.of(
+          Dir.NORTH, List.of(NE, N, NW),
+          Dir.SOUTH, List.of(SE, S, SW),
+          Dir.WEST, List.of(NW, W, SW),
+          Dir.EAST, List.of(NE, E, SE));
 
   record Grid(Set<Coord> coords, int nextDirIndex) {
     Grid nextRound() {
@@ -126,8 +137,8 @@ public class Puzzle23 {
       do {
         Dir dir = Dir.VALUES[dirIndex];
         for (Coord coord : coords) {
-          if (!proposed.containsKey(coord) &&
-              ADJACENT_IN_DIR.get(dir).stream()
+          if (!proposed.containsKey(coord)
+              && ADJACENT_IN_DIR.get(dir).stream()
                   .map(c -> new Coord(coord.x + c.x, coord.y + c.y))
                   .noneMatch(coords::contains)) {
             proposed.put(coord, coord.move(dir));
@@ -141,9 +152,14 @@ public class Puzzle23 {
 
       // Second half: make all non-conflicting moves.
       Multiset<Coord> allProposed = ImmutableMultiset.copyOf(proposed.values());
-      Set<Coord> newCoords = coords.stream()
-          .map(c -> (proposed.containsKey(c) && allProposed.count(proposed.get(c)) == 1) ? proposed.get(c) : c)
-          .collect(toImmutableSet());
+      Set<Coord> newCoords =
+          coords.stream()
+              .map(
+                  c ->
+                      (proposed.containsKey(c) && allProposed.count(proposed.get(c)) == 1)
+                          ? proposed.get(c)
+                          : c)
+              .collect(toImmutableSet());
       return new Grid(newCoords, (nextDirIndex + 1) % 4);
     }
 
@@ -182,7 +198,6 @@ public class Puzzle23 {
       return sb.toString();
     }
   }
-
 
   record Coord(int x, int y) {
     Coord move(Dir dir) {

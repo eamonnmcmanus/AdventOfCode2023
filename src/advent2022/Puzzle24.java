@@ -32,7 +32,8 @@ public class Puzzle24 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle24.class.getResourceAsStream("puzzle24.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle24.class.getResourceAsStream("puzzle24.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -48,7 +49,13 @@ public class Puzzle24 {
         System.out.println("Part 2a steps for " + name + ": " + stepsPart2a.steps);
         var stepsPart2b = steps(stepsPart2a.blizzardMap, start, end);
         System.out.println("Part 2b steps for " + name + ": " + stepsPart2b.steps);
-        System.out.println("Total part 2 steps for " + name + ": " + stepsPart1.steps + stepsPart2a.steps + stepsPart2b.steps);
+        System.out.println(
+            "Total part 2 steps for "
+                + name
+                + ": "
+                + stepsPart1.steps
+                + stepsPart2a.steps
+                + stepsPart2b.steps);
       }
     }
   }
@@ -123,16 +130,15 @@ public class Puzzle24 {
 
     boolean isFree(Coord coord) {
       return switch (coord) {
-        case Coord(int x, int y) when y == -1 -> x == 0;  // entrance
-        case Coord(int x, int y) when y == maxY -> x == maxX - 1;  // exit
+        case Coord(int x, int y) when y == -1 -> x == 0; // entrance
+        case Coord(int x, int y) when y == maxY -> x == maxX - 1; // exit
         case Coord(int x, int y) -> x >= 0 && y >= 0 && x < maxX && y < maxY && !occupied[x][y];
       };
     }
 
     BlizzardMap step() {
-      ImmutableList<Blizzard> newBlizzards = blizzards.stream()
-          .map(b -> b.step(maxX, maxY))
-          .collect(toImmutableList());
+      ImmutableList<Blizzard> newBlizzards =
+          blizzards.stream().map(b -> b.step(maxX, maxY)).collect(toImmutableList());
       return new BlizzardMap(newBlizzards, maxX, maxY);
     }
   }

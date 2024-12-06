@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,7 +35,9 @@ public class Puzzle24 {
       for (int j = i + 1; j < hailstones.size(); j++) {
         Hailstone h2 = hailstones.get(j);
         Intersection intersection = intersection(h1, h2);
-        if (intersection.t1 > 0 && intersection.t2 > 0 && bounds.inside(intersection.x, intersection.y)) {
+        if (intersection.t1 > 0
+            && intersection.t2 > 0
+            && bounds.inside(intersection.x, intersection.y)) {
           count++;
         }
       }
@@ -76,7 +77,7 @@ public class Puzzle24 {
     double dy2 = h2.deltaY;
     double slope1 = dy1 / dx1;
     double t2 = (y1 - y2 + (x2 - x1) * slope1) / (dy2 - dx2 * slope1);
-    double t1 = (x2 - x1 + t2*dx2) / dx1;
+    double t1 = (x2 - x1 + t2 * dx2) / dx1;
     double x = x1 + t1 * dx1;
     double y = y1 + t1 * dy1;
     return new Intersection(t1, t2, x, y);
@@ -153,7 +154,8 @@ public class Puzzle24 {
 
   static void part2(List<Hailstone> hailstones) {
     Hailstone one = hailstones.get(0);
-    BigDecimal[][] matrix = new BigDecimal[4][5]; // 4 equations in 4 variables, each with a constant RHS
+    BigDecimal[][] matrix =
+        new BigDecimal[4][5]; // 4 equations in 4 variables, each with a constant RHS
     MathContext context = MathContext.DECIMAL128;
     BigDecimal x1 = BigDecimal.valueOf(one.startX);
     BigDecimal y1 = BigDecimal.valueOf(one.startY);
@@ -167,32 +169,34 @@ public class Puzzle24 {
       BigDecimal dy2 = BigDecimal.valueOf(two.deltaY);
       // (y1-y2)*dx0 + (x2-x1)*dy0 + (dy2-dy1)*x0 + (dx1-dx2)*y0 = y1*dx1 - y2*dx2 + x2*dy2 - x1*dy1
       // Variables are (dx0, dy0, x0, y0) in that order. [4] is the RHS of each equation.
-      matrix[i][0] = y1.subtract(y2);   //   (y1-y2)*dx0
-      matrix[i][1] = x2.subtract(x1);   // + (x2-x1)*dy0
+      matrix[i][0] = y1.subtract(y2); //   (y1-y2)*dx0
+      matrix[i][1] = x2.subtract(x1); // + (x2-x1)*dy0
       matrix[i][2] = dy2.subtract(dy1); // + (dy2-dy1)*x0
       matrix[i][3] = dx1.subtract(dx2); // + (dx1-dx2)*y0
-      matrix[i][4] = y1.multiply(dx1)   // = y1*dx1 - y2*dx2 + x2*dy2 - x1*dy1
-          .subtract(y2.multiply(dx2))
-          .add(x2.multiply(dy2))
-          .subtract(x1.multiply(dy1));
+      matrix[i][4] =
+          y1.multiply(dx1) // = y1*dx1 - y2*dx2 + x2*dy2 - x1*dy1
+              .subtract(y2.multiply(dx2))
+              .add(x2.multiply(dy2))
+              .subtract(x1.multiply(dy1));
     }
 
     gauss(matrix);
 
-    // This is copied, but I think the `gauss` algorithm could perhaps have done these extra calculations?
+    // This is copied, but I think the `gauss` algorithm could perhaps have done these extra
+    // calculations?
     BigDecimal y0 = matrix[3][4].divide(matrix[3][3], context);
-    BigDecimal x0 = matrix[2][4]
-        .subtract(matrix[2][3].multiply(y0))
-        .divide(matrix[2][2], context);
-    BigDecimal dy0 = matrix[1][4]
-        .subtract(matrix[1][3].multiply(y0))
-        .subtract(matrix[1][2].multiply(x0))
-        .divide(matrix[1][1], context);
-    BigDecimal dx0 = matrix[0][4]
-        .subtract(matrix[0][3].multiply(y0))
-        .subtract(matrix[0][2].multiply(x0))
-        .subtract(matrix[0][1].multiply(dy0))
-        .divide(matrix[0][0], context);
+    BigDecimal x0 = matrix[2][4].subtract(matrix[2][3].multiply(y0)).divide(matrix[2][2], context);
+    BigDecimal dy0 =
+        matrix[1][4]
+            .subtract(matrix[1][3].multiply(y0))
+            .subtract(matrix[1][2].multiply(x0))
+            .divide(matrix[1][1], context);
+    BigDecimal dx0 =
+        matrix[0][4]
+            .subtract(matrix[0][3].multiply(y0))
+            .subtract(matrix[0][2].multiply(x0))
+            .subtract(matrix[0][1].multiply(dy0))
+            .divide(matrix[0][0], context);
     System.out.println("y0 " + y0 + " x0 " + x0 + " dy0 " + dy0 + " dx0 " + dx0);
 
     BigDecimal z1 = BigDecimal.valueOf(one.startZ);
@@ -210,7 +214,8 @@ public class Puzzle24 {
     // dz0 = (cz2-cz1)/(t2-t1); z0 = cz1 - dz0*t1.
     BigDecimal dz0 = cz2.subtract(cz1).divide(t2.subtract(t1), context);
     BigDecimal z0 = cz1.subtract(dz0.multiply(t1));
-    System.out.println("x0 " + x0 + " y0 " + y0 + " z0 " + z0 + " dx0 " + dx0 + " dy0 " + dy0 + " dz0 " + dz0);
+    System.out.println(
+        "x0 " + x0 + " y0 " + y0 + " z0 " + z0 + " dx0 " + dx0 + " dy0 " + dy0 + " dz0 " + dz0);
 
     System.out.println(x0.add(y0).add(z0).setScale(0, RoundingMode.HALF_UP));
   }
@@ -241,7 +246,8 @@ public class Puzzle24 {
         matrix[idxMax] = tmp;
         for (int i = pivotRow + 1; i < nRows; i++) {
           // for all lower rows, subtract so that matrix[i][pivotCol] becomes 0
-          BigDecimal factor = matrix[i][pivotCol].divide(matrix[pivotRow][pivotCol], MathContext.DECIMAL128);
+          BigDecimal factor =
+              matrix[i][pivotCol].divide(matrix[pivotRow][pivotCol], MathContext.DECIMAL128);
           matrix[i][pivotCol] = BigDecimal.ZERO;
           for (int j = pivotCol + 1; j < nCols; j++) {
             // only need to go right, to the left it's all zeros anyway
@@ -256,7 +262,8 @@ public class Puzzle24 {
 
   private static final Pattern HAILSTONE_PATTERN =
       Pattern.compile("(\\d+),\\s+(\\d+),\\s+(\\d+)\\s+@\\s+(-?\\d+),\\s+(-?\\d+),\\s+(-?\\d+)");
-      // 19, 13, 30 @ -2,  1, -2
+
+  // 19, 13, 30 @ -2,  1, -2
 
   static Hailstone parseHailstone(String line) {
     Matcher matcher = HAILSTONE_PATTERN.matcher(line);

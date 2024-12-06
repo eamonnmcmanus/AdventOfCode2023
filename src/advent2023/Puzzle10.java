@@ -59,7 +59,8 @@ public class Puzzle10 {
       if (sourceJ > 0 && grid.get(sourceI).get(sourceJ - 1).contains(RIGHT)) {
         sourceDirs.add(LEFT);
       }
-      if (sourceJ + 1 < grid.get(sourceI).size() && grid.get(sourceI).get(sourceJ + 1).contains(LEFT)) {
+      if (sourceJ + 1 < grid.get(sourceI).size()
+          && grid.get(sourceI).get(sourceJ + 1).contains(LEFT)) {
         sourceDirs.add(RIGHT);
       }
       Direction dir = sourceDirs.iterator().next();
@@ -75,7 +76,7 @@ public class Puzzle10 {
 
       // Solution for Part 1, and also fill in the pipe[][] array.
       int steps = 0;
-      for (int i = sourceI, j = sourceJ;; ) {
+      for (int i = sourceI, j = sourceJ; ; ) {
         steps++;
         // dir tells us which way to go now
         switch (dir) {
@@ -97,10 +98,16 @@ public class Puzzle10 {
       System.out.println("Total steps " + steps + ", halfway " + steps / 2);
 
       int insideCount = 0;
-      enum Corner {NONE, FROM_ABOVE, FROM_BELOW}
+      enum Corner {
+        NONE,
+        FROM_ABOVE,
+        FROM_BELOW
+      }
 
-      // We're inside the loop if we have crossed an odd number of lines starting from the left edge.
-      // It's a bit more complicated, though, because we might encounter e.g. ┏━┛. That's essentially
+      // We're inside the loop if we have crossed an odd number of lines starting from the left
+      // edge.
+      // It's a bit more complicated, though, because we might encounter e.g. ┏━┛. That's
+      // essentially
       // the same as encountering ┃, so if we were outside we are now inside, and vice versa.
       // On the other hand ┏━┓ has no effect on "insideness". So we remember a "corner" state that
       // tells us which starting corner (┏ or ┓) we encountered before. Then when we encounter the
@@ -165,7 +172,10 @@ public class Puzzle10 {
   }
 
   enum Direction {
-    LEFT, RIGHT, UP, DOWN;
+    LEFT,
+    RIGHT,
+    UP,
+    DOWN;
 
     Direction opposite() {
       return switch (this) {

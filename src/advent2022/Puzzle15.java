@@ -4,10 +4,8 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.DiscreteDomain.integers;
 import static java.lang.Math.abs;
 
-import com.google.common.collect.BoundType;
 import com.google.common.collect.ContiguousSet;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
@@ -48,7 +46,8 @@ public class Puzzle15 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle15.class.getResourceAsStream("puzzle15.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle15.class.getResourceAsStream("puzzle15.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -74,11 +73,12 @@ public class Puzzle15 {
   // Finally, the range could also include the beacon, which should then be excluded.
 
   private static void part1(String name, List<Sensor> sensors) {
-    int targetY = switch (name) {
-      case "sample" -> 10;
-      case "problem" -> 2_000_000;
-      default -> throw new AssertionError(name);
-    };
+    int targetY =
+        switch (name) {
+          case "sample" -> 10;
+          case "problem" -> 2_000_000;
+          default -> throw new AssertionError(name);
+        };
     RangeSet<Integer> ranges = impossibleRanges(sensors, targetY);
     for (Sensor sensor : sensors) {
       if (sensor.beaconY == targetY) {
@@ -90,11 +90,12 @@ public class Puzzle15 {
   }
 
   private static void part2(String name, List<Sensor> sensors) {
-    int maxCoord = switch (name) {
-      case "sample" -> 20;
-      case "problem" -> 4_000_000;
-      default -> throw new AssertionError(name);
-    };
+    int maxCoord =
+        switch (name) {
+          case "sample" -> 20;
+          case "problem" -> 4_000_000;
+          default -> throw new AssertionError(name);
+        };
     Range<Integer> allX = Range.closed(0, maxCoord);
     record Coord(int x, int y) {}
     Set<Coord> found = new HashSet<>();
@@ -145,11 +146,13 @@ public class Puzzle15 {
     return lines.stream()
         .map(SENSOR_PATTERN::matcher)
         .peek(m -> checkState(m.matches()))
-        .map(m -> new Sensor(
-            Integer.parseInt(m.group(1)),
-            Integer.parseInt(m.group(2)),
-            Integer.parseInt(m.group(3)),
-            Integer.parseInt(m.group(4))))
+        .map(
+            m ->
+                new Sensor(
+                    Integer.parseInt(m.group(1)),
+                    Integer.parseInt(m.group(2)),
+                    Integer.parseInt(m.group(3)),
+                    Integer.parseInt(m.group(4))))
         .toList();
   }
 

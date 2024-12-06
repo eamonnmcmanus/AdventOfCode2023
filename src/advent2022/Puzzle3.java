@@ -1,6 +1,5 @@
 package advent2022;
 
-import static com.google.common.collect.ImmutableMultiset.toImmutableMultiset;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Sets.intersection;
 
@@ -58,10 +57,10 @@ public class Puzzle3 {
         long sumPart2 = 0;
         assert lines.size() % 3 == 0;
         for (int i = 0; i < lines.size(); i += 3) {
-          var intersection = intersection(
-              classify(lines.get(i)),
-              intersection(classify(lines.get(i + 1)),
-                  classify(lines.get(i + 2))));
+          var intersection =
+              intersection(
+                  classify(lines.get(i)),
+                  intersection(classify(lines.get(i + 1)), classify(lines.get(i + 2))));
           var c = Iterables.getOnlyElement(intersection);
           sumPart2 += priority(c);
         }

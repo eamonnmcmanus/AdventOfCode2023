@@ -24,31 +24,28 @@ import java.util.concurrent.Callable;
 public class Puzzle17 {
   private static final String SAMPLE = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>";
 
-  private static final List<String> ROCK_STRINGS = List.of(
-      """
+  private static final List<String> ROCK_STRINGS =
+      List.of(
+          """
       ####
       """,
-
-      """
+          """
       .#.
       ###
       .#.
       """,
-
-      """
+          """
       ..#
       ..#
       ###
       """,
-
-      """
+          """
       #
       #
       #
       #
       """,
-
-      """
+          """
       ##
       ##
       """);
@@ -76,7 +73,8 @@ public class Puzzle17 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle17.class.getResourceAsStream("puzzle17.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle17.class.getResourceAsStream("puzzle17.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -147,7 +145,8 @@ public class Puzzle17 {
       cycleMap.put(state, pile.height());
       pile.addRock();
     }
-    // We've detected a cycle. Let's say the cycle looks like this, with height deltas and totals shown:
+    // We've detected a cycle. Let's say the cycle looks like this, with height deltas and totals
+    // shown:
     //   0  1  2  3  4  5  6  7  8  9 10
     //   a  b  c  d  e  c  d  e  c  d  e...
     //   2  3  3  4  5  3  4  5  3  4  5      <- height contributed
@@ -162,7 +161,8 @@ public class Puzzle17 {
     //   h3, the height of the incomplete cycle.
     // The incomplete cycle has length il = (i - x1) mod cl and its height h3 is the height at
     // index x1 + il minus h1.
-    // In the example, say we want to know the height after i = 10 rocks, which should be 36. We have
+    // In the example, say we want to know the height after i = 10 rocks, which should be 36. We
+    // have
     // x1 = 2, h1 = 5, h2 = 17, (h2 - h1) = 12, i - x1 = 8, ⌊(i - x1) / cl⌋ = ⌊8 / 3⌋ = 2, so the
     // cycle iterations contribute 2×12 = 24 to the height. The incomplete cycle has length
     // (10 - 2) mod 3 = 2 and its height is the difference between the height just before adding
@@ -207,11 +207,12 @@ public class Puzzle17 {
         // Jet pushes rock.
         char c = jets.charAt(jetI);
         jetI = (jetI + 1) % jets.length();
-        Rock shiftedRock = switch (c) {
-          case '<' -> rock.shiftedLeft();
-          case '>' -> rock.shiftedRight();
-          default -> throw new AssertionError(c);
-        };
+        Rock shiftedRock =
+            switch (c) {
+              case '<' -> rock.shiftedLeft();
+              case '>' -> rock.shiftedRight();
+              default -> throw new AssertionError(c);
+            };
         if (rockFits(shiftedRock, pos, pile)) {
           rock = shiftedRock;
         }
@@ -325,10 +326,12 @@ public class Puzzle17 {
 
     private String cachedToString;
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
       if (cachedToString == null) {
-        cachedToString = String.join(
-            "\n", Arrays.stream(bitmasks).mapToObj(m -> bitmaskString(m)).toList().reversed());
+        cachedToString =
+            String.join(
+                "\n", Arrays.stream(bitmasks).mapToObj(m -> bitmaskString(m)).toList().reversed());
       }
       return cachedToString;
     }

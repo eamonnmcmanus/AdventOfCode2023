@@ -37,10 +37,11 @@ public class Puzzle5 {
       }
 
       // Part 1
-      long minLocation = seedNumbers.stream()
-          .map(seedNumber -> lookup(seedNumber, nameToMap))
-          .min(Comparator.naturalOrder())
-          .get();
+      long minLocation =
+          seedNumbers.stream()
+              .map(seedNumber -> lookup(seedNumber, nameToMap))
+              .min(Comparator.naturalOrder())
+              .get();
       System.out.println("Min location is " + minLocation);
       long max = 0;
       for (int i = 1; i < seedNumbers.size(); i += 2) {

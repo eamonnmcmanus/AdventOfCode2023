@@ -14,7 +14,8 @@ import java.util.concurrent.Callable;
  * @author Éamonn McManus
  */
 public class Puzzle1 {
-  private static final String SAMPLE = """
+  private static final String SAMPLE =
+      """
       1000
       2000
       3000
@@ -51,10 +52,11 @@ public class Puzzle1 {
           lines = lines.subList(index + 1, lines.size());
         }
         groups.add(lines);
-        List<Long> totals = groups.stream()
-            .map(group -> group.stream().mapToLong(Long::parseLong).sum())
-            .sorted()
-            .toList();
+        List<Long> totals =
+            groups.stream()
+                .map(group -> group.stream().mapToLong(Long::parseLong).sum())
+                .sorted()
+                .toList();
         System.out.println("Max for " + name + " is " + totals.getLast());
         long topThree = totals.stream().skip(totals.size() - 3).mapToLong(Long::valueOf).sum();
         System.out.println("Sum of top three is " + topThree);

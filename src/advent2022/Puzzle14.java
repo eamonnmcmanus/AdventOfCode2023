@@ -27,7 +27,8 @@ public class Puzzle14 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle14.class.getResourceAsStream("puzzle14.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle14.class.getResourceAsStream("puzzle14.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -97,11 +98,12 @@ public class Puzzle14 {
     }
     record Pair(int x, int y) {}
     for (String line : lines) {
-      List<Pair> pairs = Pattern.compile("(\\d+),(\\d+)")
-          .matcher(line)
-          .results()
-          .map(mr -> new Pair(Integer.parseInt(mr.group(1)), Integer.parseInt(mr.group(2))))
-          .toList();
+      List<Pair> pairs =
+          Pattern.compile("(\\d+),(\\d+)")
+              .matcher(line)
+              .results()
+              .map(mr -> new Pair(Integer.parseInt(mr.group(1)), Integer.parseInt(mr.group(2))))
+              .toList();
       for (int i = 1; i < pairs.size(); i++) {
         Pair from = pairs.get(i - 1);
         Pair to = pairs.get(i);
@@ -114,7 +116,8 @@ public class Puzzle14 {
             grid[from.y][x] = '#';
           }
         } else {
-          throw new IllegalStateException("Diagonal line " + from.x + "," + from.y + " -> " + to.x + "," + to.y);
+          throw new IllegalStateException(
+              "Diagonal line " + from.x + "," + from.y + " -> " + to.x + "," + to.y);
         }
       }
     }

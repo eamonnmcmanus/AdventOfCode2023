@@ -36,7 +36,9 @@ public class Puzzle8 {
       // Part 1.
       long steps = 0;
       String node = "AAA";
-      for (int dirIndex = 0; !node.equals("ZZZ"); dirIndex = (dirIndex + 1) % directions.length(), steps++) {
+      for (int dirIndex = 0;
+          !node.equals("ZZZ");
+          dirIndex = (dirIndex + 1) % directions.length(), steps++) {
         List<String> fork = map.get(node);
         int index = indexFor(directions.charAt(dirIndex));
         node = fork.get(index);
@@ -58,7 +60,8 @@ public class Puzzle8 {
    * the solution is just the LCM of the cycle lengths.
    */
   private void solve() {
-    List<State> states = map.keySet().stream().filter(s -> s.endsWith("A")).map(s -> new State(s, 0)).toList();
+    List<State> states =
+        map.keySet().stream().filter(s -> s.endsWith("A")).map(s -> new State(s, 0)).toList();
     System.out.println("States " + states);
     // Pass through the initial states before cycling begins.
     states = nextStates(states);
@@ -68,9 +71,23 @@ public class Puzzle8 {
     long lcm = 1;
     for (State state : states) {
       Cycle cycle = cycle(state);
-      System.out.println("Start at " + state + ", cycle starts at " + cycle.startIndex + ", length " + cycle.states.size() + " - " + cycle.startIndex + " = " + (cycle.states.size() - cycle.startIndex));
+      System.out.println(
+          "Start at "
+              + state
+              + ", cycle starts at "
+              + cycle.startIndex
+              + ", length "
+              + cycle.states.size()
+              + " - "
+              + cycle.startIndex
+              + " = "
+              + (cycle.states.size() - cycle.startIndex));
       System.out.println("Last in cycle is " + cycle.states.getLast());
-      int stopIndex = IntStream.range(0, Integer.MAX_VALUE).filter(i -> cycle.states.get(i).node.endsWith("Z")).findFirst().getAsInt();
+      int stopIndex =
+          IntStream.range(0, Integer.MAX_VALUE)
+              .filter(i -> cycle.states.get(i).node.endsWith("Z"))
+              .findFirst()
+              .getAsInt();
       System.out.println("Stop index is " + stopIndex);
       lcm = lcm(lcm, cycle.states.size());
       System.out.println("LCM now " + lcm);
@@ -128,11 +145,12 @@ public class Puzzle8 {
   private static Map<String, List<String>> parseMap(List<String> lines) {
     return lines.stream()
         .map(MAP_LINE::matcher)
-        .peek(matcher -> {
-          if (!matcher.matches()) {
-            throw new IllegalArgumentException(matcher.toString());
-          }
-        })
+        .peek(
+            matcher -> {
+              if (!matcher.matches()) {
+                throw new IllegalArgumentException(matcher.toString());
+              }
+            })
         .map(matcher -> Map.entry(matcher.group(1), List.of(matcher.group(2), matcher.group(3))))
         .collect(toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
   }

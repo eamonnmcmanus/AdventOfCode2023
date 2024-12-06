@@ -169,7 +169,8 @@ public class Puzzle10 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle10.class.getResourceAsStream("puzzle10.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle10.class.getResourceAsStream("puzzle10.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -190,7 +191,7 @@ public class Puzzle10 {
           }
           int px = (cycle - 1) % 40;
           int py = (cycle - 1) / 40;
-          if (abs(x -px) <= 1) {
+          if (abs(x - px) <= 1) {
             grid[py][px] = '#';
           }
           cycle++;
@@ -200,14 +201,15 @@ public class Puzzle10 {
             }
             px = (cycle - 1) % 40;
             py = (cycle - 1) / 40;
-            if (abs(x -px) <= 1) {
+            if (abs(x - px) <= 1) {
               grid[py][px] = '#';
             }
             x += deltaX;
             cycle++;
           }
         }
-        System.out.println("For " + name + ", total signal strength " + total + ", final cycle " + cycle);
+        System.out.println(
+            "For " + name + ", total signal strength " + total + ", final cycle " + cycle);
         System.out.println("For " + name + ", grid:");
         for (char[] line : grid) {
           System.out.println(new String(line));

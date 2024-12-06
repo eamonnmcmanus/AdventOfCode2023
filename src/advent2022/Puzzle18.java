@@ -41,17 +41,21 @@ public class Puzzle18 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle18.class.getResourceAsStream("puzzle18.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle18.class.getResourceAsStream("puzzle18.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
       String name = entry.getKey();
       try (Reader r = entry.getValue().call()) {
         List<String> lines = CharStreams.readLines(r);
-        Set<Coord> cubes = lines.stream()
-            .map(line -> Splitter.on(',').splitToList(line).stream().map(Integer::parseInt).toList())
-            .map(list -> new Coord(list.get(0), list.get(1), list.get(2)))
-            .collect(toImmutableSet());
+        Set<Coord> cubes =
+            lines.stream()
+                .map(
+                    line ->
+                        Splitter.on(',').splitToList(line).stream().map(Integer::parseInt).toList())
+                .map(list -> new Coord(list.get(0), list.get(1), list.get(2)))
+                .collect(toImmutableSet());
         part1(name, cubes);
         part2(name, cubes);
       }
@@ -111,8 +115,12 @@ public class Puzzle18 {
     }
 
     boolean inBounds(Coord coord) {
-      return coord.x >= min.x && coord.y >= min.y && coord.z >= min.z
-          && coord.x <= max.x && coord.y <= max.y && coord.z <= max.z;
+      return coord.x >= min.x
+          && coord.y >= min.y
+          && coord.z >= min.z
+          && coord.x <= max.x
+          && coord.y <= max.y
+          && coord.z <= max.z;
     }
 
     Set<Coord> fill(Coord start) {
@@ -128,7 +136,8 @@ public class Puzzle18 {
   }
 
   record Coord(int x, int y, int z) {
-    @Override public String toString() {
+    @Override
+    public String toString() {
       return "(" + x + "," + y + "," + z + ")";
     }
 

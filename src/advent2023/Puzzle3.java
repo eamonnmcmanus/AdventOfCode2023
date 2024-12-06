@@ -23,8 +23,12 @@ public class Puzzle3 {
           if (Character.isDigit(line.charAt(j))) {
             int end;
             for (end = j + 1; end < line.length() && Character.isDigit(line.charAt(end)); end++) {}
-            if (sym(lines, i - 1, j - 1) || sym(lines, i, j - 1) || sym(lines, i + 1, j - 1)
-                || sym(lines, i - 1, end) || sym(lines, i, end) || sym(lines, i + 1, end)
+            if (sym(lines, i - 1, j - 1)
+                || sym(lines, i, j - 1)
+                || sym(lines, i + 1, j - 1)
+                || sym(lines, i - 1, end)
+                || sym(lines, i, end)
+                || sym(lines, i + 1, end)
                 || adjacent(lines, i, j, end)) {
               sum += Integer.parseInt(line.substring(j, end));
             }

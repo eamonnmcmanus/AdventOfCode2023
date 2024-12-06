@@ -17,7 +17,8 @@ public class Puzzle25 {
   private static final ImmutableBiMap<Character, Integer> SNAFU_TO_DECIMAL =
       ImmutableBiMap.of('0', 0, '1', 1, '2', 2, '=', -2, '-', -1);
 
-  private static final String SAMPLE = """
+  private static final String SAMPLE =
+      """
       1=-0-2
       12111
       2=0=
@@ -36,7 +37,8 @@ public class Puzzle25 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle25.class.getResourceAsStream("puzzle25.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle25.class.getResourceAsStream("puzzle25.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {

@@ -79,17 +79,35 @@ public class Puzzle25 {
     long start = System.nanoTime();
     for (int i1 = 0; i1 < edges.size(); i1++) {
       Edge edge1 = edges.get(i1);
-      System.out.println("Edge1 " + i1 + 1 + " of " + edges.size() + " (" + edge1 + "), elapsed " + (System.nanoTime() - start) / 1_000_000_000);
+      System.out.println(
+          "Edge1 "
+              + i1
+              + 1
+              + " of "
+              + edges.size()
+              + " ("
+              + edge1
+              + "), elapsed "
+              + (System.nanoTime() - start) / 1_000_000_000);
       for (int i2 = i1 + 1; i2 < edges.size(); i2++) {
         if (i2 % 200 == 0) {
-          System.out.println("  Edge2 " + i2 + ", elapsed " + (System.nanoTime() - start) / 1_000_000_000);
+          System.out.println(
+              "  Edge2 " + i2 + ", elapsed " + (System.nanoTime() - start) / 1_000_000_000);
         }
         Edge edge2 = edges.get(i2);
         for (int i3 = i2 + 1; i3 < edges.size(); i3++) {
           Edge edge3 = edges.get(i3);
           Set<Node> seen = new HashSet<>();
           if (visit(edge1.a, edge1, edge2, edge3, seen)) {
-            System.out.println("Success with component of size " + seen.size() + ": " + edge1 + ", " + edge2 + ", " + edge3);
+            System.out.println(
+                "Success with component of size "
+                    + seen.size()
+                    + ": "
+                    + edge1
+                    + ", "
+                    + edge2
+                    + ", "
+                    + edge3);
             return;
           }
         }

@@ -1,7 +1,5 @@
 package advent2022;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Range;
@@ -19,7 +17,8 @@ import java.util.regex.Pattern;
  * @author Éamonn McManus
  */
 public class Puzzle4 {
-  private static final String SAMPLE = """
+  private static final String SAMPLE =
+      """
       2-4,6-8
       2-3,4-5
       5-7,7-9
@@ -39,13 +38,18 @@ public class Puzzle4 {
       try (Reader r = entry.getValue().call()) {
         List<String> lines = CharStreams.readLines(r);
         List<RangePair> rangePairs = lines.stream().map(line -> parseRangePair(line)).toList();
-        long count1 = rangePairs.stream()
-            .filter(pair -> pair.one.encloses(pair.two) || pair.two.encloses(pair.one))
-            .count();
+        long count1 =
+            rangePairs.stream()
+                .filter(pair -> pair.one.encloses(pair.two) || pair.two.encloses(pair.one))
+                .count();
         System.out.println("For " + name + ", count of enclosing ranges is " + count1);
-        long count2 = rangePairs.stream()
-            .filter(pair -> pair.one.isConnected(pair.two) && !pair.one.intersection(pair.two).isEmpty())
-            .count();
+        long count2 =
+            rangePairs.stream()
+                .filter(
+                    pair ->
+                        pair.one.isConnected(pair.two)
+                            && !pair.one.intersection(pair.two).isEmpty())
+                .count();
         System.out.println("For " + name + ", count of overlapping ranges is " + count2);
       }
     }

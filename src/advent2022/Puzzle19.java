@@ -1,7 +1,6 @@
 package advent2022;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.Integer.max;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.CharStreams;
@@ -38,7 +37,8 @@ public class Puzzle19 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle19.class.getResourceAsStream("puzzle19.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle19.class.getResourceAsStream("puzzle19.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -63,7 +63,8 @@ public class Puzzle19 {
       // The samples actually provoke a much longer run time than the problems.
       return;
     }
-    long product = blueprints.stream().limit(3).mapToLong(bp -> max(name, bp, 32)).reduce(1L, (a, b) -> a * b);
+    long product =
+        blueprints.stream().limit(3).mapToLong(bp -> max(name, bp, 32)).reduce(1L, (a, b) -> a * b);
     System.out.println("For " + name + ", product is " + product);
   }
 
@@ -76,8 +77,12 @@ public class Puzzle19 {
   private static long max(String name, Blueprint blueprint, int minutes) {
     // There is no point in manufacturing more ore robots than the maximum ore cost of any robot
     // kind, and so on for the others. So determine what those maxima are.
-    List<Resources> costs = List.of(
-        blueprint.oreRobotCost, blueprint.clayRobotCost, blueprint.obsidianRobotCost, blueprint.geodeRobotCost);
+    List<Resources> costs =
+        List.of(
+            blueprint.oreRobotCost,
+            blueprint.clayRobotCost,
+            blueprint.obsidianRobotCost,
+            blueprint.geodeRobotCost);
     int maxOreCost = costs.stream().mapToInt(Resources::ore).max().getAsInt();
     int maxClayCost = costs.stream().mapToInt(Resources::clay).max().getAsInt();
     int maxObsidianCost = costs.stream().mapToInt(Resources::obsidian).max().getAsInt();
@@ -113,7 +118,8 @@ public class Puzzle19 {
                   newStatus.geodes));
         }
         // Consider building an obsidian robot.
-        if (status.obsidianRobots < maxObsidianCost && status.resources.contains(blueprint.obsidianRobotCost)) {
+        if (status.obsidianRobots < maxObsidianCost
+            && status.resources.contains(blueprint.obsidianRobotCost)) {
           addStatus(
               newStatuses,
               new Status(
@@ -158,12 +164,14 @@ public class Puzzle19 {
 
   record Resources(int ore, int clay, int obsidian) {
     static final Resources ZERO = new Resources(0, 0, 0);
+
     boolean contains(Resources that) {
       return this.ore >= that.ore && this.clay >= that.clay && this.obsidian >= that.obsidian;
     }
 
     Resources minus(Resources that) {
-      return new Resources(this.ore - that.ore, this.clay - that.clay, this.obsidian - that.obsidian);
+      return new Resources(
+          this.ore - that.ore, this.clay - that.clay, this.obsidian - that.obsidian);
     }
   }
 
@@ -172,24 +180,25 @@ public class Puzzle19 {
       Resources oreRobotCost,
       Resources clayRobotCost,
       Resources obsidianRobotCost,
-      Resources geodeRobotCost) {
-  }
+      Resources geodeRobotCost) {}
 
   record Status(
       Resources resources,
-      int oreRobots, int clayRobots, int obsidianRobots, int geodeRobots,
+      int oreRobots,
+      int clayRobots,
+      int obsidianRobots,
+      int geodeRobots,
       int geodes) {
     static final Status INITIAL = new Status(Resources.ZERO, 1, 0, 0, 0, 0);
 
     Status next() {
-      Resources nextResources = new Resources(
-          resources.ore + oreRobots,
-          resources.clay + clayRobots,
-          resources.obsidian + obsidianRobots);
+      Resources nextResources =
+          new Resources(
+              resources.ore + oreRobots,
+              resources.clay + clayRobots,
+              resources.obsidian + obsidianRobots);
       return new Status(
-          nextResources,
-          oreRobots, clayRobots, obsidianRobots, geodeRobots,
-          geodes + geodeRobots);
+          nextResources, oreRobots, clayRobots, obsidianRobots, geodeRobots, geodes + geodeRobots);
     }
 
     boolean contains(Status that) {
@@ -215,10 +224,11 @@ public class Puzzle19 {
   private static final Blueprint parseBlueprint(String line) {
     Matcher m = BLUEPRINT_PATTERN.matcher(line);
     checkArgument(m.matches(), line);
-    int[] ints = IntStream.rangeClosed(1, m.groupCount())
-        .mapToObj(m::group)
-        .mapToInt(Integer::parseInt)
-        .toArray();
+    int[] ints =
+        IntStream.rangeClosed(1, m.groupCount())
+            .mapToObj(m::group)
+            .mapToInt(Integer::parseInt)
+            .toArray();
     return new Blueprint(
         ints[0],
         new Resources(ints[1], 0, 0),

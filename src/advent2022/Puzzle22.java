@@ -50,7 +50,8 @@ public class Puzzle22 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle22.class.getResourceAsStream("puzzle22.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle22.class.getResourceAsStream("puzzle22.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -59,10 +60,8 @@ public class Puzzle22 {
         List<String> lines = CharStreams.readLines(r);
         String directionString = lines.getLast();
         List<Action> actions = parseDirections(directionString);
-        List<String> gridLines = lines.stream()
-            .limit(lines.size() - 2)
-            .map(s -> s.replaceFirst("\\s+$", ""))
-            .toList();
+        List<String> gridLines =
+            lines.stream().limit(lines.size() - 2).map(s -> s.replaceFirst("\\s+$", "")).toList();
         part1(name, actions, gridLines);
         part2(name, actions, gridLines);
       }
@@ -102,7 +101,7 @@ public class Puzzle22 {
   sealed interface Action {
     DirPos apply(DirPos dirPos);
   }
-  
+
   enum TurnLeft implements Action {
     LEFT;
 
@@ -139,7 +138,10 @@ public class Puzzle22 {
   }
 
   enum Dir {
-    RIGHT, DOWN, LEFT, UP;
+    RIGHT,
+    DOWN,
+    LEFT,
+    UP;
 
     Dir turnLeft() {
       return switch (this) {
@@ -222,11 +224,12 @@ public class Puzzle22 {
       for (int x = 0; x < line.length(); x++) {
         char c = line.charAt(x);
         if (c != ' ') {
-          boolean free = switch (c) {
-            case '.' -> true;
-            case '#' -> false;
-            default -> throw new AssertionError(line.charAt(x));
-          };
+          boolean free =
+              switch (c) {
+                case '.' -> true;
+                case '#' -> false;
+                default -> throw new AssertionError(line.charAt(x));
+              };
           nodes[x][y] = new Node(x, y, free);
         }
       }
@@ -355,7 +358,12 @@ public class Puzzle22 {
     face6.join(BL, RIGHT, face2, TL, RIGHT);
   }
 
-  enum Corner {TL, TR, BL, BR}
+  enum Corner {
+    TL,
+    TR,
+    BL,
+    BR
+  }
 
   record FaceFactory(int n, Node[][] nodes) {
     Face newFace(int topLeftUnitX, int topLeftUnitY) {
@@ -364,8 +372,10 @@ public class Puzzle22 {
   }
 
   record Face(int topLeftX, int topLeftY, int length, Node[][] nodes) {
-    // If we are joining for example our BL going up [BL(U)] to their TR going left, then we are setting
-    // our LEFT edges to enter the other face going DOWN and their UP edges to enter this face going RIGHT.
+    // If we are joining for example our BL going up [BL(U)] to their TR going left, then we are
+    // setting
+    // our LEFT edges to enter the other face going DOWN and their UP edges to enter this face going
+    // RIGHT.
     // We are setting our:
     //    LEFT edges for TL(D) or BL(U)
     //    RIGHT edges for TR(D) or BR(U)
@@ -394,43 +404,48 @@ public class Puzzle22 {
 
     record Coord(int x, int y) {
       Coord move(Dir dir) {
-        int dx = switch (dir) {
-          case RIGHT -> +1;
-          case LEFT -> -1;
-          case UP, DOWN -> 0;
-        };
-        int dy = switch (dir) {
-          case DOWN -> +1;
-          case UP -> -1;
-          case LEFT, RIGHT -> 0;
-        };
+        int dx =
+            switch (dir) {
+              case RIGHT -> +1;
+              case LEFT -> -1;
+              case UP, DOWN -> 0;
+            };
+        int dy =
+            switch (dir) {
+              case DOWN -> +1;
+              case UP -> -1;
+              case LEFT, RIGHT -> 0;
+            };
         return new Coord(x + dx, y + dy);
       }
     }
 
     Coord corner(Corner corner) {
-      int x = switch (corner) {
-        case TL, BL -> topLeftX;
-        case TR, BR -> topLeftX + length - 1;
-      };
-      int y = switch (corner) {
-        case TL, TR -> topLeftY;
-        case BL, BR -> topLeftY + length - 1;
-      };
+      int x =
+          switch (corner) {
+            case TL, BL -> topLeftX;
+            case TR, BR -> topLeftX + length - 1;
+          };
+      int y =
+          switch (corner) {
+            case TL, TR -> topLeftY;
+            case BL, BR -> topLeftY + length - 1;
+          };
       return new Coord(x, y);
     }
 
     record CornerDir(Corner corner, Dir dir) {}
 
-    private static final Map<CornerDir, Dir> LEAVE_MAP = ImmutableMap.of(
-        new CornerDir(TL, DOWN), LEFT,
-        new CornerDir(BL, UP), LEFT,
-        new CornerDir(TR, DOWN), RIGHT,
-        new CornerDir(BR, UP), RIGHT,
-        new CornerDir(TL, RIGHT), UP,
-        new CornerDir(TR, LEFT), UP,
-        new CornerDir(BL, RIGHT), DOWN,
-        new CornerDir(BR, LEFT), DOWN);
+    private static final Map<CornerDir, Dir> LEAVE_MAP =
+        ImmutableMap.of(
+            new CornerDir(TL, DOWN), LEFT,
+            new CornerDir(BL, UP), LEFT,
+            new CornerDir(TR, DOWN), RIGHT,
+            new CornerDir(BR, UP), RIGHT,
+            new CornerDir(TL, RIGHT), UP,
+            new CornerDir(TR, LEFT), UP,
+            new CornerDir(BL, RIGHT), DOWN,
+            new CornerDir(BR, LEFT), DOWN);
 
     static Dir leave(Corner corner, Dir dir) {
       return LEAVE_MAP.get(new CornerDir(corner, dir));
@@ -441,17 +456,19 @@ public class Puzzle22 {
     Pattern pattern = Pattern.compile("(\\d+)([LR]?)");
     Matcher matcher = pattern.matcher(directions);
     ImmutableList.Builder<Action> builder = ImmutableList.builder();
-    matcher.results().forEach(
-        matchResult -> {
-          int moveAmount = Integer.parseInt(matchResult.group(1));
-          builder.add(new Move(moveAmount));
-          switch (matchResult.group(2)) {
-            case "L" -> builder.add(TurnLeft.LEFT);
-            case "R" -> builder.add(TurnRight.RIGHT);
-            case "" -> {} // end
-            default -> throw new AssertionError(matchResult.group(2));
-          }
-        });
+    matcher
+        .results()
+        .forEach(
+            matchResult -> {
+              int moveAmount = Integer.parseInt(matchResult.group(1));
+              builder.add(new Move(moveAmount));
+              switch (matchResult.group(2)) {
+                case "L" -> builder.add(TurnLeft.LEFT);
+                case "R" -> builder.add(TurnRight.RIGHT);
+                case "" -> {} // end
+                default -> throw new AssertionError(matchResult.group(2));
+              }
+            });
     return builder.build();
   }
 

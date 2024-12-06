@@ -13,7 +13,8 @@ import java.util.concurrent.Callable;
  * @author emcmanus@google.com (Éamonn McManus)
  */
 public class Puzzle8 {
-  private static final String SAMPLE = """
+  private static final String SAMPLE =
+      """
       30373
       25512
       65332
@@ -54,7 +55,10 @@ public class Puzzle8 {
   }
 
   private static boolean visible(List<String> lines, int i, int j) {
-    return visibleUp(lines, i, j) || visibleDown(lines, i, j) || visibleLeft(lines, i, j) || visibleRight(lines, i, j);
+    return visibleUp(lines, i, j)
+        || visibleDown(lines, i, j)
+        || visibleLeft(lines, i, j)
+        || visibleRight(lines, i, j);
   }
 
   private static boolean visibleUp(List<String> lines, int i, int j) {
@@ -100,7 +104,10 @@ public class Puzzle8 {
   }
 
   private static long score(List<String> lines, int i, int j) {
-    return scoreUp(lines, i, j) * scoreDown(lines, i, j) * scoreLeft(lines, i, j) * scoreRIght(lines, i, j);
+    return scoreUp(lines, i, j)
+        * scoreDown(lines, i, j)
+        * scoreLeft(lines, i, j)
+        * scoreRIght(lines, i, j);
   }
 
   private static long scoreUp(List<String> lines, int i, int j) {

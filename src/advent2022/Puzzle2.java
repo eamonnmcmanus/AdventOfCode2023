@@ -14,7 +14,8 @@ import java.util.concurrent.Callable;
  * @author Éamonn McManus
  */
 public class Puzzle2 {
-  private static final String SAMPLE = """
+  private static final String SAMPLE =
+      """
       A Y
       B X
       C Z
@@ -66,47 +67,55 @@ public class Puzzle2 {
 
   private static Result game(Item us, Item them) {
     return switch (us) {
-      case ROCK -> switch (them) {
-        case ROCK -> Result.DRAW;
-        case PAPER -> Result.LOSE;
-        case SCISSORS -> Result.WIN;
-      };
-      case PAPER -> switch (them) {
-        case ROCK -> Result.WIN;
-        case PAPER -> Result.DRAW;
-        case SCISSORS -> Result.LOSE;
-      };
-      case SCISSORS -> switch (them) {
-        case ROCK -> Result.LOSE;
-        case PAPER -> Result.WIN;
-        case SCISSORS -> Result.DRAW;
-      };
+      case ROCK ->
+          switch (them) {
+            case ROCK -> Result.DRAW;
+            case PAPER -> Result.LOSE;
+            case SCISSORS -> Result.WIN;
+          };
+      case PAPER ->
+          switch (them) {
+            case ROCK -> Result.WIN;
+            case PAPER -> Result.DRAW;
+            case SCISSORS -> Result.LOSE;
+          };
+      case SCISSORS ->
+          switch (them) {
+            case ROCK -> Result.LOSE;
+            case PAPER -> Result.WIN;
+            case SCISSORS -> Result.DRAW;
+          };
     };
   }
 
   private static Item play(Result wanted, Item them) {
     // If they play `them`, what should we play to get the result `wanted`?
     return switch (them) {
-      case ROCK -> switch (wanted) {
-        case WIN -> Item.PAPER;
-        case DRAW -> Item.ROCK;
-        case LOSE -> Item.SCISSORS;
-      };
-      case PAPER -> switch (wanted) {
-        case WIN -> Item.SCISSORS;
-        case DRAW -> Item.PAPER;
-        case LOSE -> Item.ROCK;
-      };
-      case SCISSORS -> switch (wanted) {
-        case WIN -> Item.ROCK;
-        case DRAW -> Item.SCISSORS;
-        case LOSE -> Item.PAPER;
-      };
+      case ROCK ->
+          switch (wanted) {
+            case WIN -> Item.PAPER;
+            case DRAW -> Item.ROCK;
+            case LOSE -> Item.SCISSORS;
+          };
+      case PAPER ->
+          switch (wanted) {
+            case WIN -> Item.SCISSORS;
+            case DRAW -> Item.PAPER;
+            case LOSE -> Item.ROCK;
+          };
+      case SCISSORS ->
+          switch (wanted) {
+            case WIN -> Item.ROCK;
+            case DRAW -> Item.SCISSORS;
+            case LOSE -> Item.PAPER;
+          };
     };
   }
 
   enum Item {
-    ROCK(1), PAPER(2), SCISSORS(3);
+    ROCK(1),
+    PAPER(2),
+    SCISSORS(3);
 
     final int score;
 
@@ -116,7 +125,9 @@ public class Puzzle2 {
   }
 
   enum Result {
-    LOSE(0), DRAW(3), WIN(6);
+    LOSE(0),
+    DRAW(3),
+    WIN(6);
 
     final int score;
 

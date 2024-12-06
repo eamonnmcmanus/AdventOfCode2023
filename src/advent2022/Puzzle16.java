@@ -43,7 +43,8 @@ public class Puzzle16 {
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
-          "problem", () -> new InputStreamReader(Puzzle16.class.getResourceAsStream("puzzle16.txt")));
+          "problem",
+              () -> new InputStreamReader(Puzzle16.class.getResourceAsStream("puzzle16.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {
@@ -110,7 +111,10 @@ public class Puzzle16 {
 
             // We open.
             if (state.ourPos.flowRate > 0) {
-              nextStates.merge(new State(state.ourPos, state.open.plus(state.ourPos)), total + flowRate, Long::max);
+              nextStates.merge(
+                  new State(state.ourPos, state.open.plus(state.ourPos)),
+                  total + flowRate,
+                  Long::max);
             }
           });
       currentStates = nextStates;
@@ -122,8 +126,8 @@ public class Puzzle16 {
 
   record State(Valve ourPos, ValveSet open) {}
 
-  private static final Pattern VALVE_PATTERN = Pattern.compile(
-      "Valve (..) has flow rate=(\\d+); tunnels? leads? to valves? (.*)");
+  private static final Pattern VALVE_PATTERN =
+      Pattern.compile("Valve (..) has flow rate=(\\d+); tunnels? leads? to valves? (.*)");
 
   private static Puzzle16 parseGraph(List<String> lines) {
     ImmutableGraph.Builder<Valve> builder = GraphBuilder.<Valve>undirected().immutable();
@@ -160,15 +164,20 @@ public class Puzzle16 {
   }
 
   record Valve(int valveNumber, String name, int flowRate) {
-    @Override public String toString() {
+    @Override
+    public String toString() {
       return name + "(" + flowRate + ")";
     }
 
-    @Override public boolean equals(Object o) {
-      return o instanceof Valve that && this.valveNumber == that.valveNumber && this.name.equals(that.name);
+    @Override
+    public boolean equals(Object o) {
+      return o instanceof Valve that
+          && this.valveNumber == that.valveNumber
+          && this.name.equals(that.name);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
       return valveNumber;
     }
   }
@@ -207,12 +216,15 @@ public class Puzzle16 {
       return total;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
       return o instanceof ValveSet that && this.mask == that.mask;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
       return Long.hashCode(mask);
     }
-  };
+  }
+  ;
 }
