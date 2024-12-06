@@ -1,9 +1,11 @@
 package advent2024;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.IntPredicate;
 
 /**
  * @author Éamonn McManus
@@ -48,5 +50,24 @@ class CharGrid {
       return lines.get(line).charAt(col);
     }
     return ' ';
+  }
+
+  Optional<Coord> firstMatch(IntPredicate predicate) {
+    for (int line = 0; line < height; line++) {
+      for (int col = 0; col < width; col++) {
+        if (predicate.test(get(line, col))) {
+          return Optional.of(new Coord(line, col));
+        }
+      }
+    }
+    return Optional.empty();
+  }
+
+  CharGrid withChange(Coord coord, char c) {
+    List<String> newLines = new ArrayList<>(lines);
+    char[] changed = newLines.get(coord.line()).toCharArray();
+    changed[coord.col()] = c;
+    newLines.set(coord.line(), new String(changed));
+    return new CharGrid(newLines);
   }
 }

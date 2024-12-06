@@ -30,4 +30,17 @@ enum Dir {
         };
     return new Coord(c.line() + lineDelta, c.col() + colDelta);
   }
+
+  Dir right90() {
+    return switch (this) {
+      case NW -> NE;
+      case N -> E;
+      case NE -> SE;
+      case E -> S;
+      case SE -> SW;
+      case S -> W;
+      case SW -> NW;
+      case W -> N;
+    };
+  }
 }
