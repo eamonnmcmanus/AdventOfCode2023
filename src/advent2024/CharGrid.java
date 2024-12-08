@@ -11,7 +11,15 @@ import java.util.function.IntPredicate;
  * @author Éamonn McManus
  */
 class CharGrid {
-  record Coord(int line, int col) {}
+  record Coord(int line, int col) {
+    Coord plus(Coord that) {
+      return new Coord(this.line + that.line, this.col + that.col);
+    }
+
+    Coord minus(Coord that) {
+      return new Coord(this.line - that.line, this.col - that.col);
+    }
+  }
 
   private final List<String> lines;
   private final int height;
@@ -69,5 +77,10 @@ class CharGrid {
     changed[coord.col()] = c;
     newLines.set(coord.line(), new String(changed));
     return new CharGrid(newLines);
+  }
+
+  @Override
+  public String toString() {
+    return String.join("\n", lines);
   }
 }
