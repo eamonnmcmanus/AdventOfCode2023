@@ -2,22 +2,16 @@ package advent2021;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.collect.MoreCollectors.onlyElement;
-import static java.lang.Integer.min;
-import static java.lang.Math.multiplyExact;
-import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.joining;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.CharStreams;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
