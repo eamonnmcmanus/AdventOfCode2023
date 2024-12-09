@@ -1,15 +1,10 @@
 package advent2021;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static java.lang.Integer.signum;
-import static java.util.Arrays.stream;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.CharStreams;
-import com.google.common.primitives.Ints;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -18,8 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 /**
  * @author Éamonn McManus
@@ -41,10 +34,7 @@ public class Puzzle6 {
       try (Reader r = entry.getValue().call()) {
         List<String> lines = CharStreams.readLines(r);
         List<Integer> startTimers =
-            Splitter.on(',')
-                .splitToStream(getOnlyElement(lines))
-                .map(Integer::valueOf)
-                .toList();
+            Splitter.on(',').splitToStream(getOnlyElement(lines)).map(Integer::valueOf).toList();
         List<Long> perTimer = new ArrayList<>(Collections.nCopies(9, 0L));
         for (var i : startTimers) {
           perTimer.set(i, perTimer.get(i) + 1);
@@ -54,11 +44,13 @@ public class Puzzle6 {
           perTimer.set(6, Math.addExact(perTimer.get(6), spawnCount));
           perTimer.add(spawnCount);
           if (day == 79) {
-            System.out.printf("After 80 days, count for %s is %d\n",
+            System.out.printf(
+                "After 80 days, count for %s is %d\n",
                 name, perTimer.stream().reduce(0L, Math::addExact));
           }
         }
-        System.out.printf("After 256 days, count for %s is %d\n",
+        System.out.printf(
+            "After 256 days, count for %s is %d\n",
             name, perTimer.stream().reduce(0L, Math::addExact));
       }
     }
