@@ -41,6 +41,8 @@ public class Puzzle10 {
   private static final Set<Dir> NSEW = EnumSet.of(Dir.N, Dir.S, Dir.E, Dir.W);
 
   public static void main(String[] args) throws Exception {
+    // For this one, I started writing a solution for Part 1 that I realized was wrong, but when
+    // I got to Part 2, I realized that the previously wrong approach was right there.
     for (var entry : INPUT_PRODUCERS.entrySet()) {
       String name = entry.getKey();
       try (Reader r = entry.getValue().call()) {

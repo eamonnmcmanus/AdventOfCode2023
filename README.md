@@ -69,6 +69,8 @@ years 2022, 2023, 2024 (ongoing). They are all coded in Java, needing Java 21 at
 * [2024-12-06](https://adventofcode.com/2024/day/6): [solution](src/advent2024/Puzzle6.java) (paths in a grid with obstacles).
 * [2024-12-07](https://adventofcode.com/2024/day/7): [solution](src/advent2024/Puzzle7.java) (making equations true by inserting operators).
 * [2024-12-08](https://adventofcode.com/2024/day/8): [solution](src/advent2024/Puzzle8.java) (points aligned with pairs of points in a grid).
+* [2024-12-09](https://adventofcode.com/2024/day/9): [solution](src/advent2024/Puzzle9.java) (disk compaction).
+* [2024-12-10](https://adventofcode.com/2024/day/10): [solution](src/advent2024/Puzzle10.java) (counting paths in a graph).
 
 # Acknowledgements
 
