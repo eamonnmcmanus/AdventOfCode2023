@@ -3,6 +3,7 @@ package advent2024;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.IntPredicate;
@@ -18,6 +19,12 @@ class CharGrid {
 
     Coord minus(Coord that) {
       return new Coord(this.line - that.line, this.col - that.col);
+    }
+
+    @Override
+    public String toString() {
+      // This is (y,x) order, of course.
+      return "(" + line + "," + col + ")";
     }
   }
 
@@ -77,6 +84,29 @@ class CharGrid {
     changed[coord.col()] = c;
     newLines.set(coord.line(), new String(changed));
     return new CharGrid(newLines);
+  }
+
+  Iterable<Coord> coords() {
+    return () ->
+        new Iterator<Coord>() {
+          private int row = 0;
+          private int col = 0;
+
+          @Override
+          public boolean hasNext() {
+            return row < height;
+          }
+
+          @Override
+          public Coord next() {
+            var result = new Coord(row, col);
+            if (++col >= width) {
+              col = 0;
+              ++row;
+            }
+            return result;
+          }
+        };
   }
 
   @Override
