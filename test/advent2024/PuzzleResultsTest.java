@@ -3,19 +3,17 @@ package advent2024;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Map.entry;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Expect;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.Rule;
+import org.junit.Test;
 
 /**
- * Tests that the results that the puzzle solutions produce have not changed.
+ * Tests that the results that the puzzle solutions produce have not changed. When there is shared
+ * code between puzzles, if we modify it for a later puzzle we don't want to invalidate earlier
+ * puzzles.
  *
  * @author emcmanus
  */
@@ -105,25 +103,45 @@ public class PuzzleResultsTest {
               Part 2 total for sample is 81
               Part 1 total for problem is 501
               Part 2 total for problem is 1017
+              """),
+          entry(
+              Puzzle11.class,
+              """
+              For sample, after 25 blinks, number of stones 55312
+              For sample, after 75 blinks, number of stones 65601038650482
+              For problem, after 25 blinks, number of stones 186424
+              For problem, after 75 blinks, number of stones 219838428124832
               """));
 
   @Test
   public void results() throws Exception {
+    Class<?> slowest = null;
+    long slowestTime = 0;
     for (var entry : PUZZLE_RESULTS.entrySet()) {
       var oldOut = System.out;
       var bout = new ByteArrayOutputStream();
       System.setOut(new PrintStream(bout));
       try {
-        var main = entry.getKey().getMethod("main", String[].class);
+        Class<?> puzzleClass = entry.getKey();
+        var main = puzzleClass.getMethod("main", String[].class);
+        long startTime = System.nanoTime();
         main.invoke(null, (Object) new String[0]);
+        long elapsed = System.nanoTime() - startTime;
+        if (elapsed > slowestTime) {
+          slowest = puzzleClass;
+          slowestTime = elapsed;
+        }
         String output = bout.toString(UTF_8);
         expect
-            .withMessage("Output for %s", entry.getKey().getSimpleName())
+            .withMessage("Output for %s", puzzleClass.getSimpleName())
             .that(output)
             .isEqualTo(entry.getValue());
       } finally {
         System.setOut(oldOut);
       }
     }
+    System.out.printf(
+        "Slowest puzzle was %s with elapsed time %.3fs\n",
+        slowest.getSimpleName(), slowestTime / 1e9);
   }
 }
