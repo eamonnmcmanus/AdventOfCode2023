@@ -1,4 +1,4 @@
-package advent2024;
+package adventlib;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -11,13 +11,13 @@ import java.util.function.IntPredicate;
 /**
  * @author Éamonn McManus
  */
-class CharGrid {
-  record Coord(int line, int col) {
-    Coord plus(Coord that) {
+public class CharGrid {
+  public record Coord(int line, int col) {
+    public Coord plus(Coord that) {
       return new Coord(this.line + that.line, this.col + that.col);
     }
 
-    Coord minus(Coord that) {
+    public Coord minus(Coord that) {
       return new Coord(this.line - that.line, this.col - that.col);
     }
 
@@ -32,7 +32,7 @@ class CharGrid {
   private final int height;
   private final int width;
 
-  CharGrid(List<String> lines) {
+  public CharGrid(List<String> lines) {
     checkArgument(lines != null && !lines.isEmpty());
     this.lines = lines;
     this.height = lines.size();
@@ -40,34 +40,34 @@ class CharGrid {
     checkArgument(lines.stream().allMatch(line -> line.length() == width));
   }
 
-  int height() {
+  public int height() {
     return height;
   }
 
-  int width() {
+  public int width() {
     return width;
   }
 
-  boolean valid(Coord coord) {
+  public boolean valid(Coord coord) {
     return valid(coord.line, coord.col);
   }
 
-  boolean valid(int line, int col) {
+  public boolean valid(int line, int col) {
     return line >= 0 && line < height && col >= 0 && col < width;
   }
 
-  char get(Coord coord) {
+  public char get(Coord coord) {
     return get(coord.line, coord.col);
   }
 
-  char get(int line, int col) {
+  public char get(int line, int col) {
     if (valid(line, col)) {
       return lines.get(line).charAt(col);
     }
     return ' ';
   }
 
-  Optional<Coord> firstMatch(IntPredicate predicate) {
+  public Optional<Coord> firstMatch(IntPredicate predicate) {
     for (int line = 0; line < height; line++) {
       for (int col = 0; col < width; col++) {
         if (predicate.test(get(line, col))) {
@@ -78,7 +78,7 @@ class CharGrid {
     return Optional.empty();
   }
 
-  CharGrid withChange(Coord coord, char c) {
+  public CharGrid withChange(Coord coord, char c) {
     List<String> newLines = new ArrayList<>(lines);
     char[] changed = newLines.get(coord.line()).toCharArray();
     changed[coord.col()] = c;
@@ -86,7 +86,7 @@ class CharGrid {
     return new CharGrid(newLines);
   }
 
-  Iterable<Coord> coords() {
+  public Iterable<Coord> coords() {
     return () ->
         new Iterator<Coord>() {
           private int row = 0;

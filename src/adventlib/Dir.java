@@ -1,11 +1,11 @@
-package advent2024;
+package adventlib;
 
-import advent2024.CharGrid.Coord;
+import adventlib.CharGrid.Coord;
 
 /**
  * @author Éamonn McManus
  */
-enum Dir {
+public enum Dir {
   NW,
   N,
   NE,
@@ -15,7 +15,7 @@ enum Dir {
   S,
   SE;
 
-  Coord move(Coord c, int amount) {
+  public Coord move(Coord c, int amount) {
     int lineDelta =
         switch (this) {
           case NW, N, NE -> -amount;
@@ -31,7 +31,7 @@ enum Dir {
     return new Coord(c.line() + lineDelta, c.col() + colDelta);
   }
 
-  Dir right90() {
+  public Dir right90() {
     return switch (this) {
       case NW -> NE;
       case N -> E;

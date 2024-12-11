@@ -1,17 +1,11 @@
 package advent2023;
 
-import static advent2023.Puzzle19.parseRule;
-import static advent2023.Puzzle19.parseWorkflows;
 import static com.google.common.truth.Truth.assertThat;
 
 import advent2023.Puzzle19.Constraint;
 import advent2023.Puzzle19.ConstraintSet;
 import advent2023.Puzzle19.Constraints;
-import advent2023.Puzzle19.Rule;
-import advent2023.Puzzle19.Workflow;
 import com.google.common.collect.ImmutableSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 

@@ -1,6 +1,8 @@
 package advent2024;
 
-import advent2024.CharGrid.Coord;
+import adventlib.CharGrid;
+import adventlib.CharGrid.Coord;
+import adventlib.Dir;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.SetMultimap;

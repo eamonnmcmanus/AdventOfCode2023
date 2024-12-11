@@ -2,7 +2,8 @@ package advent2024;
 
 import static java.util.Arrays.stream;
 
-import advent2024.CharGrid.Coord;
+import adventlib.CharGrid;
+import adventlib.CharGrid.Coord;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;

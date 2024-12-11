@@ -114,9 +114,9 @@ public class Puzzle9 {
 
   private static List<Span> parseSpans(String input) {
     List<Span> spans = new ArrayList<>();
-    for (int i = 0, nextId = 0; i < input.length(); i++) {
+    for (int i = 0; i < input.length(); i++) {
       int size = input.charAt(i) - '0';
-      Integer id = (i % 2 == 0) ? nextId++ : null;
+      Integer id = (i % 2 == 0) ? i / 2 : null;
       spans.add(new Span(size, id));
     }
     return spans;

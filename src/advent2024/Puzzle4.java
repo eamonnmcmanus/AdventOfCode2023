@@ -1,8 +1,11 @@
 package advent2024;
 
+
 import static java.lang.Math.incrementExact;
 
-import advent2024.CharGrid.Coord;
+import adventlib.CharGrid;
+import adventlib.CharGrid.Coord;
+import adventlib.Dir;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.CharStreams;
