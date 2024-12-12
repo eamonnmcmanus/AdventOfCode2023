@@ -1,6 +1,8 @@
 package adventlib;
 
 import adventlib.CharGrid.Coord;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * @author Éamonn McManus
@@ -14,6 +16,8 @@ public enum Dir {
   SW,
   S,
   SE;
+
+  public static Set<Dir> NEWS = EnumSet.of(N, E, W, S);
 
   public Coord move(Coord c, int amount) {
     int lineDelta =

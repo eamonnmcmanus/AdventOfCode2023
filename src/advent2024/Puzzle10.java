@@ -40,8 +40,6 @@ public class Puzzle10 {
           "problem",
           () -> new InputStreamReader(Puzzle5.class.getResourceAsStream("puzzle10.txt")));
 
-  private static final Set<Dir> NSEW = EnumSet.of(Dir.N, Dir.S, Dir.E, Dir.W);
-
   public static void main(String[] args) throws Exception {
     // For this one, I started writing a solution for Part 1 that I realized was wrong, but when
     // I got to Part 2, I realized that the previously wrong approach was right there.
@@ -64,7 +62,7 @@ public class Puzzle10 {
           char next = (char) (cur + 1);
           for (Coord curCoord : digitToCoord.get(cur)) {
             long routeCount = 0;
-            for (Dir dir : NSEW) {
+            for (Dir dir : Dir.NEWS) {
               Coord neighbour = dir.move(curCoord, 1);
               if (grid.get(neighbour) == next) {
                 reachableNines.putAll(curCoord, reachableNines.get(neighbour));

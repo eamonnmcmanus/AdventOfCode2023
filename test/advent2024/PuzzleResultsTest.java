@@ -111,6 +111,14 @@ public class PuzzleResultsTest {
               For sample, after 75 blinks, number of stones 65601038650482
               For problem, after 25 blinks, number of stones 186424
               For problem, after 75 blinks, number of stones 219838428124832
+              """),
+          entry(
+              Puzzle12.class,
+              """
+              For sample, total fence price for part 1 is 1930
+              For sample, total fence price for part 2 is 1206
+              For problem, total fence price for part 1 is 1456082
+              For problem, total fence price for part 2 is 872382
               """));
 
   @Test
