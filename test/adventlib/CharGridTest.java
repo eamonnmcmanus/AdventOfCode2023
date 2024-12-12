@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThrows;
 import adventlib.CharGrid.Coord;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import java.util.EnumSet;
 import java.util.List;
 import org.junit.Test;
 
@@ -93,8 +94,7 @@ public class CharGridTest {
             abcd
             efgh
             ijkl\
-            """
-        );
+            """);
   }
 
   @Test
@@ -104,5 +104,27 @@ public class CharGridTest {
     assertThat(c12.plus(c34)).isEqualTo(new Coord(4, 6));
     assertThat(c12.minus(c34)).isEqualTo(new Coord(-2, -2));
     assertThat(c12.toString()).isEqualTo("(1,2)");
+  }
+
+  @Test
+  public void toGraphOrthogonal() {
+    var graph = EXAMPLE.toGraph(Dir.NEWS, Coord::toString);
+    assertThat(graph.nodes()).hasSize(12);
+    assertThat(graph.nodes()).containsAtLeast("(0,0)", "(0,1)", "(2,3)");
+    assertThat(graph.nodes()).doesNotContain("(3,3)");
+    assertThat(graph.successors("(0,0)")).containsExactly("(0,1)", "(1,0)");
+    assertThat(graph.successors("(1,1)"))
+        .containsExactly("(0,1)", "(1,0)", "(1,2)", "(2,1)");
+  }
+
+  @Test
+  public void toGraphWithDiagonals() {
+    var graph = EXAMPLE.toGraph(EnumSet.allOf(Dir.class), Coord::toString);
+    assertThat(graph.nodes()).hasSize(12);
+    assertThat(graph.nodes()).containsAtLeast("(0,0)", "(0,1)", "(2,3)");
+    assertThat(graph.nodes()).doesNotContain("(3,3)");
+    assertThat(graph.successors("(0,0)")).containsExactly("(0,1)", "(1,0)", "(1,1)");
+    assertThat(graph.successors("(1,1)"))
+        .containsExactly("(0,0)", "(0,1)", "(0,2)", "(1,0)", "(1,2)", "(2,0)", "(2,1)", "(2,2)");
   }
 }

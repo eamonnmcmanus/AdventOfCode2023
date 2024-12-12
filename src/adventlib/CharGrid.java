@@ -2,10 +2,18 @@ package adventlib;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.graph.Graph;
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.ImmutableGraph;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.IntPredicate;
 
 /**
@@ -107,6 +115,26 @@ public class CharGrid {
             return result;
           }
         };
+  }
+
+  public <N> ImmutableGraph<N> toGraph(Set<Dir> adjacentDirs, Function<Coord, N> nodeFactory) {
+    Map<Coord, N> coordToNode = new LinkedHashMap<>();
+    ImmutableGraph.Builder<N> builder = GraphBuilder.undirected().<N>immutable();
+    for (Coord coord : coords()) {
+      N node = nodeFactory.apply(coord);
+      coordToNode.put(coord, node);
+      builder.addNode(node);
+    }
+    for (Coord coord : coords()) {
+      N coordNode = coordToNode.get(coord);
+      for (Dir dir : adjacentDirs) {
+        Coord adjacent = dir.move(coord, 1);
+        if (valid(adjacent)) {
+          builder.putEdge(coordNode, coordToNode.get(adjacent));
+        }
+      }
+    }
+    return builder.build();
   }
 
   @Override
