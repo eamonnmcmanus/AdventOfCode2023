@@ -73,6 +73,7 @@ years 2022, 2023, 2024 (ongoing). They are all coded in Java, needing Java 21 at
 * [2024-12-10](https://adventofcode.com/2024/day/10): [solution](src/advent2024/Puzzle10.java) (counting paths in a graph).
 * [2024-12-11](https://adventofcode.com/2024/day/11): [solution](src/advent2024/Puzzle11.java) (exponential evolution of a list of numbers).
 * [2024-12-12](https://adventofcode.com/2024/day/12): [solution](src/advent2024/Puzzle12.java) (perimeters and side counts of regions in a grid).
+* [2024-12-13](https://adventofcode.com/2024/day/13): [solution](src/advent2024/Puzzle13.java) (simultaneous Diophantine equations).
 
 # Acknowledgements
 
