@@ -23,9 +23,10 @@ public class CharGridTest {
   }
 
   @Test
-  public void heightWidth() {
+  public void heightWidthSize() {
     assertThat(EXAMPLE.height()).isEqualTo(3);
     assertThat(EXAMPLE.width()).isEqualTo(4);
+    assertThat(EXAMPLE.size()).isEqualTo(12);
   }
 
   @Test

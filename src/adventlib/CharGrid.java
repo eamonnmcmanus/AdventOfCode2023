@@ -2,11 +2,9 @@ package adventlib;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,6 +52,10 @@ public class CharGrid {
 
   public int width() {
     return width;
+  }
+
+  public int size() {
+    return height * width;
   }
 
   public boolean valid(Coord coord) {
