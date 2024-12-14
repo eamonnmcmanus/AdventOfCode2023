@@ -2,12 +2,8 @@ package advent2021;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import adventlib.CharGrid;
-import adventlib.CharGrid.Coord;
-import adventlib.Dir;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
@@ -16,13 +12,9 @@ import com.google.common.io.CharStreams;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.EnumSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 /**
  * @author Éamonn McManus
