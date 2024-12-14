@@ -119,6 +119,19 @@ public class PuzzleResultsTest {
               For sample, total fence price for part 2 is 1206
               For problem, total fence price for part 1 is 1456082
               For problem, total fence price for part 2 is 872382
+              """),
+          entry(Puzzle13.class,
+              """
+              For Part 1 sample, total 480
+              For Part 2 sample, total 875318608908
+              For Part 1 problem, total 37297
+              For Part 2 problem, total 83197086729371
+              """),
+          entry(Puzzle14.class,
+              """
+              For sample, safety factor 12
+              For problem, safety factor 225943500
+              Pattern after 6377 steps
               """));
 
   @Test
