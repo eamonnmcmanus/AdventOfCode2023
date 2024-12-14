@@ -4,6 +4,7 @@ import adventlib.CharGrid;
 import adventlib.CharGrid.Coord;
 import adventlib.Dir;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.CharStreams;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -46,16 +47,18 @@ public class Puzzle6 {
         List<String> lines = CharStreams.readLines(r);
         CharGrid grid = new CharGrid(lines);
         Coord start = grid.firstMatch(c -> c == '^').get();
-        System.out.println("Part 1 result for " + name + " is " + part1(grid, start, Dir.N));
-        System.out.println("Part 2 result for " + name + " is " + part2(grid, start, Dir.N));
+        ImmutableSet<Coord> path = part1(grid, start, Dir.N);
+        System.out.println("Part 1 result for " + name + " is " + path.size());
+        System.out.println("Part 2 result for " + name + " is " + part2(grid, start, Dir.N, path));
       }
     }
   }
 
   // Walk through the grid from the starting position and direction until we exit. Return the number
   // of different positions visited (including the starting position).
-  private static int part1(CharGrid grid, Coord coord, Dir dir) {
-    Set<Coord> visited = new LinkedHashSet<>(Set.of(coord));
+  private static ImmutableSet<Coord> part1(CharGrid grid, Coord coord, Dir dir) {
+    ImmutableSet.Builder<Coord> visited = ImmutableSet.builder();
+    visited.add(coord);
     while (true) {
       Coord next = dir.move(coord, 1);
       if (!grid.valid(next)) {
@@ -68,7 +71,7 @@ public class Puzzle6 {
       visited.add(next);
       coord = next;
     }
-    return visited.size();
+    return visited.build();
   }
 
   // Walk through the grid from the starting position and direction until we exit or detect a loop.
@@ -93,15 +96,14 @@ public class Puzzle6 {
     }
   }
 
-  private static long part2(CharGrid grid, Coord start, Dir dir) {
+  // We can only change the path with an obstacle that is in the path, so only try those positions.
+  private static long part2(CharGrid grid, Coord start, Dir dir, Set<Coord> path) {
     long total = 0;
-    for (int line = 0; line < grid.height(); line++) {
-      for (int col = 0; col < grid.width(); col++) {
-        if (grid.get(line, col) == '.') {
-          CharGrid newGrid = grid.withChange(new Coord(line, col), '#');
-          if (!willExit(newGrid, start, dir)) {
-            total++;
-          }
+    for (Coord coord : path) {
+      if (grid.get(coord) == '.') {
+        CharGrid newGrid = grid.withChange(coord, '#');
+        if (!willExit(newGrid, start, dir)) {
+          total++;
         }
       }
     }
