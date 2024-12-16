@@ -38,7 +38,7 @@ public class Puzzle6 {
           "sample",
           () -> new StringReader(SAMPLE),
           "problem",
-          () -> new InputStreamReader(Puzzle5.class.getResourceAsStream("puzzle6.txt")));
+          () -> new InputStreamReader(Puzzle6.class.getResourceAsStream("puzzle6.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {

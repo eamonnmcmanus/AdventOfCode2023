@@ -48,7 +48,7 @@ public class Puzzle13 {
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
           "problem",
-              () -> new InputStreamReader(Puzzle1.class.getResourceAsStream("puzzle13.txt")));
+              () -> new InputStreamReader(Puzzle13.class.getResourceAsStream("puzzle13.txt")));
 
   record Coord(int x, int y) {}
 

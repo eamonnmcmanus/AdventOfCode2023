@@ -39,7 +39,7 @@ public class Puzzle11 {
       ImmutableMap.of(
           "sample", () -> new StringReader(SAMPLE),
           "problem",
-              () -> new InputStreamReader(Puzzle1.class.getResourceAsStream("puzzle11.txt")));
+              () -> new InputStreamReader(Puzzle11.class.getResourceAsStream("puzzle11.txt")));
 
   private static class Octopus {
     int energy;

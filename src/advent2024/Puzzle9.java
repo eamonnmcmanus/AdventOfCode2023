@@ -30,7 +30,7 @@ public class Puzzle9 {
           "sample",
           () -> new StringReader(SAMPLE),
           "problem",
-          () -> new InputStreamReader(Puzzle5.class.getResourceAsStream("puzzle9.txt")));
+          () -> new InputStreamReader(Puzzle9.class.getResourceAsStream("puzzle9.txt")));
 
   public static void main(String[] args) throws Exception {
     for (var entry : INPUT_PRODUCERS.entrySet()) {

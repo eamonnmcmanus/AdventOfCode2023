@@ -10,11 +10,9 @@ import com.google.common.io.CharStreams;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 /**
@@ -38,7 +36,7 @@ public class Puzzle10 {
           "sample",
           () -> new StringReader(SAMPLE),
           "problem",
-          () -> new InputStreamReader(Puzzle5.class.getResourceAsStream("puzzle10.txt")));
+          () -> new InputStreamReader(Puzzle10.class.getResourceAsStream("puzzle10.txt")));
 
   public static void main(String[] args) throws Exception {
     // For this one, I started writing a solution for Part 1 that I realized was wrong, but when

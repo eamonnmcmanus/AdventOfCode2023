@@ -44,7 +44,7 @@ public class Puzzle13 {
           "sample",
           () -> new StringReader(SAMPLE),
           "problem",
-          () -> new InputStreamReader(Puzzle5.class.getResourceAsStream("puzzle13.txt")));
+          () -> new InputStreamReader(Puzzle13.class.getResourceAsStream("puzzle13.txt")));
 
   // Button A: X+94, Y+34
   // Button B: X+22, Y+67
