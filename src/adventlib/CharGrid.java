@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Éamonn McManus
@@ -117,6 +119,10 @@ public class CharGrid {
             return result;
           }
         };
+  }
+
+  public Stream<Coord> coordStream() {
+    return StreamSupport.stream(coords().spliterator(), false);
   }
 
   public <N> ImmutableGraph<N> toGraph(Set<Dir> adjacentDirs, Function<Coord, N> nodeFactory) {

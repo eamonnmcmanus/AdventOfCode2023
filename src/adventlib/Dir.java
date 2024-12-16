@@ -19,6 +19,26 @@ public enum Dir {
 
   public static Set<Dir> NEWS = EnumSet.of(N, E, W, S);
 
+  public static Dir fromChar(char c) {
+    return switch (c) {
+      case '<' -> W;
+      case '>' -> E;
+      case '^' -> N;
+      case 'v' -> S;
+      default ->
+          throw new IllegalArgumentException(
+              String.format("Unknown direction char %c (U+%04x)", c, (int) c));
+    };
+  }
+
+  public static Dir fromChar(int c) {
+    char cc = (char) c;
+    if (cc != c) {
+      throw new IllegalArgumentException(String.format("Unknown direction char %c (U+%04x)", c, c));
+    }
+    return fromChar(cc);
+  }
+
   public Coord move(Coord c, int amount) {
     int lineDelta =
         switch (this) {
@@ -33,6 +53,23 @@ public enum Dir {
           case N, S -> 0;
         };
     return new Coord(c.line() + lineDelta, c.col() + colDelta);
+  }
+
+  public Coord move(Coord c) {
+    return move(c, 1);
+  }
+
+  public Dir opposite() {
+    return switch (this) {
+      case NW -> SE;
+      case N -> S;
+      case NE -> SW;
+      case E -> W;
+      case SE -> NW;
+      case S -> N;
+      case SW -> NE;
+      case W -> E;
+    };
   }
 
   public Dir right90() {
