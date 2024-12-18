@@ -77,6 +77,7 @@ years 2022, 2023, 2024 (ongoing). They are all coded in Java, needing Java 21 at
 * [2024-12-14](https://adventofcode.com/2024/day/14): [solution](src/advent2024/Puzzle14.java) (vector-moving robots forming a Christmas tree).
 * [2024-12-16](https://adventofcode.com/2024/day/16): [solution](src/advent2024/Puzzle16.java) (shortest path through a maze with penalty for turns).
 * [2024-12-17](https://adventofcode.com/2024/day/17): [solution](src/advent2024/Puzzle17.java) (quining a program on a 3-bit CPU).
+* [2024-12-18](https://adventofcode.com/2024/day/18): [solution](src/advent2024/Puzzle18.java) (shortest path through grid with obstacles).
 
 # Acknowledgements
 
