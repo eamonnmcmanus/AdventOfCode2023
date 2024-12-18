@@ -120,18 +120,43 @@ public class PuzzleResultsTest {
               For problem, total fence price for part 1 is 1456082
               For problem, total fence price for part 2 is 872382
               """),
-          entry(Puzzle13.class,
+          entry(
+              Puzzle13.class,
               """
               For Part 1 sample, total 480
               For Part 2 sample, total 875318608908
               For Part 1 problem, total 37297
               For Part 2 problem, total 83197086729371
               """),
-          entry(Puzzle14.class,
+          entry(
+              Puzzle14.class,
               """
               For sample, safety factor 12
               For problem, safety factor 225943500
               Pattern after 6377 steps
+              """),
+          entry(
+              Puzzle16.class,
+              """
+              For sample 1, least cost is 7036
+              For sample 1, tiles on path: 45
+              For sample 2, least cost is 11048
+              For sample 2, tiles on path: 64
+              For problem, least cost is 73432
+              For problem, tiles on path: 496
+              """),
+          entry(
+              Puzzle17.class,
+              """
+              For Sample 0, program output is empty
+              For Sample 1, program output is 0,1,2
+              For Sample 2, program output is 4,2,5,6,7,7,7,7,3,1,0
+              For Sample 3, program output is empty
+              For Sample 4, program output is empty
+              For Sample 5, program output is 4,6,3,5,6,3,5,2,1,0
+              For Sample 6, program output is 0,3,5,4,3,0
+              For problem, program output is 7,0,3,1,2,6,3,7,1
+              Quine A is 109020013201563
               """));
 
   @Test

@@ -84,4 +84,17 @@ public enum Dir {
       case W -> N;
     };
   }
+
+  public Dir left90() {
+    return switch (this) {
+      case NW -> SW;
+      case N -> W;
+      case NE -> NW;
+      case E -> N;
+      case SE -> NE;
+      case S -> E;
+      case SW -> SE;
+      case W -> S;
+    };
+  }
 }
