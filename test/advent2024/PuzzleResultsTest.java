@@ -157,6 +157,14 @@ public class PuzzleResultsTest {
               For Sample 6, program output is 0,3,5,4,3,0
               For problem, program output is 7,0,3,1,2,6,3,7,1
               Quine A is 109020013201563
+              """),
+          entry(
+              Puzzle18.class,
+              """
+              For sample, minimum distance is 22
+              For sample, first blocking coord is 6,1
+              For problem, minimum distance is 438
+              For problem, first blocking coord is 26,22
               """));
 
   @Test

@@ -5,8 +5,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.lang.Integer.parseInt;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
 import com.google.common.io.CharStreams;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -88,30 +86,36 @@ public class Puzzle18 {
                 .toList();
         int maxX = coords.stream().mapToInt(Coord::x).max().getAsInt();
         int maxY = coords.stream().mapToInt(Coord::y).max().getAsInt();
+        Coord start = new Coord(0, 0);
+        Coord end = new Coord(maxX, maxY);
 
         Set<Coord> blocked = new LinkedHashSet<>(coords.subList(0, part1Max));
 
         {
           Map<Coord, Integer> costs = new LinkedHashMap<>();
-          traverse(new Coord(0, 0), 0, maxX, maxY, blocked, costs);
+          traverse(start, end, 0, blocked, costs);
           System.out.printf(
               "For %s, minimum distance is %d\n", name, costs.get(new Coord(maxX, maxY)));
         }
 
-        // Part2
+        // Part2. To speed this up, we remember the last successful path. If a new blocked cell is
+        // not on that path then we don't need to construct a new one. This reduces running time
+        // from about three minutes to less than a second.
         {
-          // This brute-force solution takes about 3 minutes to run. One idea to speed it up is to
-          // construct a shortest path explicitly. Then as long as no newly-blocked coordinate is on
-          // that path, we don't need to reconstruct it.
           Coord result = null;
+          Set<Coord> lastPath = null;
           for (Coord block : coords.subList(part1Max, coords.size())) {
             blocked.add(block);
+            if (lastPath != null && !lastPath.contains(block)) {
+              continue;
+            }
             Map<Coord, Integer> costs = new LinkedHashMap<>();
-            traverse(new Coord(0, 0), 0, maxX, maxY, blocked, costs);
-            if (costs.get(new Coord(maxX, maxY)) == null) {
+            traverse(start, end, 0, blocked, costs);
+            if (costs.get(end) == null) {
               result = block;
               break;
             }
+            lastPath = constructPath(costs, start, end);
           }
           checkNotNull(result);
           System.out.printf("For %s, first blocking coord is %d,%d\n", name, result.x, result.y);
@@ -121,20 +125,37 @@ public class Puzzle18 {
   }
 
   private static void traverse(
-      Coord start,
-      int startCost,
-      int maxX,
-      int maxY,
-      Set<Coord> blocked,
-      Map<Coord, Integer> costs) {
-    if (startCost >= costs.getOrDefault(start, Integer.MAX_VALUE)) {
+      Coord current, Coord end, int startCost, Set<Coord> blocked, Map<Coord, Integer> costs) {
+    if (startCost >= costs.getOrDefault(current, Integer.MAX_VALUE)) {
       return;
     }
-    costs.put(start, startCost);
-    for (Coord adj : start.adjacent()) {
-      if (adj.x >= 0 && adj.y >= 0 && adj.x <= maxX && adj.y <= maxY && !blocked.contains(adj)) {
-        traverse(adj, startCost + 1, maxX, maxY, blocked, costs);
+    costs.put(current, startCost);
+    for (Coord next : current.adjacent()) {
+      if (next.x >= 0
+          && next.y >= 0
+          && next.x <= end.x
+          && next.y <= end.y
+          && !blocked.contains(next)) {
+        traverse(next, end, startCost + 1, blocked, costs);
       }
     }
+  }
+
+  private static Set<Coord> constructPath(Map<Coord, Integer> costs, Coord start, Coord end) {
+    Set<Coord> path = new LinkedHashSet<>(Set.of(end));
+    Integer target = costs.get(end) - 1;
+    outer:
+    for (Coord c = end; !c.equals(start); ) {
+      for (Coord prev : c.adjacent()) {
+        if (target.equals(costs.get(prev))) {
+          path.add(prev);
+          --target;
+          c = prev;
+          continue outer;
+        }
+      }
+      throw new AssertionError();
+    }
+    return path;
   }
 }
