@@ -165,6 +165,12 @@ public class PuzzleResultsTest {
               For sample, first blocking coord is 6,1
               For problem, minimum distance is 438
               For problem, first blocking coord is 26,22
+              """),
+          entry(
+              Puzzle19.class,
+              """
+              For sample, possible count 6, combinations 16
+              For problem, possible count 374, combinations 1100663950563322
               """));
 
   @Test

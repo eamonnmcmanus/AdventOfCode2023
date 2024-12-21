@@ -99,8 +99,10 @@ public class Puzzle18 {
         }
 
         // Part2. To speed this up, we remember the last successful path. If a new blocked cell is
-        // not on that path then we don't need to construct a new one. This reduces running time
+        // not on that path then we don't need to construct a new path. This reduces running time
         // from about three minutes to less than a second.
+        // Forum discussion suggests binary search, which I didn't think of, though it seems obvious
+        // in retrospect. It would probably be much faster, but this was fast enough.
         {
           Coord result = null;
           Set<Coord> lastPath = null;
