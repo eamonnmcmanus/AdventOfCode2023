@@ -171,7 +171,18 @@ public class PuzzleResultsTest {
               """
               For sample, possible count 6, combinations 16
               For problem, possible count 374, combinations 1100663950563322
-              """));
+              """),
+          entry(
+              Puzzle22.class,
+              """
+              For sample 1, sum of 2000th secret numbers is 37327623
+              For sample 1, max bananas is 24
+              For sample 2, sum of 2000th secret numbers is 37990510
+              For sample 2, max bananas is 23
+              For problem, sum of 2000th secret numbers is 20068964552
+              For problem, max bananas is 2246
+              """
+          ));
 
   @Test
   public void results() throws Exception {

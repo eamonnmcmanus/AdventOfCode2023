@@ -1,15 +1,7 @@
 package advent2024;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static com.google.common.collect.MoreCollectors.onlyElement;
-
-import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.graph.ImmutableValueGraph;
-import com.google.common.graph.MutableValueGraph;
-import com.google.common.graph.ValueGraphBuilder;
 import com.google.common.io.CharStreams;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -17,11 +9,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 /**
@@ -42,6 +31,7 @@ public class Puzzle22 {
       3
       2024
       """;
+  // Took me embarrassingly long to realize that the sample from Part 1 was not the same in Part 2.
 
   private static final Map<String, Callable<Reader>> INPUT_PRODUCERS =
       ImmutableMap.of(
@@ -66,10 +56,11 @@ public class Puzzle22 {
   }
 
   private static long part2(List<Long> secrets) {
-    Map<List<Integer>, Long> totals = new LinkedHashMap<>();
+    // Map from each sequence of 4 differences to the total prices for the first occurrence of that
+    // sequence in the secret sequence for each starting number.
+    Map<ImmutableList<Integer>, Long> totals = new LinkedHashMap<>();
     for (long s : secrets) {
-      long s0 = s;
-      Map<List<Integer>, Integer> results = new LinkedHashMap<>();
+      Map<ImmutableList<Integer>, Integer> results = new LinkedHashMap<>();
       List<Integer> window = new ArrayList<>();
       int lastPrice = 0;
       for (int i = 0; i < 2000; i++) {
@@ -81,7 +72,8 @@ public class Puzzle22 {
             window.removeFirst();
           }
           if (window.size() == 4) {
-            results.putIfAbsent(new ArrayList<>(window), price);
+            // Have to make a copy of the list before storing it as a key in the map.
+            results.putIfAbsent(ImmutableList.copyOf(window), price);
           }
         }
         lastPrice = price;
