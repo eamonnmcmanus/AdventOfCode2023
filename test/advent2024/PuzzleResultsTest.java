@@ -173,6 +173,14 @@ public class PuzzleResultsTest {
               For problem, possible count 374, combinations 1100663950563322
               """),
           entry(
+              Puzzle20.class,
+              """
+              For sample, Part 1 cheats saving at least 20: 5
+              For sample, Part 2 cheats saving at least 70: 41
+              For problem, Part 1 cheats saving at least 100: 1404
+              For problem, Part 2 cheats saving at least 100: 1010981
+              """),
+          entry(
               Puzzle22.class,
               """
               For sample 1, sum of 2000th secret numbers is 37327623
