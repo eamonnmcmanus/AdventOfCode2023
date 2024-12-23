@@ -181,8 +181,15 @@ public class PuzzleResultsTest {
               For sample 2, max bananas is 23
               For problem, sum of 2000th secret numbers is 20068964552
               For problem, max bananas is 2246
+              """),
+          entry(
+              Puzzle23.class,
               """
-          ));
+              For sample, number of 3-cliques is 7
+              For sample, largest clique is co,de,ka,ta
+              For problem, number of 3-cliques is 1485
+              For problem, largest clique is cc,dz,ea,hj,if,it,kf,qo,sk,ug,ut,uv,wh
+              """));
 
   @Test
   public void results() throws Exception {
