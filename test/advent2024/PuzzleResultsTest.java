@@ -192,6 +192,14 @@ public class PuzzleResultsTest {
               For problem, Part 2 cheats saving at least 100: 1010981
               """),
           entry(
+              Puzzle21.class,
+              """
+              For sample, Part 1 complexity is 126384
+              For sample, Part 2 complexity is 154115708116294
+              For problem, Part 1 complexity is 205160
+              For problem, Part 2 complexity is 252473394928452
+              """),
+          entry(
               Puzzle22.class,
               """
               For sample 1, sum of 2000th secret numbers is 37327623
