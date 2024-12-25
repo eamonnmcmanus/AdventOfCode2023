@@ -182,7 +182,6 @@ public class Puzzle15Test {
     for (var example : EXAMPLES) {
       Input input = makeMap(example.before);
       var gridMap = input.gridMap;
-      Puzzle15.debug = EXAMPLES.indexOf(example) == 5;
       var unused = Puzzle15.part2Move(gridMap, input.robot, example.move);
       if (!mapToString(gridMap).equals(example.after.strip())) {
         System.err.println("For example: " + example);

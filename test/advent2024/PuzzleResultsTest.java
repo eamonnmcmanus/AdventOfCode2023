@@ -136,6 +136,17 @@ public class PuzzleResultsTest {
               Pattern after 6377 steps
               """),
           entry(
+              Puzzle15.class,
+              """
+              For Part 1 small sample, sum is 2028
+              For Part 2 small sample, sum is 1751
+              For Part 1 big sample, sum is 10092
+              For Part 2 big sample, sum is 9021
+              For Part 1 problem, sum is 1463512
+              For Part 2 problem, sum is 1486520
+              """
+          ),
+          entry(
               Puzzle16.class,
               """
               For sample 1, least cost is 7036
