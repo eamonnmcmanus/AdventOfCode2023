@@ -197,6 +197,12 @@ public class PuzzleResultsTest {
               For sample, largest clique is co,de,ka,ta
               For problem, number of 3-cliques is 1485
               For problem, largest clique is cc,dz,ea,hj,if,it,kf,qo,sk,ug,ut,uv,wh
+              """),
+          entry(
+              Puzzle25.class,
+              """
+              For sample, count is 3
+              For problem, count is 3136
               """));
 
   @Test
