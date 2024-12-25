@@ -1,23 +1,22 @@
 package advent2024;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.MoreCollectors.onlyElement;
-import static java.util.stream.Collectors.toMap;
 import static advent2024.Puzzle15.Contents.BOX;
 import static advent2024.Puzzle15.Contents.BOX_LEFT;
 import static advent2024.Puzzle15.Contents.BOX_RIGHT;
 import static advent2024.Puzzle15.Contents.EMPTY;
 import static advent2024.Puzzle15.Contents.ROBOT;
 import static advent2024.Puzzle15.Contents.WALL;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.MoreCollectors.onlyElement;
+import static java.util.stream.Collectors.toMap;
 
 import adventlib.CharGrid;
 import adventlib.CharGrid.Coord;
 import adventlib.Dir;
-import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multiset;
 import com.google.common.io.CharStreams;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -97,56 +96,20 @@ public class Puzzle15 {
 
         CharGrid wideGrid = new CharGrid(widen(gridLines));
         Map<Coord, Contents> wideGridMap = gridMap(wideGrid);
-        System.out.printf("For Part 2 %s, sum is %d\n", name, part2Sum(wideGridMap, moves));
-        List<String> flippedGridLines = flipLinesLR(gridLines);
-        List<Dir> flippedMoves = flipMovesLR(moves);
-        CharGrid flippedWideGrid = new CharGrid(flippedWiden(flippedGridLines));
-        Map<Coord, Contents> flippedWideGridMap = gridMap(flippedWideGrid);
         System.out.printf(
-            "For Part 2 %s, flipped sum is %d\n", name, part2Sum(flippedWideGridMap, flippedMoves));
-        show(wideGrid, wideGridMap);
-        System.out.println(moves);
-        System.out.println();
-        show(flippedWideGrid, flippedWideGridMap);
-        System.out.println(flippedMoves);
-        for (Coord coord : wideGridMap.keySet()) {
-          Coord flip = new Coord(coord.line(), flippedWideGrid.width() - 1 - coord.col());
-          Contents orig = wideGridMap.get(coord);
-          Contents flipped =
-              switch (orig) {
-                case BOX_LEFT -> BOX_RIGHT;
-                case BOX_RIGHT -> BOX_LEFT;
-                default -> orig;
-              };
-          if (flipped != flippedWideGridMap.get(flip)) {
-            System.out.printf(
-                "Disparity at %s (flipped to %s for width %d) orig %s flipped %s\n",
-                coord,
-                flip,
-                flippedWideGrid.width(),
-                wideGridMap.get(coord),
-                flippedWideGridMap.get(flip));
-          }
-        }
+            "For Part 2 %s, sum is %d\n", name, part2Sum(wideGrid, wideGridMap, moves));
       }
     }
   }
 
-  private static List<String> flipLinesLR(List<String> lines) {
-    return lines.stream().map(s -> new StringBuilder(s).reverse().toString()).toList();
-  }
-
-  private static List<Dir> flipMovesLR(List<Dir> moves) {
-    return moves.stream()
-        .map(
-            move ->
-                switch (move) {
-                  case W -> Dir.E;
-                  case E -> Dir.W;
-                  default -> move;
-                })
-        .toList();
-  }
+  // I found this one of the trickiest of 2024's puzzles. My initial solution for Part 2 worked with
+  // all the examples I could find but did not give the right answer for my puzzle input. In the end
+  // I compared the output after every step with the output from someone else's correct solution in
+  // order to find the first disparity. (The bug was in handling the case where we are pushing a row
+  // with gaps between boxes, and one of the gaps coincides with a box in the next row. Then that
+  // box stays put and fill its part of the gap.)
+  // The correct solution I used was by Balázs Zaicsek, which I picked because it was in Java.
+  // https://github.com/zebalu/advent-of-code-2024/blob/master/solution/src/main/java/io/github/zebalu/aoc2024/Day15.java
 
   private static int part1Sum(Map<Coord, Contents> gridMap, List<Dir> moves) {
     Coord robot = robotCoord(gridMap);
@@ -174,8 +137,10 @@ public class Puzzle15 {
   // moving north, we have to check both halves of each box in a stack. Each one must have either an
   // empty space or another box-half north of it. In the case where a box has two boxes north of it,
   // each of those must recursively meet the same conditions. Potentially we can have a very wide
-  // row of boxes at the end.
-  private static int part2Sum(Map<Coord, Contents> gridMap, List<Dir> moves) {
+  // row of boxes at the end. Furthermore, we can have gaps in the row of boxes that are moving, and
+  // we have to take care that such a gap is not blocked by a wall and does not push or overwrite a
+  // box in the next row.
+  private static int part2Sum(CharGrid grid, Map<Coord, Contents> gridMap, List<Dir> moves) {
     Coord robot = robotCoord(gridMap);
     for (Dir move : moves) {
       robot = part2Move(gridMap, robot, move);
@@ -212,8 +177,10 @@ public class Puzzle15 {
         switch (gridMap.get(toPos)) {
           case WALL -> {}
           case EMPTY -> robotMove = true;
-          case BOX_LEFT -> robotMove = pushNorthSouth(gridMap, move, toPos, Dir.E.move(toPos));
-          case BOX_RIGHT -> robotMove = pushNorthSouth(gridMap, move, Dir.W.move(toPos), toPos);
+          case BOX_LEFT ->
+              robotMove = pushNorthSouth(gridMap, move, toPos, Dir.E.move(toPos));
+          case BOX_RIGHT ->
+              robotMove = pushNorthSouth(gridMap, move, Dir.W.move(toPos), toPos);
         }
         if (robotMove) {
           gridMap.put(toPos, ROBOT);
@@ -225,82 +192,118 @@ public class Puzzle15 {
     return robot;
   }
 
+  private static boolean pushNorthSouth(
+      Map<Coord, Contents> gridMap, Dir move, Coord first, Coord second) {
+    var spans = ImmutableList.of(new Span(first.col(), second.col()));
+    return pushNorthSouth(gridMap, move, first.line(), spans);
+  }
+
   /**
-   * Recursively pushes a horizontal row of boxes. The row can have gaps but there is a BOX_LEFT at
-   * the west end and a BOX_RIGHT at the right end.
+   * Recursively pushes a horizontal row of boxes.
    *
+   * @param spans the spans within the row that contain boxes to be pushed.
    * @return true if this row and all following rows were successfully pushed.
    */
   private static boolean pushNorthSouth(
-      Map<Coord, Contents> gridMap, Dir move, Coord westEnd, Coord eastEnd) {
-    checkArgument(
-        gridMap.get(westEnd) == BOX_LEFT, "Unexpected %s at %s", gridMap.get(westEnd), westEnd);
-    checkArgument(gridMap.get(eastEnd) == BOX_RIGHT);
-    int line = westEnd.line();
+      Map<Coord, Contents> gridMap, Dir move, int row, List<Span> spans) {
 
-    // First check if we can move at all. Each box-half must be able to move into an empty space.
+    // First check if we can move at all. Each box-half must be able to move into an empty space or
+    // push another box.
     boolean sawBoxes = false;
-    for (int col = westEnd.col(); col <= eastEnd.col(); col++) {
-      Coord here = new Coord(line, col);
-      Coord next = move.move(here);
-      switch (gridMap.get(here)) {
-        case EMPTY -> {}
-        case BOX_LEFT, BOX_RIGHT -> {
-          switch (gridMap.get(next)) {
-            case BOX_LEFT, BOX_RIGHT -> sawBoxes = true;
-            case EMPTY -> {}
-            case WALL -> {
-              return false;
+    for (Span span : spans) {
+      for (int col = span.first; col <= span.last; col++) {
+        Coord here = new Coord(row, col);
+        Coord next = move.move(here);
+        switch (gridMap.get(here)) {
+          case EMPTY -> {}
+          case BOX_LEFT, BOX_RIGHT -> {
+            switch (gridMap.get(next)) {
+              case BOX_LEFT, BOX_RIGHT -> sawBoxes = true;
+              case EMPTY -> {}
+              case WALL -> {
+                return false;
+              }
+              default -> ise(gridMap.get(next));
             }
-            default -> ise(gridMap.get(next));
           }
+          default -> ise(gridMap.get(here));
         }
-        default -> ise(gridMap.get(here));
       }
     }
 
     // If we haven't returned, then either there is empty space everywhere needed or there are boxes
     // in the next row. In the first case we can move the current row now, but in the second case we
-    // need to try recursively moving the boxes above. The span to move may be wider or narrower
+    // need to try recursively moving the boxes above. The spans to move may be wider or narrower
     // depending on what's above each end of the current row.
     if (sawBoxes) {
-      Coord nextWestEnd = move.move(westEnd);
-      switch (gridMap.get(nextWestEnd)) {
-        case EMPTY -> {
-          do {
-            nextWestEnd = Dir.E.move(nextWestEnd);
-          } while (gridMap.get(nextWestEnd) == EMPTY);
+      ImmutableList.Builder<Span> nextSpansBuilder = ImmutableList.builder();
+      for (Span span : spans) {
+        Coord nextWestEnd = move.move(new Coord(row, span.first));
+        if (gridMap.get(nextWestEnd) == Contents.BOX_RIGHT) {
+          nextWestEnd = Dir.W.move(nextWestEnd);
         }
-        case BOX_LEFT -> {}
-        case BOX_RIGHT -> nextWestEnd = Dir.W.move(nextWestEnd);
-        default -> ise(gridMap.get(nextWestEnd));
-      }
-      Coord nextEastEnd = move.move(eastEnd);
-      switch (gridMap.get(nextEastEnd)) {
-        case EMPTY -> {
-          do {
-            nextEastEnd = Dir.W.move(nextEastEnd);
-          } while (gridMap.get(nextEastEnd) == EMPTY);
+        Coord nextEastEnd = move.move(new Coord(row, span.last));
+        if (gridMap.get(nextEastEnd) == Contents.BOX_LEFT) {
+          nextEastEnd = Dir.E.move(nextEastEnd);
         }
-        case BOX_RIGHT -> {}
-        case BOX_LEFT -> nextEastEnd = Dir.E.move(nextEastEnd);
-        default -> ise(gridMap.get(nextEastEnd));
+        nextSpansBuilder.addAll(
+            boxSpans(gridMap, nextWestEnd.line(), new Span(nextWestEnd.col(), nextEastEnd.col())));
       }
-      if (!pushNorthSouth(gridMap, move, nextWestEnd, nextEastEnd)) {
+      var nextSpans = nextSpansBuilder.build();
+      checkState(!nextSpans.isEmpty());
+      if (!pushNorthSouth(
+          gridMap, move, move.move(new Coord(row, 0)).line(), nextSpansBuilder.build())) {
         return false;
       }
     }
 
-    for (int col = westEnd.col(); col <= eastEnd.col(); col++) {
-      Coord here = new Coord(line, col);
-      Coord next = move.move(here);
-      if (gridMap.get(next) != WALL) {
-        // A gap between boxes can be pushed into a wall, which of course stays a wall.
-        gridMap.put(next, gridMap.get(here));
+    for (Span span : spans) {
+      for (int col = span.first; col <= span.last; col++) {
+        Coord here = new Coord(row, col);
+        Coord next = move.move(here);
+        switch (gridMap.get(next)) {
+          case BOX_LEFT, BOX_RIGHT, EMPTY -> gridMap.put(next, gridMap.get(here));
+          default -> throw new AssertionError(gridMap.get(next));
+        }
+        gridMap.put(here, Contents.EMPTY);
       }
-      gridMap.put(here, EMPTY);
     }
     return true;
+  }
+
+  /**
+   * A span of columns.
+   *
+   * @param first the first column in the span
+   * @param last the last column in the span. Inclusive: this is not the first column not in the
+   *     span.
+   */
+  private record Span(int first, int last) {}
+
+  private static ImmutableList<Span> boxSpans(Map<Coord, Contents> gridMap, int row, Span span) {
+    ImmutableList.Builder<Span> spans = ImmutableList.builder();
+    int currentStart = -1;
+    int col;
+    for (col = span.first; col <= span.last; col++) {
+      Coord coord = new Coord(row, col);
+      switch (gridMap.get(coord)) {
+        case BOX_LEFT -> {
+          if (currentStart < 0) {
+            currentStart = col;
+          }
+        }
+        case EMPTY, WALL -> {
+          if (currentStart >= 0) {
+            spans.add(new Span(currentStart, col - 1));
+            currentStart = -1;
+          }
+        }
+      }
+    }
+    if (currentStart >= 0) {
+      spans.add(new Span(currentStart, span.last));
+    }
+    return spans.build();
   }
 
   private static Coord robotCoord(Map<Coord, Contents> gridMap) {
@@ -376,14 +379,6 @@ public class Puzzle15 {
 
   private static String widen(String line) {
     return line.replace("#", "##").replace("O", "[]").replace(".", "..").replace("@", "@.");
-  }
-
-  private static List<String> flippedWiden(List<String> lines) {
-    return lines.stream().map(Puzzle15::flippedWiden).toList();
-  }
-
-  private static String flippedWiden(String line) {
-    return line.replace("#", "##").replace("O", "[]").replace(".", "..").replace("@", ".@");
   }
 
   private static void show(CharGrid grid, Map<Coord, Contents> gridMap) {

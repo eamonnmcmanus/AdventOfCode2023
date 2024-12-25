@@ -131,15 +131,66 @@ public class Puzzle15Test {
               ...[]...
               ....@...
               ........
-              """)
-          );
+              """),
+          new Example(
+              /*
+              pushNorthSouth move=N west=(7,3) east=(7,4)
+              pushNorthSouth move=N west=(6,4) east=(6,5)
+              pushNorthSouth move=N west=(5,3) east=(5,6)
+              pushNorthSouth move=N west=(4,2) east=(4,7)
+              pushNorthSouth move=N west=(3,2) east=(3,8)
+              pushNorthSouth move=N west=(2,3) east=(2,6)
+              pushNorthSouth move=N west=(1,4) east=(1,5)
+              */
+              """
+              #............[]
+              ....[].[][][][]
+              #..[][]..##[]..
+              ..[]...[]......
+              ..[][][].[]..##
+              ...[][]........
+              ....[].[]....##
+              ...[]##....[]..
+              ....@...[]...[]
+              """,
+              Dir.N,
+              /*
+              #...[].......[]
+              ...[][][][][][]
+              #.[]...[]##[]..
+              ..[][][].......
+              ...[][]..[]..##
+              ....[].........
+              ...[]..[]....##
+              ....@##....[]..
+              ........[]...[]
+              */
+              """
+              #...[].......[]
+              ...[]..[][][][]
+              #.[].[][]##[]..
+              ..[][][].......
+              ...[][]..[]..##
+              ....[].........
+              ...[]..[]....##
+              ....@##....[]..
+              ........[]...[]
+              """));
 
   @Test
   public void checkExamples() {
     for (var example : EXAMPLES) {
       Input input = makeMap(example.before);
       var gridMap = input.gridMap;
+      Puzzle15.debug = EXAMPLES.indexOf(example) == 5;
       var unused = Puzzle15.part2Move(gridMap, input.robot, example.move);
+      if (!mapToString(gridMap).equals(example.after.strip())) {
+        System.err.println("For example: " + example);
+        System.err.println("expected");
+        System.err.println(example.after.strip());
+        System.err.println("actual");
+        System.err.println(mapToString(gridMap));
+      }
       assertThat(mapToString(gridMap)).isEqualTo(example.after.strip());
     }
   }
@@ -148,7 +199,8 @@ public class Puzzle15Test {
 
   private static Input makeMap(String s) {
     List<String> lines = Splitter.on('\n').omitEmptyStrings().splitToList(s);
-    checkArgument(lines.stream().allMatch(line -> line.length() == lines.get(0).length()), "%s", lines);
+    checkArgument(
+        lines.stream().allMatch(line -> line.length() == lines.get(0).length()), "%s", lines);
     Map<Coord, Contents> gridMap = new LinkedHashMap<>();
     Coord robot = null;
     for (int i = 0; i < lines.size(); i++) {
@@ -178,13 +230,12 @@ public class Puzzle15Test {
   private static String mapToString(Map<Coord, Contents> gridMap) {
     StringBuilder sb = new StringBuilder();
     gridMap.forEach(
-      (coord, contents) -> {
-        if (coord.col() == 0 && !sb.isEmpty()) {
-          sb.append('\n');
-        }
-        sb.append(contents.toChar());
-      }
-    );
+        (coord, contents) -> {
+          if (coord.col() == 0 && !sb.isEmpty()) {
+            sb.append('\n');
+          }
+          sb.append(contents.toChar());
+        });
     return sb.toString();
   }
 }
