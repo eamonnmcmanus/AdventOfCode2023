@@ -75,9 +75,14 @@ years 2022, 2023, 2024 (ongoing). They are all coded in Java, needing Java 21 at
 * [2024-12-12](https://adventofcode.com/2024/day/12): [solution](src/advent2024/Puzzle12.java) (perimeters and side counts of regions in a grid).
 * [2024-12-13](https://adventofcode.com/2024/day/13): [solution](src/advent2024/Puzzle13.java) (simultaneous Diophantine equations).
 * [2024-12-14](https://adventofcode.com/2024/day/14): [solution](src/advent2024/Puzzle14.java) (vector-moving robots forming a Christmas tree).
+* [2024-12-15](https://adventofcode.com/2024/day/15): [solution](src/advent2024/Puzzle15.java) (robot pushing stacks of boxes).
 * [2024-12-16](https://adventofcode.com/2024/day/16): [solution](src/advent2024/Puzzle16.java) (shortest path through a maze with penalty for turns).
 * [2024-12-17](https://adventofcode.com/2024/day/17): [solution](src/advent2024/Puzzle17.java) (quining a program on a 3-bit CPU).
 * [2024-12-18](https://adventofcode.com/2024/day/18): [solution](src/advent2024/Puzzle18.java) (shortest path through grid with obstacles).
+* [2024-12-19](https://adventofcode.com/2024/day/19): [solution](src/advent2024/Puzzle19.java) (counting substring splits).
+* [2024-12-20](https://adventofcode.com/2024/day/20): [solution](src/advent2024/Puzzle20.java) (shortest path through maze with one jump allowed).
+* [2024-12-22](https://adventofcode.com/2024/day/22): [solution](src/advent2024/Puzzle22.java) (best sequence of differences in parallel pseudorandom streams).
+* [2024-12-23](https://adventofcode.com/2024/day/23): [solution](src/advent2024/Puzzle23.java) (largest clique in a graph).
 
 # Acknowledgements
 
@@ -118,3 +123,10 @@ All solutions are entirely the work of
   [explanation and solution](https://github.com/dirk527/aoc2021/blob/main/src/aoc2023/Day24.java)
   by [@dirk527](https://github.com/dirk527) showed me the right path, but then
   there wasn't much for me to write.
+
+* [2024-12-15](https://adventofcode.com/2024/day/15) (robot pushing stacks of boxes).
+
+  I found this very tricky to get right. In order to track down a bug, I compared the output from my
+  solution with the output from the
+  [solution](https://github.com/zebalu/advent-of-code-2024/blob/master/solution/src/main/java/io/github/zebalu/aoc2024/Day15.java)
+  by Balázs Zaicsek (which I picked because it was in Java).
