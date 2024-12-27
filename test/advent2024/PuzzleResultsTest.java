@@ -144,8 +144,7 @@ public class PuzzleResultsTest {
               For Part 2 big sample, sum is 9021
               For Part 1 problem, sum is 1463512
               For Part 2 problem, sum is 1486520
-              """
-          ),
+              """),
           entry(
               Puzzle16.class,
               """
@@ -216,6 +215,14 @@ public class PuzzleResultsTest {
               For sample, largest clique is co,de,ka,ta
               For problem, number of 3-cliques is 1485
               For problem, largest clique is cc,dz,ea,hj,if,it,kf,qo,sk,ug,ut,uv,wh
+              """),
+          entry(
+              Puzzle24.class,
+              """
+              For sample 1, computed number is 4
+              For sample 2, computed number is 2024
+              For problem, computed number is 52956035802096
+              List of exchanged outputs is hnv,hth,kfm,tqr,vmv,z07,z20,z28
               """),
           entry(
               Puzzle25.class,

@@ -84,6 +84,7 @@ years 2022, 2023, 2024 (ongoing). They are all coded in Java, needing Java 21 at
 * [2024-12-21](https://adventofcode.com/2024/day/21): [solution](src/advent2024/Puzzle21.java) (navigating multiple levels of keypads).
 * [2024-12-22](https://adventofcode.com/2024/day/22): [solution](src/advent2024/Puzzle22.java) (best sequence of differences in parallel pseudorandom streams).
 * [2024-12-23](https://adventofcode.com/2024/day/23): [solution](src/advent2024/Puzzle23.java) (largest clique in a graph).
+* [2024-12-24](https://adventofcode.com/2024/day/24): [solution](src/advent2024/Puzzle24.java) (fixing an adder circuit by swapping wires).
 * [2024-12-25](https://adventofcode.com/2024/day/25): [solution](src/advent2024/Puzzle25.java) (trivial problem with measuring column heights).
 
 # Acknowledgements
