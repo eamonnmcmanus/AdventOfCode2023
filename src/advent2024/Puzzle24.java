@@ -9,6 +9,7 @@ import static com.google.common.collect.Iterables.getOnlyElement;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.Graphs;
@@ -152,7 +153,12 @@ public class Puzzle24 {
   // Since the tree leading to bit i should only depend on bits i and earlier, we can start from the
   // lowest bits and check for each one whether the shape of the tree corresponds to the shape
   // expected. If not, we can simply try every possible exchange of outputs until we do find the
-  // shape we want. There are 222 gates, so that's only 24,531 echanges.
+  // shape we want. There are 222 gates, so that's only 24,531 echanges. As an optimization, we can
+  // examine only the gates that ultimately arrive at bit i but not at earlier bits. That reduces
+  // run time to much less than a second.
+  //
+  // This does assume that when we find a wrong bit, it will be because of exactly one pair of
+  // swapped outputs. It appears from forum discussion that that is always the case.
   //
   // I spent a lot of time trying other approaches before hitting on this. I tried inspecting the
   // results of additions and making exchanges to see if I could improve them. If you determine that
@@ -164,24 +170,29 @@ public class Puzzle24 {
   // have its output wire exchanged.
   private static void part2(Circuit circuit) {
     MutableGraph<Node> actualGraph = circuit.graph;
-    List<Operation> operations =
+    ImmutableSet<Operation> operations =
         actualGraph.nodes().stream()
             .filter(n -> n instanceof Operation)
             .map(n -> (Operation) n)
-            .toList();
+            .collect(toImmutableSet());
     Set<String> exchangedOutputs = new TreeSet<>();
+    ImmutableSet<Node> knownCorrect = ImmutableSet.of();
     for (int bit = 0; bit < circuit.outputs.size() && exchangedOutputs.size() < 8; bit++) {
+      ImmutableSet<Node> newTransitiveSet =
+          transitivePredecessors(actualGraph, circuit.outputs.get(bit));
       MutableGraph<Node> expectedGraph = GraphBuilder.directed().build();
       Operation expected = expected(bit, expectedGraph);
       Node actual = getOnlyElement(actualGraph.predecessors(circuit.outputs.get(bit)));
       if (!isomorphic(expected, expectedGraph, actual, actualGraph)) {
+        ImmutableSet<Operation> notKnownCorrect =
+            Sets.difference(operations, knownCorrect).immutableCopy();
+        ImmutableSet<Operation> suspects =
+            Sets.intersection(notKnownCorrect, newTransitiveSet).immutableCopy();
         boolean found = false;
         exchanges:
-        for (int aIndex = 0; aIndex < operations.size(); aIndex++) {
-          Operation a = operations.get(aIndex);
+        for (Operation a : suspects) {
           Set<Node> aOuts = new LinkedHashSet<>(actualGraph.successors(a));
-          for (int bIndex = aIndex + 1; bIndex < operations.size(); bIndex++) {
-            Operation b = operations.get(bIndex);
+          for (Operation b : notKnownCorrect) {
             Set<Node> bOuts = new LinkedHashSet<>(actualGraph.successors(b));
             if (aOuts.contains(b) || bOuts.contains(a) || !Collections.disjoint(aOuts, bOuts)) {
               continue;
@@ -193,17 +204,16 @@ public class Puzzle24 {
                 exchangedOutputs.add(a.originalOut);
                 exchangedOutputs.add(b.originalOut);
                 found = true;
+                newTransitiveSet = transitivePredecessors(actualGraph, circuit.outputs.get(bit));
                 break exchanges;
               }
             }
             exchangeOutputs(actualGraph, a, b);
           }
         }
-        if (!found) {
-          System.out.printf("Could not fix incorrect bit %d\n", bit);
-          break;
-        }
+        checkState(found, "Could not fix incorrect bit %s", bit);
       }
+      knownCorrect = newTransitiveSet;
     }
     System.out.printf("List of exchanged outputs is %s\n", String.join(",", exchangedOutputs));
   }
@@ -258,6 +268,22 @@ public class Puzzle24 {
 
   private static Operation inputOperation(int bit, Op op, MutableGraph<Node> graph) {
     return operation(new Terminal("x", bit), op, new Terminal("y", bit), graph);
+  }
+
+  private static <N> ImmutableSet<N> transitivePredecessors(Graph<N> graph, N node) {
+    Set<N> preds = new LinkedHashSet<>();
+    for (N pred : graph.predecessors(node)) {
+      transitivePredecessors(graph, pred, preds);
+    }
+    return ImmutableSet.copyOf(preds);
+  }
+
+  private static <N> void transitivePredecessors(Graph<N> graph, N pred, Set<N> preds) {
+    if (preds.add(pred)) {
+      for (N pred1 : graph.predecessors(pred)) {
+        transitivePredecessors(graph, pred1, preds);
+      }
+    }
   }
 
   private sealed interface Node {}
