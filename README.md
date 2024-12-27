@@ -1,6 +1,8 @@
 These are my solutions to [Advent of Code 2023](https://adventofcode.com) for
 years 2022, 2023, 2024 (ongoing). They are all coded in Java, needing Java 21 at least.
 
+To run Day 21 of 2024, say, you must build with a puzzle input in `src/advent2024/puzzle21.txt`.
+
 # Index
 
 ## 2022
